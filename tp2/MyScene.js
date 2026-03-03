@@ -29,11 +29,19 @@ export class MyScene extends CGFscene {
 
     //Initialize scene objects
     this.axis = new CGFaxis(this);
+    this.parallelogram = new MyParallelogram(this);
     this.diamond = new MyDiamond(this);
+    this.pinkTriangle = new MyTriangle(this);
+    this.orangeTriangle = new MyTriangleBig(this);
+    this.blueTriangle = new MyTriangleBig(this);
 
     //Objects connected to MyInterface
     this.displayAxis = true;
+    this.displayParallelogram = true;
     this.displayDiamond = true;
+    this.displayOrangeTriangle = true;
+    this.displayPinkTriangle = true;
+    this.displayBlueTriangle = true;
     this.scaleFactor = 1;
   }
   initLights() {
@@ -135,21 +143,41 @@ export class MyScene extends CGFscene {
       0.0,
 
       0.0,
-      1.5,
+      2.0,
       0.0,
       1.0
     ];
 
 
     this.multMatrix(sca);
-    this.multMatrix(trans);
-    this.multMatrix(rot);
-    
-    //this.translate(0,1.5,0);
-    //this.rotate(Math.PI/4, 0, 0, 1);
-
     // ---- BEGIN Primitive drawing section
+    this.pushMatrix();
+    this.multMatrix(trans);
+    this.multMatrix(rot);    
     if (this.displayDiamond) this.diamond.display();
+    this.popMatrix();
+
+    this.pushMatrix();
+    this.rotate(((-Math.PI/4) + Math.PI/8), 0.0, 0.0, 1.0);
+    if (this.displayParallelogram) this.parallelogram.display();
+    this.popMatrix();
+
+    this.pushMatrix();
+    this.translate(0.0, 1.5, 0.0);
+    this.rotate(Math.PI/4, 0.0, 0.0, 1.0);
+    if (this.displayPinkTriangle) this.pinkTriangle.display();
+    this.popMatrix();
+
+    this.pushMatrix();
+    this.translate(-1.0,-1.0,0.0);
+    this.rotate(-Math.PI/2,0.0,0.0,1.0);
+    if (this.displayOrangeTriangle) this.orangeTriangle.display();
+    this.popMatrix();
+
+    this.pushMatrix();
+    this.translate(0.0,-4,0.0);
+    if (this.displayBlueTriangle) this.blueTriangle.display();
+    this.popMatrix();
     // ---- END Primitive drawing section
   }
 }
