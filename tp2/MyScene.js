@@ -79,23 +79,74 @@ export class MyScene extends CGFscene {
       0.0,
       0.0,
       0.0,
+
       0.0,
       this.scaleFactor,
       0.0,
       0.0,
+
       0.0,
       0.0,
       this.scaleFactor,
       0.0,
+
       0.0,
       0.0,
       0.0,
       1.0,
     ];
 
+    var rot = [
+      Math.cos(Math.PI/4),
+      Math.sin(Math.PI/4),
+      0.0,
+      0.0,
+      
+      -Math.sin(Math.PI/4),
+      Math.cos(Math.PI/4),
+      0.0,
+      0.0,
+      
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ];
+
+    var trans = [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+
+      0.0,
+      1.5,
+      0.0,
+      1.0
+    ];
+
+
     this.multMatrix(sca);
-    this.translate(0,1.5,0);
-    this.rotate(Math.PI/4, 0, 0, 1);
+    this.multMatrix(trans);
+    this.multMatrix(rot);
+    
+    //this.translate(0,1.5,0);
+    //this.rotate(Math.PI/4, 0, 0, 1);
 
     // ---- BEGIN Primitive drawing section
     if (this.displayDiamond) this.diamond.display();
