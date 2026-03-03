@@ -163,7 +163,7 @@ export class MyScene extends CGFscene {
     this.popMatrix();
 
     this.pushMatrix();
-    this.translate(0.0, 1.5, 0.0);
+    this.translate(0.0, 1.4, 0.0);
     this.rotate(Math.PI/4, 0.0, 0.0, 1.0);
     if (this.displayPinkTriangle) this.pinkTriangle.display();
     this.popMatrix();
