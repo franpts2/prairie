@@ -1,9 +1,5 @@
 import { CGFscene, CGFcamera, CGFaxis } from "../lib/CGF.js";
-import { MyDiamond } from "./MyDiamond.js";
-import { MyTriangle } from "./MyTriangle.js";
-import { MyParallelogram } from "./MyParallelogram.js";
-import { MyTriangleSmall } from "./MyTriangleSmall.js";
-import { MyTriangleBig } from "./MyTriangleBig.js";
+import { MyTangram } from "./MyTangram.js";
 
 /**
  * MyScene
@@ -29,23 +25,11 @@ export class MyScene extends CGFscene {
 
     //Initialize scene objects
     this.axis = new CGFaxis(this);
-    this.parallelogram = new MyParallelogram(this);
-    this.diamond = new MyDiamond(this);
-    this.pinkTriangle = new MyTriangle(this);
-    this.orangeTriangle = new MyTriangleBig(this);
-    this.blueTriangle = new MyTriangleBig(this);
-    this.redTriangle = new MyTriangleSmall(this);
-    this.purpleTriangle = new MyTriangleSmall(this);
+    this.tangram = new MyTangram(this);
 
     //Objects connected to MyInterface
     this.displayAxis = true;
-    this.displayParallelogram = true;
-    this.displayDiamond = true;
-    this.displayOrangeTriangle = true;
-    this.displayPinkTriangle = true;
-    this.displayBlueTriangle = true;
-    this.displayRedTriangle = true;
-    this.displayPurpleTriangle = true;
+    this.displayTangram = true;
     this.scaleFactor = 1;
   }
   initLights() {
@@ -108,93 +92,12 @@ export class MyScene extends CGFscene {
       1.0,
     ];
 
-    var rot = [
-      Math.cos(Math.PI/4),
-      Math.sin(Math.PI/4),
-      0.0,
-      0.0,
-      
-      -Math.sin(Math.PI/4),
-      Math.cos(Math.PI/4),
-      0.0,
-      0.0,
-      
-      0.0,
-      0.0,
-      1.0,
-      0.0,
-
-      0.0,
-      0.0,
-      0.0,
-      1.0
-    ];
-
-    var trans = [
-      1.0,
-      0.0,
-      0.0,
-      0.0,
-      
-      0.0,
-      1.0,
-      0.0,
-      0.0,
-      
-      0.0,
-      0.0,
-      1.0,
-      0.0,
-
-      0.0,
-      2.1,
-      0.0,
-      1.0
-    ];
-
-
     this.multMatrix(sca);
+
     // ---- BEGIN Primitive drawing section
-    this.pushMatrix();
-    this.multMatrix(trans);
-    this.multMatrix(rot);    
-    if (this.displayDiamond) this.diamond.display();
-    this.popMatrix();
+    
+    if (this.displayTangram) this.tangram.display();
 
-    this.pushMatrix();
-    this.translate(0.0, 2.8, 0.0);
-    this.rotate((Math.PI/4 + 0.46365), 0.0, 0.0, 1.0);
-    if (this.displayParallelogram) this.parallelogram.display();
-    this.popMatrix();
-
-    this.pushMatrix();
-    this.translate(0.0, 1.4, 0.0);
-    this.rotate(Math.PI/4, 0.0, 0.0, 1.0);
-    if (this.displayPinkTriangle) this.pinkTriangle.display();
-    this.popMatrix();
-
-    this.pushMatrix();
-    this.translate(-1.0,-1.0,0.0);
-    this.rotate(-Math.PI/2,0.0,0.0,1.0);
-    if (this.displayOrangeTriangle) this.orangeTriangle.display();
-    this.popMatrix();
-
-    this.pushMatrix();
-    this.translate(0.0,-4,0.0);
-    if (this.displayBlueTriangle) this.blueTriangle.display();
-    this.popMatrix();
-
-    this.pushMatrix();
-    this.translate(1.0,0.0,0.0);
-    this.rotate(Math.PI/2,0.0,0.0,1.0);
-    if (this.displayRedTriangle) this.redTriangle.display();
-    this.popMatrix();
-
-    this.pushMatrix();
-    this.translate(1.0,0.-2,0.0);
-    this.rotate(Math.PI/2,0.0,0.0,1.0);
-    if (this.displayPurpleTriangle) this.purpleTriangle.display();
-    this.popMatrix();
     // ---- END Primitive drawing section
   }
 }
