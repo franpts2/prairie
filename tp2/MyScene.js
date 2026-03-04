@@ -1,5 +1,6 @@
 import { CGFscene, CGFcamera, CGFaxis } from "../lib/CGF.js";
 import { MyTangram } from "./MyTangram.js";
+import { MyQuad } from "./MyQuad.js";
 
 /**
  * MyScene
@@ -26,10 +27,12 @@ export class MyScene extends CGFscene {
     //Initialize scene objects
     this.axis = new CGFaxis(this);
     this.tangram = new MyTangram(this);
+    this.quad = new MyQuad(this);
 
     //Objects connected to MyInterface
     this.displayAxis = true;
-    this.displayTangram = true;
+    this.displayTangram = false;
+    this.displayQuad = true;
     this.scaleFactor = 1;
   }
   initLights() {
@@ -97,6 +100,7 @@ export class MyScene extends CGFscene {
     // ---- BEGIN Primitive drawing section
     
     if (this.displayTangram) this.tangram.display();
+    if (this.displayQuad) this.quad.display();
 
     // ---- END Primitive drawing section
   }
