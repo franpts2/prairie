@@ -47,7 +47,7 @@ export class MyScene extends CGFscene {
       0.1,
       500,
       vec3.fromValues(15, 15, 15),
-      vec3.fromValues(0, 0, 0)
+      vec3.fromValues(0, 0, 0),
     );
   }
   setDefaultAppearance() {
@@ -98,9 +98,17 @@ export class MyScene extends CGFscene {
     this.multMatrix(sca);
 
     // ---- BEGIN Primitive drawing section
-    
-    //if (this.displayTangram) this.tangram.display();
+
+    this.pushMatrix();
+    this.scale(12, 12, 12);
+    this.translate(0.5, -1.0, 0.5);
     if (this.displayUnitCube) this.unitCube.display();
+    this.popMatrix();
+    
+    this.pushMatrix();
+    this.translate(6.0, -7.0, 12.1);
+    if (this.displayTangram) this.tangram.display();
+    this.popMatrix();
 
     // ---- END Primitive drawing section
   }
