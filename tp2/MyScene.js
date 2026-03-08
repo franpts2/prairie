@@ -1,5 +1,6 @@
 import { CGFscene, CGFcamera, CGFaxis } from "../lib/CGF.js";
 import { MyTangram } from "./MyTangram.js";
+import { MyUnitCube } from "./MyUnitCube.js";
 
 /**
  * MyScene
@@ -26,10 +27,12 @@ export class MyScene extends CGFscene {
     //Initialize scene objects
     this.axis = new CGFaxis(this);
     this.tangram = new MyTangram(this);
+    this.unitCube = new MyUnitCube(this);
 
     //Objects connected to MyInterface
     this.displayAxis = true;
     this.displayTangram = true;
+    this.displayUnitCube = true;
     this.scaleFactor = 1;
   }
   initLights() {
@@ -44,7 +47,7 @@ export class MyScene extends CGFscene {
       0.1,
       500,
       vec3.fromValues(15, 15, 15),
-      vec3.fromValues(0, 0, 0)
+      vec3.fromValues(0, 0, 0),
     );
   }
   setDefaultAppearance() {
@@ -95,8 +98,17 @@ export class MyScene extends CGFscene {
     this.multMatrix(sca);
 
     // ---- BEGIN Primitive drawing section
+
+    this.pushMatrix();
+    this.scale(12, 12, 12);
+    this.translate(0.5, -1.0, 0.5);
+    if (this.displayUnitCube) this.unitCube.display();
+    this.popMatrix();
     
+    this.pushMatrix();
+    this.translate(6.0, -7.0, 12.1);
     if (this.displayTangram) this.tangram.display();
+    this.popMatrix();
 
     // ---- END Primitive drawing section
   }
