@@ -2,7 +2,7 @@
 
 ## Group T10G06
 
-## TP 1 Notes
+## TP 2 Notes
 
 In exercise 1, we recreated a Tangram figure by instantiating MyDiamond using 4x4 transformation matrices and multMatrix(). The remaining pieces were positioned using CGFscene transformation methods (translate, rotate, scale) and managed with pushMatrix() and popMatrix() to maintain the origin as a reference.
 Then we created a MyTangram class to encapsulate all individual pieces and moved the transformation logic into MyTangram.display() to treat the entire figure as a single, modular object within the scene.
