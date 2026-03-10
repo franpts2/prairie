@@ -7,7 +7,7 @@ import {CGFobject} from '../lib/CGF.js';
 export class MyUnitCube extends CGFobject {
 	constructor(scene) {
 		super(scene);
-		this.initBuffers();
+        this.initBuffers();
 	}
 	
 	initBuffers() {
@@ -54,6 +54,18 @@ export class MyUnitCube extends CGFobject {
             6, 5, 4,
             7, 6, 4, // face z<0
 		];
+
+        this.normals = [
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+        ];
+        
 
 		//The defined indices (and corresponding vertices)
 		//will be read in groups of three to draw triangles
