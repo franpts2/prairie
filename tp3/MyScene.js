@@ -12,6 +12,9 @@ export class MyScene extends CGFscene {
         super();
     }
     init(application) {
+        
+        this.globalAmbientLightning = 0.3;
+        
         super.init(application);
         this.initCameras();
         this.initLights();
@@ -46,7 +49,7 @@ export class MyScene extends CGFscene {
 
     }
     initLights() {
-        this.setGlobalAmbientLight(0.3, 0.3, 0.3, 1.0);
+        this.setGlobalAmbientLight(this.globalAmbientLightning, this.globalAmbientLightning, this.globalAmbientLightning, 1.0);
 
         this.lights[0].setPosition(2.0, 2.0, -1.0, 1.0);
         this.lights[0].setDiffuse(1.0, 1.0, 1.0, 1.0);
@@ -99,6 +102,10 @@ export class MyScene extends CGFscene {
 
     updateObjectComplexity(){
         this.objects[this.selectedObject].updateBuffers(this.objectComplexity);
+    }
+
+    updateGlobalAmbientLight(){
+        this.setGlobalAmbientLight(this.globalAmbientLightning, this.globalAmbientLightning, this.globalAmbientLightning, 1.0);
     }
 
 
