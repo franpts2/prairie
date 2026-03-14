@@ -45,7 +45,7 @@ export class MyScene extends CGFscene {
         this.objectIDs = { 'Plane': 0 , 'Pyramid': 1, 'Cone': 2, 'Tangram': 3, 'UnitCube': 4};
 
         //Other variables connected to MyInterface
-        this.selectedObject = 4;
+        this.selectedObject = 0;
         this.selectedMaterial = 0;
         this.displayAxis = true;
         this.displayNormals = true;
