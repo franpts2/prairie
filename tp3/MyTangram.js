@@ -26,12 +26,54 @@ export class MyTangram extends CGFobject {
   }
 
   initMaterials() {
+          // Yellow
+          this.yellowMaterial = new CGFappearance(this.scene);
+          this.yellowMaterial.setAmbient(1.0, 1.0, 0, 1.0);
+          this.yellowMaterial.setDiffuse(1.0, 1.0, 0, 1.0);
+          this.yellowMaterial.setSpecular(1, 1, 1, 1.0);
+          this.yellowMaterial.setShininess(10.0);
+  
           // Green
           this.greenMaterial = new CGFappearance(this.scene);
           this.greenMaterial.setAmbient(0, 1.0, 0, 1.0);
           this.greenMaterial.setDiffuse(0, 1.0, 0, 1.0);
           this.greenMaterial.setSpecular(1, 1, 1, 1.0);
           this.greenMaterial.setShininess(10.0);
+  
+          // Pink
+          this.pinkMaterial = new CGFappearance(this.scene);
+          this.pinkMaterial.setAmbient(1.0, 0.612, 0.824, 1.0);
+          this.pinkMaterial.setDiffuse(1.0, 0.612, 0.824, 1.0);
+          this.pinkMaterial.setSpecular(1, 1, 1, 1.0);
+          this.pinkMaterial.setShininess(10.0);
+  
+          // Orange
+          this.orangeMaterial = new CGFappearance(this.scene);
+          this.orangeMaterial.setAmbient(1.0, 0.611, 0, 1.0);
+          this.orangeMaterial.setDiffuse(1.0, 0.611, 0, 1.0);
+          this.orangeMaterial.setSpecular(1, 1, 1, 1.0);
+          this.orangeMaterial.setShininess(10.0);
+
+          // Red
+          this.redMaterial = new CGFappearance(this.scene);
+          this.redMaterial.setAmbient(1.0, 0, 0, 1.0);
+          this.redMaterial.setDiffuse(1.0, 0, 0, 1.0);
+          this.redMaterial.setSpecular(1, 1, 1, 1.0);
+          this.redMaterial.setShininess(10.0);
+
+          // Purple
+          this.purpleMaterial = new CGFappearance(this.scene);
+          this.purpleMaterial.setAmbient(0.663, 0.309, 0.757, 1.0);
+          this.purpleMaterial.setDiffuse(0.663, 0.309, 0.757, 1.0);
+          this.purpleMaterial.setSpecular(1, 1, 1, 1.0);
+          this.purpleMaterial.setShininess(10.0);
+
+          // Blue
+          this.blueMaterial = new CGFappearance(this.scene);
+          this.blueMaterial.setAmbient(0, 0.611, 1.0, 1.0);
+          this.blueMaterial.setDiffuse(0, 0.611, 1.0, 1.0);
+          this.blueMaterial.setSpecular(1, 1, 1, 1.0);
+          this.blueMaterial.setShininess(10.0);
       }
 
   display() {
