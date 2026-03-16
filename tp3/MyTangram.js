@@ -126,7 +126,7 @@ export class MyTangram extends CGFobject {
     this.scene.pushMatrix();
     this.scene.multMatrix(trans);
     this.scene.multMatrix(rot);   
-    this.greenMaterial.apply(); 
+    this.scene.customMaterial.apply(); 
     this.diamond.display();
     this.scene.popMatrix();
 
