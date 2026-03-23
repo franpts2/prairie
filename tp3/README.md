@@ -2,7 +2,7 @@
 
 ## Group T10G06
 
-## TP 2 Notes
+## TP 3 Notes
 
 ### Exercises 1 - 3: Integration and Normals
 
