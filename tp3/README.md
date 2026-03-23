@@ -17,10 +17,6 @@ In these exercises, we explored the `CGFappearance` class to manipulate lighting
 		<td style="width:50%;"><img src="screenshots/cg-t10g06-tp3-1.png" alt="Cube with wood-like material" style="width:100%; height:auto;"/></td>
 		<td style="width:50%;"><img src="screenshots/cg-t10g06-tp3-2.png" alt="Tangram with Custom" style="width:100%; height:auto;"/></td>
 	</tr>
-	<tr>
-		<td align="center">Cube with wood-like material</td>
-		<td align="center">Tangram with Custom material</td>
-	</tr>
 </table>
 
 
