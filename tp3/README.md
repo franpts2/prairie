@@ -8,13 +8,21 @@
 
 We began by importing the `MyTangram` and `MyUnitCube` classes from the previous assignment into the current scene. Initially, these objects appeared with inconsistent lighting because their normal vectors had not yet been defined. To resolve this, we implemented the `initBuffers()` method for each class to declare normals. For the cube, we learned that vertices must be duplicated; since a single corner is shared by three faces with different orientations, it requires three distinct normals to reflect light correctly.
 
-![Cube with texture](screenshots/cg-t10g06-tp3-1.png)
-
 ### Exercises 4 - 6: Materials and Specular Reflection
 
 In these exercises, we explored the `CGFappearance` class to manipulate lighting components. We created a wood-like material for the cube characterized by a low specular component to simulate a matte finish. Conversely, for the Tangram, we developed unique materials for each piece using high specular components and specific RGB colors to create sharp, bright highlights. Finally, we linked the `MyDiamond` piece to a "Custom" material, allowing real-time adjustments of its properties through the graphical interface
 
-![Tangram with Custom](screenshots/cg-t10g06-tp3-2.png)
+<table style="width:100%; table-layout:fixed;">
+	<tr>
+		<td style="width:50%;"><img src="screenshots/cg-t10g06-tp3-1.png" alt="Cube with wood-like material" style="width:100%; height:auto;"/></td>
+		<td style="width:50%;"><img src="screenshots/cg-t10g06-tp3-2.png" alt="Tangram with Custom" style="width:100%; height:auto;"/></td>
+	</tr>
+	<tr>
+		<td align="center">Cube with wood-like material</td>
+		<td align="center">Tangram with Custom material</td>
+	</tr>
+</table>
+
 
 ### Exercises 7 - 9: The MyPrism Class
 
