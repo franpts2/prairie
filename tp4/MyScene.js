@@ -63,8 +63,8 @@ export class MyScene extends CGFscene {
         this.wrappingS = { 'Repeat': 0, 'Clamp to edge': 1, 'Mirrored repeat': 2 };
         this.wrappingT = { 'Repeat': 0, 'Clamp to edge': 1, 'Mirrored repeat': 2 };
 
-        this.displayQuad = true;
-        this.displayTangram = false;
+        this.displayQuad = false;
+        this.displayTangram = true;
       }
 
     initLights() {

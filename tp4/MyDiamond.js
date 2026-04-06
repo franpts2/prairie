@@ -37,11 +37,11 @@ export class MyDiamond extends CGFobject {
         ]
 
 		this.texCoords = [
-			0, 1,
-			1, 1,
-			0, 0,
-			1, 0
-		]
+			0.0, 0.5,   // v0 left
+			0.25, 0.75, // v1 bottom
+			0.25, 0.25, // v2 top
+			0.5, 0.5    // v3 right
+		];
 
 		//The defined indices (and corresponding vertices)
 		//will be read in groups of three to draw triangles
