@@ -32,6 +32,7 @@ export class MyTriangle extends CGFobject {
             0, 0, 1, //2
         ];
 
+		// Default is the purple
 		this.texCoords = [
 			0, 0.5,
 			0, 1,

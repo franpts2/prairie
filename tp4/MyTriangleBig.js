@@ -32,6 +32,7 @@ export class MyTriangleBig extends CGFobject {
             0, 0, 1, //2
         ];
 
+        // Default is the blue
         this.texCoords = [
 			0, 0,
 			1, 0,
