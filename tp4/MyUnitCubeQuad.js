@@ -24,7 +24,7 @@ export class MyUnitCubeQuad extends CGFobject {
     //face da frente
     this.scene.pushMatrix();
     if (this.front) {
-      this.scene.setActiveTexture(this.front);
+      this.front.bind();
     }
     this.scene.translate(0, 0, 12.0);
     this.scene.scale(12, 12, 12);
@@ -35,7 +35,7 @@ export class MyUnitCubeQuad extends CGFobject {
     //face de trás
     this.scene.pushMatrix();
     if (this.back) {
-      this.scene.setActiveTexture(this.back);
+      this.back.bind();
     }
     this.scene.scale(12, 12, 12);
     this.scene.translate(0.5, -0.5, 0);
@@ -45,7 +45,7 @@ export class MyUnitCubeQuad extends CGFobject {
     //face de baixo
     this.scene.pushMatrix();
     if (this.bottom) {
-      this.scene.setActiveTexture(this.bottom);
+      this.bottom.bind();
     }
     this.scene.translate(0, -12, 0);
     this.scene.scale(12, 12, 12);
@@ -57,7 +57,7 @@ export class MyUnitCubeQuad extends CGFobject {
     //face da esquerda
     this.scene.pushMatrix();
     if (this.left) {
-      this.scene.setActiveTexture(this.left);
+      this.left.bind();
     }
     this.scene.scale(12, 12, 12);
     this.scene.translate(0, -0.5, 0.5);
@@ -69,7 +69,7 @@ export class MyUnitCubeQuad extends CGFobject {
     //face da direita
     this.scene.pushMatrix();
     if (this.right) {
-      this.scene.setActiveTexture(this.right);
+      this.right.bind();
     }
     this.scene.translate(12, 0, 0);
     this.scene.scale(12, 12, 12);
@@ -82,7 +82,7 @@ export class MyUnitCubeQuad extends CGFobject {
     //face de cima
     this.scene.pushMatrix();
     if (this.top) {
-      this.scene.setActiveTexture(this.top);
+      this.top.bind();
     }
     this.scene.scale(12, 12, 12);
     this.scene.translate(0.5, 0, 0.5);

@@ -30,7 +30,6 @@ export class MyScene extends CGFscene {
         this.axis = new CGFaxis(this);
         this.quad = new MyQuad(this);
         this.tangram = new MyTangram(this);
-        this.unitCubeQuad = new MyUnitCubeQuad(this);
 
         //------ Applied Material
         this.quadMaterial = new CGFappearance(this);
@@ -42,12 +41,27 @@ export class MyScene extends CGFscene {
         this.quadMaterial.setTextureWrap('REPEAT', 'REPEAT');
         //------
 
+        // Material for unit cube
+        this.cubeMaterial = new CGFappearance(this);
+        this.cubeMaterial.setAmbient(0.8, 0.8, 0.8, 1);
+        this.cubeMaterial.setDiffuse(0.8, 0.8, 0.8, 1);
+        this.cubeMaterial.setSpecular(0.8, 0.8, 0.8, 1);
+        this.cubeMaterial.setShininess(10.0);
+        this.cubeMaterial.loadTexture('images/default.png');
+        this.cubeMaterial.setTextureWrap('REPEAT', 'REPEAT');
+        //------
+
         //------ Textures
         this.texture1 = new CGFtexture(this, 'images/board.jpg');
         this.texture2 = new CGFtexture(this, 'images/floor.png');
         this.texture3 = new CGFtexture(this, 'images/window.jpg');
         this.texture4 = new CGFtexture(this, 'images/tangram.png');
-        //-------
+
+        this.mineTopTexture = new CGFtexture(this, 'images/mineTop.png');
+        this.mineBottomTexture = new CGFtexture(this, 'images/mineBottom.png');
+        this.mineSideTexture = new CGFtexture(this, 'images/mineSide.png');
+
+        this.unitCubeQuad = new MyUnitCubeQuad(this, this.mineTopTexture, this.mineSideTexture, this.mineSideTexture, this.mineSideTexture, this.mineSideTexture, this.mineBottomTexture);
 
         //-------Objects connected to MyInterface
         this.displayAxis = true;
@@ -141,6 +155,7 @@ export class MyScene extends CGFscene {
         }
 
         if (this.displayUnitCubeQuad) {
+            this.cubeMaterial.apply();
             this.unitCubeQuad.display();
         }
 
