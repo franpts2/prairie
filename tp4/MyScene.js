@@ -60,7 +60,7 @@ export class MyScene extends CGFscene {
         this.wrappingT = { 'Repeat': 0, 'Clamp to edge': 1, 'Mirrored repeat': 2 };
 
         //this.displayTangram = false;
-        this.displayQuad = false;
+        this.displayQuad = true;
       }
 
     initLights() {
@@ -118,15 +118,16 @@ export class MyScene extends CGFscene {
 
         // ---- BEGIN Primitive drawing section
 
-        this.quadMaterial.apply();
+        if (this.displayQuad) {
+            this.quadMaterial.apply();
 
-        // Default texture filtering in WebCGF is LINEAR. 
-        // Uncomment next line for NEAREST when magnifying, or 
-        // add a checkbox in the GUI to alternate in real time
-        
-        // this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+            // Default texture filtering in WebCGF is LINEAR.
+            // Uncomment next line for NEAREST when magnifying, or
+            // add a checkbox in the GUI to alternate in real time
+            // this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
 
-        this.quad.display();
+            this.quad.display();
+        }
 
         // ---- END Primitive drawing section
     }
