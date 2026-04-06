@@ -21,72 +21,62 @@ export class MyUnitCubeQuad extends CGFobject {
 
   display() {
 
-    //face da frente
+    //face da frente (z = 0.5)
     this.scene.pushMatrix();
     if (this.front) {
       this.front.bind();
     }
-    this.scene.translate(0, 0, 12.0);
-    this.scene.scale(12, 12, 12);
-    this.scene.translate(0.5, -0.5, 0);
+    this.scene.translate(0, 0, 0.5);
     this.quad.display();
     this.scene.popMatrix();
 
-    //face de trás
+    //face de trás (z = -0.5)
     this.scene.pushMatrix();
     if (this.back) {
       this.back.bind();
     }
-    this.scene.scale(12, 12, 12);
-    this.scene.translate(0.5, -0.5, 0);
+    this.scene.translate(0, 0, -0.5);
+    this.scene.rotate(Math.PI, 0, 1, 0);
     this.quad.display();
     this.scene.popMatrix();
 
-    //face de baixo
+    //face de baixo (y = -0.5)
     this.scene.pushMatrix();
     if (this.bottom) {
       this.bottom.bind();
     }
-    this.scene.translate(0, -12, 0);
-    this.scene.scale(12, 12, 12);
-    this.scene.translate(0.5, 0, 0.5);
+    this.scene.translate(0, -0.5, 0);
     this.scene.rotate(Math.PI / 2, 1.0, 0.0, 0.0);
     this.quad.display();
     this.scene.popMatrix();
 
-    //face da esquerda
+    //face da esquerda (x = -0.5)
     this.scene.pushMatrix();
     if (this.left) {
       this.left.bind();
     }
-    this.scene.scale(12, 12, 12);
-    this.scene.translate(0, -0.5, 0.5);
-    this.scene.rotate(Math.PI / 2, 0.0, 0.0, 1.0);
-    this.scene.rotate(Math.PI / 2, 1.0, 0.0, 0.0);
+    this.scene.translate(-0.5, 0, 0);
+    this.scene.rotate(Math.PI / 2, 0.0, 1.0, 0.0);
     this.quad.display();
     this.scene.popMatrix();
 
-    //face da direita
+    //face da direita (x = 0.5)
     this.scene.pushMatrix();
     if (this.right) {
       this.right.bind();
     }
-    this.scene.translate(12, 0, 0);
-    this.scene.scale(12, 12, 12);
-    this.scene.translate(0, -0.5, 0.5);
-    this.scene.rotate(Math.PI / 2, 0.0, 0.0, 1.0);
-    this.scene.rotate(Math.PI / 2, 1.0, 0.0, 0.0);
+    this.scene.translate(0.5, 0, 0);
+    this.scene.rotate(-Math.PI / 2, 0.0, 1.0, 0.0);
     this.quad.display();
     this.scene.popMatrix();
 
-    //face de cima
+    //face de cima (y = 0.5)
     this.scene.pushMatrix();
     if (this.top) {
       this.top.bind();
     }
-    this.scene.scale(12, 12, 12);
-    this.scene.translate(0.5, 0, 0.5);
-    this.scene.rotate(Math.PI / 2, 1.0, 0.0, 0.0);
+    this.scene.translate(0, 0.5, 0);
+    this.scene.rotate(-Math.PI / 2, 1.0, 0.0, 0.0);
     this.quad.display();
     this.scene.popMatrix();
 
