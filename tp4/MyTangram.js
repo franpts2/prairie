@@ -149,34 +149,39 @@ export class MyTangram extends CGFobject {
     this.scene.pushMatrix();
     this.scene.translate(0.0, 1.4, 0.0);
     this.scene.rotate(Math.PI/4, 0.0, 0.0, 1.0);
-    this.pinkMaterial.apply();
+    //this.pinkMaterial.apply();
+    this.tangramMaterial.apply();
     this.pinkTriangle.display();
     this.scene.popMatrix();
 
     this.scene.pushMatrix();
     this.scene.translate(-1.0,-1.0,0.0);
     this.scene.rotate(-Math.PI/2,0.0,0.0,1.0);
-    this.orangeMaterial.apply();
+    //this.orangeMaterial.apply();
+    this.tangramMaterial.apply();
     this.orangeTriangle.display();
     this.scene.popMatrix();
 
     this.scene.pushMatrix();
     this.scene.translate(0.0,-4,0.0);
-    this.blueMaterial.apply();
+    //this.blueMaterial.apply();
+    this.tangramMaterial.apply();
     this.blueTriangle.display();
     this.scene.popMatrix();
 
     this.scene.pushMatrix();
     this.scene.translate(1.0,0.0,0.0);
     this.scene.rotate(Math.PI/2,0.0,0.0,1.0);
-    this.redMaterial.apply();
+    //this.redMaterial.apply();
+    this.tangramMaterial.apply();
     this.redTriangle.display();
     this.scene.popMatrix();
 
     this.scene.pushMatrix();
     this.scene.translate(1.0,-2,0.0);
     this.scene.rotate(Math.PI/2,0.0,0.0,1.0);
-    this.purpleMaterial.apply();
+    //this.purpleMaterial.apply();
+    this.tangramMaterial.apply();
     this.purpleTriangle.display();
     this.scene.popMatrix();
     // ---- END Primitive drawing section
