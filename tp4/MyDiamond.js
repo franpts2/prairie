@@ -2,12 +2,15 @@ import {CGFobject} from '../lib/CGF.js';
 /**
  * MyDiamond
  * @constructor
- * @param scene - Reference to MyScene object
+ * @param {MyScene} scene - Reference to MyScene object
+ * @param {Array} coords - Array of texture coordinates (optional)
  */
 export class MyDiamond extends CGFobject {
-	constructor(scene) {
+	constructor(scene, coords) {
 		super(scene);
 		this.initBuffers();
+		if (coords != undefined)
+			this.updateTexCoords(coords);
 	}
 	
 	initBuffers() {
@@ -31,13 +34,30 @@ export class MyDiamond extends CGFobject {
             0, 0, 1, //1
             0, 0, 1, //2
             0, 0, 1, //3
-        ]
+        ];
+
+		this.texCoords = [
+			0.0, 0.5,   // v0 left
+			0.25, 0.75, // v1 bottom
+			0.25, 0.25, // v2 top
+			0.5, 0.5    // v3 right
+		]
 
 		//The defined indices (and corresponding vertices)
 		//will be read in groups of three to draw triangles
 		this.primitiveType = this.scene.gl.TRIANGLES;
 
 		this.initGLBuffers();
+	}
+
+	/**
+	 * @method updateTexCoords
+	 * Updates the list of texture coordinates of the quad
+	 * @param {Array} coords - Array of texture coordinates
+	 */
+	updateTexCoords(coords) {
+		this.texCoords = [...coords];
+		this.updateTexCoordsGLBuffers();
 	}
 }
 

@@ -17,9 +17,19 @@ export class MyTangram extends CGFobject {
     this.parallelogram = new MyParallelogram(scene);
     this.diamond = new MyDiamond(scene);
     this.pinkTriangle = new MyTriangle(scene);
-    this.orangeTriangle = new MyTriangleBig(scene);
+    //this.orangeTriangle = new MyTriangleBig(scene);
+    this.orangeTriangle = new MyTriangleBig(scene, [
+      1, 1,
+      1, 0,
+      0.5, 0.5
+    ]);
     this.blueTriangle = new MyTriangleBig(scene);
-    this.redTriangle = new MyTriangleSmall(scene);
+    //this.redTriangle = new MyTriangleSmall(scene);
+    this.redTriangle = new MyTriangleSmall(scene,[
+      0.25, 0.75,
+      0.5,0.5,
+      0.75, 0.75
+    ]);
     this.purpleTriangle = new MyTriangleSmall(scene);
 
     this.initMaterials();
@@ -74,6 +84,13 @@ export class MyTangram extends CGFobject {
           this.pinkMaterial.setDiffuse(1.0, 0.612, 0.824, 1.0);
           this.pinkMaterial.setSpecular(1, 1, 1, 1.0);
           this.pinkMaterial.setShininess(10.0);
+
+          this.tangramMaterial = new CGFappearance(this.scene);
+          this.tangramMaterial.setAmbient(0.1, 0.1, 0.1, 1);
+          this.tangramMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
+          this.tangramMaterial.setSpecular(0.1, 0.1, 0.1, 1);
+          this.tangramMaterial.setShininess(10.0);
+          this.tangramMaterial.loadTexture('images/tangram.png');
       }
 
   display() {
@@ -126,7 +143,7 @@ export class MyTangram extends CGFobject {
     this.scene.pushMatrix();
     this.scene.multMatrix(trans);
     this.scene.multMatrix(rot);   
-    this.scene.customMaterial.apply(); 
+    this.tangramMaterial.apply(); 
     this.diamond.display();
     this.scene.popMatrix();
 
@@ -134,41 +151,47 @@ export class MyTangram extends CGFobject {
     this.scene.translate(0.0, 2.8, 0.0);
     this.scene.rotate(Math.PI, 0.0, 1.0, 0.0);
     this.scene.rotate((Math.PI/4 + 0.46365), 0.0, 0.0, 1.0);
-    this.yellowMaterial.apply();
+    //this.yellowMaterial.apply();
+    this.tangramMaterial.apply();
     this.parallelogram.display();
     this.scene.popMatrix();
 
     this.scene.pushMatrix();
     this.scene.translate(0.0, 1.4, 0.0);
     this.scene.rotate(Math.PI/4, 0.0, 0.0, 1.0);
-    this.pinkMaterial.apply();
+    //this.pinkMaterial.apply();
+    this.tangramMaterial.apply();
     this.pinkTriangle.display();
     this.scene.popMatrix();
 
     this.scene.pushMatrix();
     this.scene.translate(-1.0,-1.0,0.0);
     this.scene.rotate(-Math.PI/2,0.0,0.0,1.0);
-    this.orangeMaterial.apply();
+    //this.orangeMaterial.apply();
+    this.tangramMaterial.apply();
     this.orangeTriangle.display();
     this.scene.popMatrix();
 
     this.scene.pushMatrix();
     this.scene.translate(0.0,-4,0.0);
-    this.blueMaterial.apply();
+    //this.blueMaterial.apply();
+    this.tangramMaterial.apply();
     this.blueTriangle.display();
     this.scene.popMatrix();
 
     this.scene.pushMatrix();
     this.scene.translate(1.0,0.0,0.0);
     this.scene.rotate(Math.PI/2,0.0,0.0,1.0);
-    this.redMaterial.apply();
+    //this.redMaterial.apply();
+    this.tangramMaterial.apply();
     this.redTriangle.display();
     this.scene.popMatrix();
 
     this.scene.pushMatrix();
     this.scene.translate(1.0,-2,0.0);
     this.scene.rotate(Math.PI/2,0.0,0.0,1.0);
-    this.purpleMaterial.apply();
+    //this.purpleMaterial.apply();
+    this.tangramMaterial.apply();
     this.purpleTriangle.display();
     this.scene.popMatrix();
     // ---- END Primitive drawing section
