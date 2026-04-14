@@ -10,8 +10,8 @@ void main() {
   float normalizedY = (vPosition.y / vPosition.w) * 0.5 + 0.5;
 
   if (normalizedY > 0.5) {
-    gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0); // Yellow
+    gl_FragColor = vec4(0.898, 0.898, 0.0, 1.0); // #E5E500
   } else {
-    gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0); // Blue
+    gl_FragColor = vec4(0.541, 0.541, 0.898, 1.0); // #8A8AE5
   }
 }
