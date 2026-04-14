@@ -1,18 +1,17 @@
+#ifdef GL_ES
 precision highp float;
+#endif
 
-varying vec4 vPosition; // receives interpoled pos from Vertex Shader
+varying vec4 vPosition;
 
 void main() {
-    // vPosition cords go from -w to +w
-    // normalize to [-1,1] (divide by w)
-    // then map to [0,1]
-    float normalized_y = (vPosition.y / vPosition.w + 1.0) / 2.0;
+  // vPosition is in clip space (-w to w). convert to Normalized Device Coords by dividing by w.
+  // NDC range from -1 to 1. We scale and bias to get a 0 to 1 range.
+  float normalizedY = (vPosition.y / vPosition.w) * 0.5 + 0.5;
 
-    // if y in top half, yellow color
-    if (normalized_y > 0.5) {
-        gl_FragColor = vec4(1.0,1.0,0.0,1.0); // yellow
-    }
-    else {
-        gl_FragColor = vec4(0.0,0.0,1.0,1.0); // blue
-    }
+  if (normalizedY > 0.5) {
+    gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0); // Yellow
+  } else {
+    gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0); // Blue
+  }
 }
