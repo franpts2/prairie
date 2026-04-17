@@ -22,10 +22,5 @@ void main() {
 	vec3 tinted = mix(baseColor.rgb, waterTint, 0.2);
 	float highlight = 0.08 * (vWave * 0.5 + 0.5);
 
-    vec4 filter = texture2D(uSampler2, vTextureCoord + timeFactor * 0.01);
-    if (filter.b > 0.5) {
-        gl_FragColor = vec4(0.52, 0.18, 0.11, 1.0);
-    } else {
-        gl_FragColor = vec4(tinted + highlight, baseColor.a);
-    }
+	gl_FragColor = vec4(tinted + highlight, baseColor.a);
 }
