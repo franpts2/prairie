@@ -5,7 +5,7 @@ export class MySphere extends CGFobject {
         super(scene);
         this.slices = slices;  // divisions around the poles (longitude)
         this.stacks = stacks;  // divisions from pole to pole (latitude)
-        this.radius = 1;       // radius of sphere
+        this.radius = 500;     // radius of sphere
         this.initBuffers();
     }
 
@@ -36,7 +36,7 @@ export class MySphere extends CGFobject {
                 this.vertices.push(x * this.radius, y * this.radius, z * this.radius);
                 
                 // Normal (points outward from center - same as vertex for unit sphere)
-                this.normals.push(x, y, z);
+                this.normals.push(-x, -y, -z);
             }
         }
 
