@@ -5,7 +5,7 @@ export class MySphere extends CGFobject {
         super(scene);
         this.slices = slices;  // divisions around the poles (longitude)
         this.stacks = stacks;  // divisions from pole to pole (latitude)
-        this.radius = 500;     // radius of sphere
+        this.radius = 200;     // radius of sphere
         this.initBuffers();
     }
 
