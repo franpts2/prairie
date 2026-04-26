@@ -64,8 +64,8 @@ export class MyScene extends CGFscene {
       0.4,
       0.1,
       500,
-      vec3.fromValues(15, 15, 15),
-      vec3.fromValues(0, 0, 0)
+      vec3.fromValues(0, 20, 0),
+      vec3.fromValues(0, 10, 0)
     );
   }
   setDefaultAppearance() {
