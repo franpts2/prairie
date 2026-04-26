@@ -1,4 +1,4 @@
-import { CGFscene, CGFcamera, CGFaxis } from "../lib/CGF.js";
+import { CGFscene, CGFcamera, CGFaxis, CGFappearance, CGFtexture } from "../lib/CGF.js";
 import { MySphere } from "./MySphere.js";
 
 /**
@@ -22,10 +22,20 @@ export class MyScene extends CGFscene {
     this.gl.enable(this.gl.DEPTH_TEST);
     this.gl.enable(this.gl.CULL_FACE);
     this.gl.depthFunc(this.gl.LEQUAL);
+    this.enableTextures(true);
 
     //Initialize scene objects
     this.axis = new CGFaxis(this);
     this.sphere = new MySphere(this, 150, 150);
+
+    this.sphereAppearance = new CGFappearance(this);
+    this.sphereAppearance.setAmbient(1.0, 1.0, 1.0, 1.0);
+    this.sphereAppearance.setDiffuse(1.0, 1.0, 1.0, 1.0);
+    this.sphereAppearance.setSpecular(0.0, 0.0, 0.0, 1.0);
+    this.sphereAppearance.setShininess(10.0);
+    this.sphereTexture = new CGFtexture(this, "./images/sky.jpeg");
+    this.sphereAppearance.setTexture(this.sphereTexture);
+    this.sphereAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
 
     //Objects connected to MyInterface
     this.displayAxis = true;
@@ -90,6 +100,7 @@ export class MyScene extends CGFscene {
 
     this.multMatrix(sca);
 
+    this.sphereAppearance.apply();
     this.sphere.display();
   }
 }

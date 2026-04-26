@@ -13,9 +13,10 @@ export class MySphere extends CGFobject {
         this.vertices = [];
         this.indices = [];
         this.normals = [];
+        this.texCoords = [];
 
         const alphaAng = 2 * Math.PI / this.slices;  // angle between longitude lines
-        const betaAng = Math.PI / this.stacks;       // angle between latitude lines
+        const betaAng = (Math.PI / 2) / this.stacks;       // angle between latitude lines
 
         // Generate vertices using spherical coordinates
         for (let stack = 0; stack <= this.stacks; stack++) {
@@ -37,6 +38,11 @@ export class MySphere extends CGFobject {
                 
                 // Normal (points outward from center - same as vertex for unit sphere)
                 this.normals.push(-x, -y, -z);
+
+                // UV coordinates for spherical mapping
+                const u = 1 - (slice / this.slices);
+                const v = 1 - (stack / this.stacks);
+                this.texCoords.push(u, v);
             }
         }
 
