@@ -1,4 +1,4 @@
-import { CGFscene, CGFcamera, CGFaxis, CGFappearance, CGFtexture } from "../lib/CGF.js";
+import { CGFscene, CGFcamera, CGFaxis, CGFappearance, CGFtexture, CGFshader } from "../lib/CGF.js";
 import { MySphere } from "./MySphere.js";
 
 /**
@@ -11,7 +11,7 @@ export class MyScene extends CGFscene {
   }
   init(application) {
     super.init(application);
-    
+
     this.initCameras();
     this.initLights();
 
@@ -21,6 +21,8 @@ export class MyScene extends CGFscene {
     this.gl.clearDepth(100.0);
     this.gl.enable(this.gl.DEPTH_TEST);
     this.gl.enable(this.gl.CULL_FACE);
+    this.gl.enable(this.gl.BLEND);
+    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
     this.gl.depthFunc(this.gl.LEQUAL);
     this.enableTextures(true);
 
@@ -36,6 +38,16 @@ export class MyScene extends CGFscene {
     this.sphereTexture = new CGFtexture(this, "./images/sky.jpeg");
     this.sphereAppearance.setTexture(this.sphereTexture);
     this.sphereAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
+
+    // Cloud setup
+    this.cloudSphere = new MySphere(this, 150, 150);
+    this.cloudAppearance = new CGFappearance(this);
+    this.cloudAppearance.setAmbient(1.0, 1.0, 1.0, 1.0);
+    this.cloudAppearance.setDiffuse(1.0, 1.0, 1.0, 1.0);
+    this.cloudTexture = new CGFtexture(this, "./images/clouds.png");
+    this.cloudAppearance.setTexture(this.cloudTexture);
+    this.cloudAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
+    this.cloudRotation = 0;
 
     //Objects connected to MyInterface
     this.displayAxis = true;
@@ -102,5 +114,17 @@ export class MyScene extends CGFscene {
 
     this.sphereAppearance.apply();
     this.sphere.display();
+
+    this.pushMatrix();
+    this.scale(0.98, 0.98, 0.98); // inside sky sphere
+    this.rotate(this.cloudRotation, 0, 1, 0);
+    this.gl.disable(this.gl.CULL_FACE); // show inside of sphere
+    this.cloudAppearance.apply();
+    this.cloudSphere.display();
+    this.gl.enable(this.gl.CULL_FACE);
+    this.popMatrix();
+
+    // animate clouds
+    this.cloudRotation += 0.0001;
   }
 }
