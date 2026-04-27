@@ -26,9 +26,11 @@ export class MyScene extends CGFscene {
     this.gl.depthFunc(this.gl.LEQUAL);
     this.enableTextures(true);
 
+    this.setGlobalAmbientLight(0.3, 0.3, 0.3, 1.0);
+
     //Initialize scene objects
     this.axis = new CGFaxis(this);
-    this.sphere = new MySphere(this, 150, 150);
+    this.sphere = new MySphere(this, 150, 150, 200);
 
     this.sphereAppearance = new CGFappearance(this);
     this.sphereAppearance.setAmbient(1.0, 1.0, 1.0, 1.0);
@@ -51,11 +53,14 @@ export class MyScene extends CGFscene {
 
     //Objects connected to MyInterface
     this.displayAxis = true;
+    this.displayLight0 = true;
     this.scaleFactor = 1;
   }
   initLights() {
-    this.lights[0].setPosition(15, 2, 5, 1);
+    this.lights[0].setPosition(0.45, -0.89, 0, 0);
+    this.lights[0].setAmbient(0.3, 0.3, 0.3, 1.0);
     this.lights[0].setDiffuse(1.0, 1.0, 1.0, 1.0);
+    this.lights[0].setSpecular(1.0, 1.0, 1.0, 1.0);
     this.lights[0].enable();
     this.lights[0].update();
   }
@@ -69,9 +74,9 @@ export class MyScene extends CGFscene {
     );
   }
   setDefaultAppearance() {
-    this.setAmbient(0.2, 0.4, 0.8, 1.0);
-    this.setDiffuse(0.2, 0.4, 0.8, 1.0);
-    this.setSpecular(0.2, 0.4, 0.8, 1.0);
+    this.setAmbient(0.4, 0.4, 0.4, 1.0);
+    this.setDiffuse(0.6, 0.6, 0.6, 1.0);
+    this.setSpecular(0.2, 0.2, 0.2, 1.0);
     this.setShininess(10.0);
   }
   display() {
@@ -88,6 +93,10 @@ export class MyScene extends CGFscene {
     // Draw axis
     // x: red , y: green, z: blue
     if (this.displayAxis) this.axis.display();
+
+    if (this.displayLight0) this.lights[0].enable();
+    else this.lights[0].disable();
+    this.lights[0].update();
 
     this.setDefaultAppearance();
 

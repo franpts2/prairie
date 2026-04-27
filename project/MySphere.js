@@ -1,11 +1,11 @@
 import { CGFobject } from '../lib/CGF.js';
 
 export class MySphere extends CGFobject {
-    constructor(scene, slices, stacks) {
+    constructor(scene, slices, stacks, radius = 200) {
         super(scene);
         this.slices = slices;  // divisions around the poles (longitude)
         this.stacks = stacks;  // divisions from pole to pole (latitude)
-        this.radius = 200;     // radius of sphere
+        this.radius = radius;     // radius of sphere
         this.initBuffers();
     }
 
