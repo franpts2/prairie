@@ -1,0 +1,8 @@
+deploy:
+  image: node:20-slim
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  script:
+    - npm install wrangler --location=global
+    - wrangler pages deploy ./project --project-name "cgra-t10-g06" --branch "main"
