@@ -4,6 +4,7 @@ deploy:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   script:
+    - npm install wrangler --location=global
     - mkdir -p ./deploy
     - cp -r ./project/* ./deploy/
     - cp -r ./lib ./deploy/lib
