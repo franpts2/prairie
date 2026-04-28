@@ -133,6 +133,13 @@ export class MyScene extends CGFscene {
 
     this.multMatrix(sca);
 
+    this.pushMatrix();
+    this.scale(400, 400, 400);
+    this.rotate(- Math.PI / 2, 1, 0, 0);
+    this.planeAppearance.apply();
+    this.plane.display();
+    this.popMatrix();
+
     this.sphereAppearance.apply();
     this.sphere.display();
 
@@ -141,13 +148,6 @@ export class MyScene extends CGFscene {
     this.rotate(this.cloudRotation, 0, 1, 0);
     this.cloudAppearance.apply();
     this.cloudSphere.display();
-    this.popMatrix();
-
-    this.pushMatrix();
-    this.scale(400, 400, 400);
-    this.rotate(- Math.PI / 2, 1, 0, 0);
-    this.planeAppearance.apply();
-    this.plane.display();
     this.popMatrix();
 
     // animate clouds
