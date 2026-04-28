@@ -1,5 +1,6 @@
 import { CGFscene, CGFcamera, CGFaxis, CGFappearance, CGFtexture, CGFshader } from "../lib/CGF.js";
 import { MySphere } from "./MySphere.js";
+import { MyPlane } from "./MyPlane.js";
 
 /**
  * MyScene
@@ -31,6 +32,7 @@ export class MyScene extends CGFscene {
     //Initialize scene objects
     this.axis = new CGFaxis(this);
     this.sphere = new MySphere(this, 150, 150, 200);
+    this.plane = new MyPlane(this, 10, 0, 1, 0, 1); //???????
 
     this.sphereAppearance = new CGFappearance(this);
     this.sphereAppearance.setAmbient(1.0, 1.0, 1.0, 1.0);
@@ -50,6 +52,16 @@ export class MyScene extends CGFscene {
     this.cloudAppearance.setTexture(this.cloudTexture);
     this.cloudAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
     this.cloudRotation = 0;
+
+    // plane setup
+    this.planeAppearance = new CGFappearance(this);
+    this.planeAppearance.setAmbient(1.0, 1.0, 1.0, 1.0);
+    this.planeAppearance.setDiffuse(1.0, 1.0, 1.0, 1.0);
+    this.planeAppearance.setSpecular(0.0, 0.0, 0.0, 1.0);
+    this.planeAppearance.setShininess(10.0);
+    this.planeTexture = new CGFtexture(this, "./images/grass.jpg");
+    this.planeAppearance.setTexture(this.planeTexture);
+    this.planeAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
 
     //Objects connected to MyInterface
     this.displayAxis = true;
@@ -131,6 +143,13 @@ export class MyScene extends CGFscene {
     this.cloudAppearance.apply();
     this.cloudSphere.display();
     this.gl.enable(this.gl.CULL_FACE);
+    this.popMatrix();
+
+    this.pushMatrix();
+    this.scale(400, 400, 400);
+    this.rotate(- Math.PI / 2, 1, 0, 0);
+    this.planeAppearance.apply();
+    this.plane.display();
     this.popMatrix();
 
     // animate clouds
