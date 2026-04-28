@@ -139,10 +139,8 @@ export class MyScene extends CGFscene {
     this.pushMatrix();
     this.scale(0.98, 0.98, 0.98); // inside sky sphere
     this.rotate(this.cloudRotation, 0, 1, 0);
-    this.gl.disable(this.gl.CULL_FACE); // show inside of sphere
     this.cloudAppearance.apply();
     this.cloudSphere.display();
-    this.gl.enable(this.gl.CULL_FACE);
     this.popMatrix();
 
     this.pushMatrix();
