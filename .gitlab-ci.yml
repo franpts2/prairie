@@ -4,5 +4,9 @@ deploy:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   script:
-    - npm install wrangler --location=global
-    - wrangler pages deploy ./project --project-name "cgra-t10-g06" --branch "main"
+    - mkdir -p ./deploy
+    - cp -r ./project/* ./deploy/
+    - cp -r ./lib ./deploy/lib
+    - grep -rl "'../lib/" ./deploy/ | xargs sed -i "s|'../lib/|'./lib/|g"
+    - grep -rl '"../lib/' ./deploy/ | xargs sed -i 's|"../lib/|"./lib/|g'
+    - wrangler pages deploy ./deploy --project-name "cgra-t10-g06" --branch "main"
