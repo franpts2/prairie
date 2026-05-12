@@ -1,6 +1,8 @@
 import { CGFscene, CGFcamera, CGFaxis, CGFappearance, CGFtexture, CGFshader } from "../lib/CGF.js";
-import { MySphere } from "./MySphere.js";
-import { MyPlane } from "./MyPlane.js";
+import { MySky } from "./elements/MySky.js";
+import { MyCloud } from "./elements/MyCloud.js";
+import { MySun } from "./elements/MySun.js";
+import { MyGround } from "./elements/MyGround.js";
 
 /**
  * MyScene
@@ -31,37 +33,13 @@ export class MyScene extends CGFscene {
 
     //Initialize scene objects
     this.axis = new CGFaxis(this);
-    this.sphere = new MySphere(this, 150, 150, 200);
-    this.plane = new MyPlane(this, 10, 0, 1, 0, 1); //???????
 
-    this.sphereAppearance = new CGFappearance(this);
-    this.sphereAppearance.setAmbient(1.0, 1.0, 1.0, 1.0);
-    this.sphereAppearance.setDiffuse(1.0, 1.0, 1.0, 1.0);
-    this.sphereAppearance.setSpecular(0.0, 0.0, 0.0, 1.0);
-    this.sphereAppearance.setShininess(10.0);
-    this.sphereTexture = new CGFtexture(this, "./images/sky.jpeg");
-    this.sphereAppearance.setTexture(this.sphereTexture);
-    this.sphereAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
-
-    // Cloud setup
-    this.cloudSphere = new MySphere(this, 150, 150);
-    this.cloudAppearance = new CGFappearance(this);
-    this.cloudAppearance.setAmbient(1.0, 1.0, 1.0, 1.0);
-    this.cloudAppearance.setDiffuse(1.0, 1.0, 1.0, 1.0);
-    this.cloudTexture = new CGFtexture(this, "./images/clouds.png");
-    this.cloudAppearance.setTexture(this.cloudTexture);
-    this.cloudAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
-    this.cloudRotation = 0;
-
-    // plane setup
-    this.planeAppearance = new CGFappearance(this);
-    this.planeAppearance.setAmbient(1.0, 1.0, 1.0, 1.0);
-    this.planeAppearance.setDiffuse(1.0, 1.0, 1.0, 1.0);
-    this.planeAppearance.setSpecular(0.0, 0.0, 0.0, 1.0);
-    this.planeAppearance.setShininess(10.0);
-    this.planeTexture = new CGFtexture(this, "./images/grass.jpg");
-    this.planeAppearance.setTexture(this.planeTexture);
-    this.planeAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
+    // Element setup
+    this.ground = new MyGround(this);
+    this.sky = new MySky(this);
+    this.cloud = new MyCloud(this);
+    this.sun = new MySun(this);
+    this.sun.initLight();
 
     //Objects connected to MyInterface
     this.displayAxis = true;
@@ -69,12 +47,7 @@ export class MyScene extends CGFscene {
     this.scaleFactor = 1;
   }
   initLights() {
-    this.lights[0].setPosition(0.45, -0.89, 0, 0);
-    this.lights[0].setAmbient(0.3, 0.3, 0.3, 1.0);
-    this.lights[0].setDiffuse(1.0, 1.0, 1.0, 1.0);
-    this.lights[0].setSpecular(1.0, 1.0, 1.0, 1.0);
-    this.lights[0].enable();
-    this.lights[0].update();
+    // Lights initialized in MySun
   }
   initCameras() {
     this.camera = new CGFcamera(
@@ -133,24 +106,11 @@ export class MyScene extends CGFscene {
 
     this.multMatrix(sca);
 
-    this.pushMatrix();
-    this.scale(400, 400, 400);
-    this.rotate(- Math.PI / 2, 1, 0, 0);
-    this.planeAppearance.apply();
-    this.plane.display();
-    this.popMatrix();
+    this.ground.display();
 
-    this.sphereAppearance.apply();
-    this.sphere.display();
+    this.sky.display();
 
-    this.pushMatrix();
-    this.scale(0.98, 0.98, 0.98); // inside sky sphere
-    this.rotate(this.cloudRotation, 0, 1, 0);
-    this.cloudAppearance.apply();
-    this.cloudSphere.display();
-    this.popMatrix();
-
-    // animate clouds
-    this.cloudRotation += 0.0001;
+    this.cloud.update();
+    this.cloud.display();
   }
 }
