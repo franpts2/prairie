@@ -78,21 +78,35 @@ export class MyScene extends CGFscene {
   }
 
   initPlacement() {
-    const placements = PlacementUtils.generateScatterPositions({
-      count: 12,
-      minX: -150,
-      maxX: 150,
-      minZ: -150,
-      maxZ: 150,
-      minDistance: 35,
+    /*
+    - 4 groups
+    - each group has 3–6 rocks
+    - groups are kept 50 units apart
+    - rocks are clustered within a 20 unit radius
+    - items stay at least 6 units from each other
+    */
+    const groups = PlacementUtils.generateClusteredPositions({
+      groupCount: 4,
+      minGroupSize: 3,
+      maxGroupSize: 6,
+      minX: -120,
+      maxX: 120,
+      minZ: -120,
+      maxZ: 120,
+      minGroupDistance: 50,
+      clusterRadius: 20,
+      minItemDistance: 6,
     });
 
-    this.rockItems = placements.map((position) => ({
-      x: position.x,
-      z: position.z,
-      size: 0.6 + Math.random() * 0.8,
-      rotation: Math.random() * Math.PI * 2,
-    }));
+    this.rockItems = groups.flatMap((group, groupIndex) =>
+      group.items.map((item) => ({
+        x: item.x,
+        z: item.z,
+        size: 0.6 + Math.random() * 0.8,
+        rotation: Math.random() * Math.PI * 2,
+        groupIndex,
+      }))
+    );
   }
 
   displayRockPlacements() {
