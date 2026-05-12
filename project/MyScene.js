@@ -3,6 +3,8 @@ import { MySky } from "./elements/MySky.js";
 import { MyCloud } from "./elements/MyCloud.js";
 import { MySun } from "./elements/MySun.js";
 import { MyGround } from "./elements/MyGround.js";
+import { MySphere } from "./shapes/MySphere.js";
+import * as PlacementUtils from "./utils/PlacementUtils.js";
 
 /**
  * MyScene
@@ -41,6 +43,16 @@ export class MyScene extends CGFscene {
     this.sun = new MySun(this);
     this.sun.initLight();
 
+    // TEMP ROCKS
+    this.rockPrototype = new MySphere(this, 16, 16, 1);
+    this.rockAppearance = new CGFappearance(this);
+    this.rockAppearance.setAmbient(0.2, 0.2, 0.2, 1.0);
+    this.rockAppearance.setDiffuse(0.5, 0.5, 0.5, 1.0);
+    this.rockAppearance.setSpecular(0.1, 0.1, 0.1, 1.0);
+    this.rockAppearance.setShininess(5.0);
+    this.rockItems = [];
+    this.initPlacement();
+
     //Objects connected to MyInterface
     this.displayAxis = true;
     this.displayLight0 = true;
@@ -64,6 +76,38 @@ export class MyScene extends CGFscene {
     this.setSpecular(0.2, 0.2, 0.2, 1.0);
     this.setShininess(10.0);
   }
+
+  initPlacement() {
+    const placements = PlacementUtils.generateScatterPositions({
+      count: 12,
+      minX: -150,
+      maxX: 150,
+      minZ: -150,
+      maxZ: 150,
+      minDistance: 35,
+    });
+
+    this.rockItems = placements.map((position) => ({
+      x: position.x,
+      z: position.z,
+      size: 0.6 + Math.random() * 0.8,
+      rotation: Math.random() * Math.PI * 2,
+    }));
+  }
+
+  displayRockPlacements() {
+    this.rockAppearance.apply();
+
+    for (const rock of this.rockItems) {
+      this.pushMatrix();
+      this.translate(rock.x, rock.size, rock.z);
+      this.rotate(rock.rotation, 0, 1, 0);
+      this.scale(rock.size, rock.size, rock.size);
+      this.rockPrototype.display();
+      this.popMatrix();
+    }
+  }
+
   display() {
     // ---- BEGIN Background, camera and axis setup
     // Clear image and depth buffer everytime we update the scene
@@ -107,6 +151,8 @@ export class MyScene extends CGFscene {
     this.multMatrix(sca);
 
     this.ground.display();
+
+    this.displayRockPlacements();
 
     this.sky.display();
 
