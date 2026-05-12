@@ -54,6 +54,7 @@ export function generateClusteredPositions({
 }) {
     const groups = [];
     const minGroupDistance2 = minGroupDistance * minGroupDistance;
+    const maxGroupAttempts = 50;
 
     const computeClusterRadius = () =>
         typeof clusterRadius == "number"
@@ -70,12 +71,12 @@ export function generateClusteredPositions({
                 z: randomBetween(minZ, maxZ)
             };
 
-            const tooClose = positions.some((existing) =>
-                squaredDistance(existing, candidate) < minDistance2
+            const tooClose = groups.some((existing) =>
+                squaredDistance(existing.center, candidate) < minGroupDistance2
             );
 
             if (!tooClose) {
-                position = candidate;
+                center = candidate;
                 break;
             }
 
