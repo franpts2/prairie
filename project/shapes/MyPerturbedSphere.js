@@ -1,20 +1,38 @@
 import { CGFobject } from '../../lib/CGF.js';
+import { NoiseGenerator } from '../utils/NoiseUtils.js';
 
 export class MyPerturbedSphere extends CGFobject {
-    constructor(scene, slices, stacks, radius = 1, perturbationStrength = 0.2, seed = 0) {
+    constructor(scene, slices, stacks, radius = 1, perturbationStrength = 0.5, seed = 0, roughness = 0.5) {
         super(scene);
         this.slices = slices;
         this.stacks = stacks;
         this.radius = radius;
         this.perturbationStrength = perturbationStrength;
         this.seed = seed;
+        this.roughness = Math.max(0, Math.min(1, roughness)); // Clamp 0-1
+        this.noise = new NoiseGenerator(seed);
         this.initBuffers();
     }
 
-    seededRandom(x, y, z) {
-        const seed = this.seed;
-        const n = Math.sin(x * 12.9898 + y * 78.233 + z * 45.164 + seed) * 43758.5453;
-        return n - Math.floor(n);
+    /**
+     * Generate rock shape with roughness variation
+     * Roughness 0: smooth, round rocks
+     * Roughness 0.5: balanced appearance
+     * Roughness 1: very jagged, craggy rocks
+     */
+    generateRockShape(x, y, z) {
+        const DETAIL_WEIGHT = 0.2 + 0.35 * this.roughness;
+        const SMOOTH_WEIGHT = 0.18 * (1 - this.roughness);
+        const SPIKE_WEIGHT = 0.1 + 0.3 * this.roughness;
+        const FINAL_SCALE = 0.55 + 0.25 * this.roughness;
+
+        const base = this.noise.perlinNoise(x * 2, y * 2, z * 2) * 0.4;
+        const detail = this.noise.ridgeNoise(x * 4, y * 4, z * 4, 3) * DETAIL_WEIGHT;
+        const smooth = this.noise.billowNoise(x * 1.5, y * 1.5, z * 1.5, 2) * SMOOTH_WEIGHT;
+        const spikes = Math.pow(Math.max(0, this.noise.perlinNoise(x * 7, y * 7, z * 7) - 0.45) * 2, 2) * SPIKE_WEIGHT;
+
+        const combined = base + detail + smooth + spikes;
+        return combined * FINAL_SCALE;
     }
 
     initBuffers() {
@@ -26,7 +44,7 @@ export class MyPerturbedSphere extends CGFobject {
         const alphaAng = 2 * Math.PI / this.slices;
         const betaAng = (Math.PI / 2) / this.stacks;
 
-        // generate vertices with perturbation
+        // Generate vertices with procedural rock geometry
         for (let stack = 0; stack <= this.stacks; stack++) {
             const beta = stack * betaAng;
             const sinBeta = Math.sin(beta);
@@ -37,31 +55,24 @@ export class MyPerturbedSphere extends CGFobject {
                 const sinAlpha = Math.sin(alpha);
                 const cosAlpha = Math.cos(alpha);
 
-                // base sphere vertex
-                let x = cosAlpha * sinBeta;
-                let y = cosBeta;
-                let z = sinAlpha * sinBeta;
+                // Base sphere direction
+                const x = cosAlpha * sinBeta;
+                const y = cosBeta;
+                const z = sinAlpha * sinBeta;
 
-                // perturbation based on position
-                const perturbX = (this.seededRandom(x, y, z) - 0.5) * this.perturbationStrength;
-                const perturbY = (this.seededRandom(x + 10, y + 10, z + 10) - 0.5) * this.perturbationStrength;
-                const perturbZ = (this.seededRandom(x + 20, y + 20, z + 20) - 0.5) * this.perturbationStrength;
+                // Apply procedural rock generation
+                const rockShape = this.generateRockShape(x, y, z);
+                const radiusVariation = 1 + rockShape * this.perturbationStrength;
 
-                // displace vertex
-                x += perturbX;
-                y += perturbY;
-                z += perturbZ;
+                // Scale vertex by procedurally generated radius
+                const finalRadius = this.radius * radiusVariation;
+                this.vertices.push(
+                    x * finalRadius,
+                    y * finalRadius,
+                    z * finalRadius
+                );
 
-                // normalize to maintain sphere-like shape
-                const len = Math.sqrt(x * x + y * y + z * z);
-                x /= len;
-                y /= len;
-                z /= len;
-
-                // scale by radius
-                this.vertices.push(x * this.radius, y * this.radius, z * this.radius);
-
-                // normal points outward
+                // Normal points outward from center
                 this.normals.push(-x, -y, -z);
 
                 // UV coordinates
@@ -71,7 +82,7 @@ export class MyPerturbedSphere extends CGFobject {
             }
         }
 
-        // indices
+        // Generate indices
         for (let stack = 0; stack < this.stacks; stack++) {
             for (let slice = 0; slice < this.slices; slice++) {
                 const current = stack * (this.slices + 1) + slice;
