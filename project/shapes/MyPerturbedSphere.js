@@ -21,17 +21,16 @@ export class MyPerturbedSphere extends CGFobject {
      * Roughness 1: very jagged, craggy rocks
      */
     generateRockShape(x, y, z) {
-        const DETAIL_WEIGHT = 0.2 + 0.35 * this.roughness;
-        const SMOOTH_WEIGHT = 0.18 * (1 - this.roughness);
-        const SPIKE_WEIGHT = 0.1 + 0.3 * this.roughness;
+        const BASE_WEIGHT = 0.45;
+        const DETAIL_WEIGHT = 0.2 + 0.3 * this.roughness;
+        const EDGE_WEIGHT = 0.12 + 0.28 * this.roughness;
         const FINAL_SCALE = 0.55 + 0.25 * this.roughness;
 
-        const base = this.noise.perlinNoise(x * 2, y * 2, z * 2) * 0.4;
-        const detail = this.noise.ridgeNoise(x * 4, y * 4, z * 4, 3) * DETAIL_WEIGHT;
-        const smooth = this.noise.billowNoise(x * 1.5, y * 1.5, z * 1.5, 2) * SMOOTH_WEIGHT;
-        const spikes = Math.pow(Math.max(0, this.noise.perlinNoise(x * 7, y * 7, z * 7) - 0.45) * 2, 2) * SPIKE_WEIGHT;
+        const base = this.noise.noise(x * 1.5, y * 1.5, z * 1.5) * 2 - 1;
+        const detail = this.noise.fractalNoise(x * 4, y * 4, z * 4, 4);
+        const edges = (1 - Math.abs(detail)) * 2 - 1;
 
-        const combined = base + detail + smooth + spikes;
+        const combined = base * BASE_WEIGHT + detail * DETAIL_WEIGHT + edges * EDGE_WEIGHT;
         return combined * FINAL_SCALE;
     }
 

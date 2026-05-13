@@ -5,8 +5,6 @@ const HASH_MULTIPLIER = 1274126177;
 const HASH_SHIFT_A = 13;
 const HASH_SHIFT_B = 16;
 const HASH_MASK = 2147483647;
-const CELLULAR_OFFSET = 100;
-const CELLULAR_INITIAL_MIN_DIST = 1.0;
 
 export class NoiseGenerator {
     constructor(seed = 0) {
@@ -25,8 +23,8 @@ export class NoiseGenerator {
         return t * t * (3 - 2 * t);
     }
 
-    // Perlin-like noise using cubic interpolation
-    perlinNoise(x, y, z) {
+    // Smooth value noise in the 0..1 range.
+    noise(x, y, z) {
         const xi = Math.floor(x);
         const yi = Math.floor(y);
         const zi = Math.floor(z);
@@ -58,82 +56,15 @@ export class NoiseGenerator {
         return nxy0 * (1 - w) + nxy1 * w;
     }
 
-    // Ridge noise for rocky edges and sharp features
-    ridgeNoise(x, y, z, octaves = 3) {
+    // Multi-scale noise in the -1..1 range for natural irregular shapes.
+    fractalNoise(x, y, z, octaves = 4) {
         let value = 0;
         let amplitude = 1;
         let frequency = 1;
         let maxValue = 0;
 
         for (let i = 0; i < octaves; i++) {
-            const n = this.perlinNoise(x * frequency, y * frequency, z * frequency);
-            const ridge = 1 - Math.abs(n * 2 - 1);
-            value += amplitude * ridge;
-            maxValue += amplitude;
-            amplitude *= 0.5;
-            frequency *= 2.5;
-        }
-
-        return value / maxValue;
-    }
-
-    // Billowy noise for rounded, flowing features
-    billowNoise(x, y, z, octaves = 3) {
-        let value = 0;
-        let amplitude = 1;
-        let frequency = 1;
-        let maxValue = 0;
-
-        for (let i = 0; i < octaves; i++) {
-            const n = Math.abs(this.perlinNoise(x * frequency, y * frequency, z * frequency) * 2 - 1);
-            value += amplitude * n;
-            maxValue += amplitude;
-            amplitude *= 0.5;
-            frequency *= 2;
-        }
-
-        return value / maxValue;
-    }
-
-    // Cellular (Worley-like) noise for irregular surface details
-    cellularNoise(x, y, z) {
-        const xi = Math.floor(x);
-        const yi = Math.floor(y);
-        const zi = Math.floor(z);
-        const xf = x - xi;
-        const yf = y - yi;
-        const zf = z - zi;
-
-        let minDist = CELLULAR_INITIAL_MIN_DIST;
-        for (let dx = -1; dx <= 1; dx++) {
-            for (let dy = -1; dy <= 1; dy++) {
-                for (let dz = -1; dz <= 1; dz++) {
-                    const px = this.hash(xi + dx, yi + dy, zi + dz);
-                    const py = this.hash(xi + dx + CELLULAR_OFFSET, yi + dy + CELLULAR_OFFSET, zi + dz + CELLULAR_OFFSET);
-                    const pz = this.hash(xi + dx + CELLULAR_OFFSET * 2, yi + dy + CELLULAR_OFFSET * 2, zi + dz + CELLULAR_OFFSET * 2);
-
-                    const dx2 = (dx + px - xf);
-                    const dy2 = (dy + py - yf);
-                    const dz2 = (dz + pz - zf);
-                    const dist = dx2 * dx2 + dy2 * dy2 + dz2 * dz2;
-
-                    if (dist < minDist) minDist = dist;
-                }
-            }
-        }
-
-        return Math.sqrt(minDist);
-    }
-
-    // Fractal Brownian Motion for natural multi-scale variations
-    fbmNoise(x, y, z, octaves = 4) {
-        let value = 0;
-        let amplitude = 1;
-        let frequency = 1;
-        let maxValue = 0;
-
-        for (let i = 0; i < octaves; i++) {
-            value += amplitude * (this.perlinNoise(x * frequency, y * frequency, z * frequency) - 0.5) * 2;
+            value += amplitude * (this.noise(x * frequency, y * frequency, z * frequency) * 2 - 1);
             maxValue += amplitude;
             amplitude *= 0.5;
             frequency *= 2;
