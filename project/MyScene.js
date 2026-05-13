@@ -1,10 +1,9 @@
-import { CGFscene, CGFcamera, CGFaxis, CGFappearance, CGFtexture, CGFshader } from "../lib/CGF.js";
+import { CGFscene, CGFcamera, CGFaxis } from "../lib/CGF.js";
 import { MySky } from "./elements/MySky.js";
 import { MyCloud } from "./elements/MyCloud.js";
 import { MySun } from "./elements/MySun.js";
 import { MyGround } from "./elements/MyGround.js";
-import { MyRock } from "./elements/MyRock.js";
-import * as PlacementUtils from "./utils/PlacementUtils.js";
+import { MyRocks } from "./elements/MyRocks.js";
 
 /**
  * MyScene
@@ -43,9 +42,7 @@ export class MyScene extends CGFscene {
     this.sun = new MySun(this);
     this.sun.initLight();
 
-    // ROCKS - with multiple textures and vertex perturbation
-    this.rockItems = [];
-    this.initPlacement();
+    this.rocks = new MyRocks(this);
 
     //Objects connected to MyInterface
     this.displayAxis = true;
@@ -69,80 +66,6 @@ export class MyScene extends CGFscene {
     this.setDiffuse(0.6, 0.6, 0.6, 1.0);
     this.setSpecular(0.2, 0.2, 0.2, 1.0);
     this.setShininess(10.0);
-  }
-
-  initPlacement() {
-    const ROCK_RADIUS_PADDING = 1.25;
-    const ROCK_GAP = 0.35;
-
-    const getRockSize = () => {
-      const sizeRoll = Math.random();
-
-      if (sizeRoll < 0.35) {
-        return 0.3 + Math.random() * 0.45; // small stones
-      }
-
-      if (sizeRoll < 0.85) {
-        return 0.75 + Math.random() * 0.75; // regular rocks
-      }
-
-      return 1.5 + Math.random() * 0.9; // larger boulders
-    };
-
-    const rocksOverlap = (a, b) => {
-      const dx = a.x - b.x;
-      const dz = a.z - b.z;
-      const minDistance = (a.size + b.size) * ROCK_RADIUS_PADDING + ROCK_GAP;
-
-      return dx * dx + dz * dz < minDistance * minDistance;
-    };
-
-    const groups = PlacementUtils.generateClusteredPositions({
-      groupCount: 10,
-      minGroupSize: 1,
-      maxGroupSize: 10,
-      minX: -120,
-      maxX: 120,
-      minZ: -120,
-      maxZ: 120,
-      minGroupDistance: 50,
-      clusterRadius: 20,
-      minItemDistance: 5,
-    });
-
-    const rockCandidates = groups.flatMap((group, groupIndex) =>
-      group.items.map((item, itemIndex) => {
-        const seed = groupIndex * 100 + itemIndex; // Consistent seed for texture selection
-        return {
-          x: item.x,
-          z: item.z,
-          size: getRockSize(),
-          rotation: Math.random() * Math.PI * 2,
-          groupIndex,
-          rock: new MyRock(this, 1, seed), // Create rock with seed for consistent appearance
-        };
-      })
-    );
-
-    this.rockItems = [];
-    rockCandidates
-      .sort((a, b) => b.size - a.size)
-      .forEach((candidate) => {
-        if (this.rockItems.every((rock) => !rocksOverlap(candidate, rock))) {
-          this.rockItems.push(candidate);
-        }
-      });
-  }
-
-  displayRockPlacements() {
-    for (const rock of this.rockItems) {
-      this.pushMatrix();
-      this.translate(rock.x, rock.size, rock.z);
-      this.rotate(rock.rotation, 0, 1, 0);
-      this.scale(rock.size, rock.size, rock.size);
-      rock.rock.display();
-      this.popMatrix();
-    }
   }
 
   display() {
@@ -189,7 +112,7 @@ export class MyScene extends CGFscene {
 
     this.ground.display();
 
-    this.displayRockPlacements();
+    this.rocks.display();
 
     this.sky.display();
 
