@@ -72,39 +72,66 @@ export class MyScene extends CGFscene {
   }
 
   initPlacement() {
-    /*
-    - 4 groups
-    - each group has 3–6 rocks
-    - groups are kept 50 units apart
-    - rocks are clustered within a 20 unit radius
-    - items stay at least 6 units from each other
-    */
+    const ROCK_RADIUS_PADDING = 1.25;
+    const ROCK_GAP = 0.35;
+
+    const getRockSize = () => {
+      const sizeRoll = Math.random();
+
+      if (sizeRoll < 0.35) {
+        return 0.3 + Math.random() * 0.45; // small stones
+      }
+
+      if (sizeRoll < 0.85) {
+        return 0.75 + Math.random() * 0.75; // regular rocks
+      }
+
+      return 1.5 + Math.random() * 0.9; // larger boulders
+    };
+
+    const rocksOverlap = (a, b) => {
+      const dx = a.x - b.x;
+      const dz = a.z - b.z;
+      const minDistance = (a.size + b.size) * ROCK_RADIUS_PADDING + ROCK_GAP;
+
+      return dx * dx + dz * dz < minDistance * minDistance;
+    };
+
     const groups = PlacementUtils.generateClusteredPositions({
-      groupCount: 4,
-      minGroupSize: 3,
-      maxGroupSize: 6,
+      groupCount: 10,
+      minGroupSize: 1,
+      maxGroupSize: 10,
       minX: -120,
       maxX: 120,
       minZ: -120,
       maxZ: 120,
       minGroupDistance: 50,
       clusterRadius: 20,
-      minItemDistance: 6,
+      minItemDistance: 5,
     });
 
-    this.rockItems = groups.flatMap((group, groupIndex) =>
+    const rockCandidates = groups.flatMap((group, groupIndex) =>
       group.items.map((item, itemIndex) => {
         const seed = groupIndex * 100 + itemIndex; // Consistent seed for texture selection
         return {
           x: item.x,
           z: item.z,
-          size: 0.6 + Math.random() * 0.8,
+          size: getRockSize(),
           rotation: Math.random() * Math.PI * 2,
           groupIndex,
           rock: new MyRock(this, 1, seed), // Create rock with seed for consistent appearance
         };
       })
     );
+
+    this.rockItems = [];
+    rockCandidates
+      .sort((a, b) => b.size - a.size)
+      .forEach((candidate) => {
+        if (this.rockItems.every((rock) => !rocksOverlap(candidate, rock))) {
+          this.rockItems.push(candidate);
+        }
+      });
   }
 
   displayRockPlacements() {
