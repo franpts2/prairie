@@ -1,10 +1,9 @@
-import { CGFscene, CGFcamera, CGFaxis, CGFappearance, CGFtexture, CGFshader } from "../lib/CGF.js";
+import { CGFscene, CGFcamera, CGFaxis } from "../lib/CGF.js";
 import { MySky } from "./elements/MySky.js";
 import { MyCloud } from "./elements/MyCloud.js";
 import { MySun } from "./elements/MySun.js";
 import { MyGround } from "./elements/MyGround.js";
-import { MySphere } from "./shapes/MySphere.js";
-import * as PlacementUtils from "./utils/PlacementUtils.js";
+import { MyRocks } from "./elements/MyRocks.js";
 
 /**
  * MyScene
@@ -25,7 +24,7 @@ export class MyScene extends CGFscene {
 
     this.gl.clearDepth(100.0);
     this.gl.enable(this.gl.DEPTH_TEST);
-    this.gl.enable(this.gl.CULL_FACE);
+    //this.gl.enable(this.gl.CULL_FACE);
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
     this.gl.depthFunc(this.gl.LEQUAL);
@@ -43,15 +42,7 @@ export class MyScene extends CGFscene {
     this.sun = new MySun(this);
     this.sun.initLight();
 
-    // TEMP ROCKS
-    this.rockPrototype = new MySphere(this, 16, 16, 1);
-    this.rockAppearance = new CGFappearance(this);
-    this.rockAppearance.setAmbient(0.2, 0.2, 0.2, 1.0);
-    this.rockAppearance.setDiffuse(0.5, 0.5, 0.5, 1.0);
-    this.rockAppearance.setSpecular(0.1, 0.1, 0.1, 1.0);
-    this.rockAppearance.setShininess(5.0);
-    this.rockItems = [];
-    this.initPlacement();
+    this.rocks = new MyRocks(this);
 
     //Objects connected to MyInterface
     this.displayAxis = true;
@@ -75,51 +66,6 @@ export class MyScene extends CGFscene {
     this.setDiffuse(0.6, 0.6, 0.6, 1.0);
     this.setSpecular(0.2, 0.2, 0.2, 1.0);
     this.setShininess(10.0);
-  }
-
-  initPlacement() {
-    /*
-    - 4 groups
-    - each group has 3–6 rocks
-    - groups are kept 50 units apart
-    - rocks are clustered within a 20 unit radius
-    - items stay at least 6 units from each other
-    */
-    const groups = PlacementUtils.generateClusteredPositions({
-      groupCount: 4,
-      minGroupSize: 3,
-      maxGroupSize: 6,
-      minX: -120,
-      maxX: 120,
-      minZ: -120,
-      maxZ: 120,
-      minGroupDistance: 50,
-      clusterRadius: 20,
-      minItemDistance: 6,
-    });
-
-    this.rockItems = groups.flatMap((group, groupIndex) =>
-      group.items.map((item) => ({
-        x: item.x,
-        z: item.z,
-        size: 0.6 + Math.random() * 0.8,
-        rotation: Math.random() * Math.PI * 2,
-        groupIndex,
-      }))
-    );
-  }
-
-  displayRockPlacements() {
-    this.rockAppearance.apply();
-
-    for (const rock of this.rockItems) {
-      this.pushMatrix();
-      this.translate(rock.x, rock.size, rock.z);
-      this.rotate(rock.rotation, 0, 1, 0);
-      this.scale(rock.size, rock.size, rock.size);
-      this.rockPrototype.display();
-      this.popMatrix();
-    }
   }
 
   display() {
@@ -166,7 +112,7 @@ export class MyScene extends CGFscene {
 
     this.ground.display();
 
-    this.displayRockPlacements();
+    this.rocks.display();
 
     this.sky.display();
 
