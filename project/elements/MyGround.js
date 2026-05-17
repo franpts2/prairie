@@ -15,7 +15,7 @@ export class MyGround {
     this.appearance.setSpecular(0.0, 0.0, 0.0, 1.0);
     this.appearance.setShininess(10.0);
 
-    this.texture = new CGFtexture(scene, "./textures/grass.jpg");
+    this.texture = new CGFtexture(scene, "./textures/soil.jpg");
     this.appearance.setTexture(this.texture);
     this.appearance.setTextureWrap("REPEAT", "REPEAT");
 
@@ -102,6 +102,12 @@ export class MyGround {
     this.scene.pushMatrix();
     this.appearance.apply();
     this.scene.setActiveShader(this.shader);
+    
+    this.shader.setUniformsValues({
+      uLightEnabled: this.scene.lights[0].enabled,
+      uLightPosition: this.scene.lights[0].position
+    });
+
     this.heightMap.bind(1);
     this.terrain.display();
     this.scene.setActiveShader(this.scene.defaultShader);
