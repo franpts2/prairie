@@ -42,7 +42,7 @@ export class MyScene extends CGFscene {
     this.sun = new MySun(this);
     this.sun.initLight();
 
-    this.rocks = new MyRocks(this);
+    this.rocks = new MyRocks(this, this.ground);
 
     //Objects connected to MyInterface
     this.displayAxis = true;

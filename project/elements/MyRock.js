@@ -32,10 +32,10 @@ export class MyRock {
 
         // Array of rock textures for variety
         this.textureNames = [
-            "./images/rock1.png",
-            "./images/rock2.png",
-            "./images/rock3.png",
-            "./images/rock4.png",
+            "./textures/rocks/rock1.png",
+            "./textures/rocks/rock2.png",
+            "./textures/rocks/rock3.png",
+            "./textures/rocks/rock4.png",
         ];
 
         // appearances for different rock textures

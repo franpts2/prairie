@@ -2,8 +2,9 @@ import { MyRock } from "./MyRock.js";
 import * as PlacementUtils from "../utils/PlacementUtils.js";
 
 export class MyRocks {
-    constructor(scene) {
+    constructor(scene, ground) {
         this.scene = scene;
+        this.ground = ground;
         this.rockItems = [];
 
         this.initPlacement();
@@ -12,15 +13,15 @@ export class MyRocks {
     getRockSize() {
         const sizeRoll = Math.random();
 
-        if (sizeRoll < 0.35) {
-            return 0.3 + Math.random() * 0.45; // small stones
+        if (sizeRoll < 0.45) {
+            return 0.2 + Math.random() * 0.3; // small stones (0.2 - 0.5)
         }
 
-        if (sizeRoll < 0.85) {
-            return 0.75 + Math.random() * 0.75; // regular rocks
+        if (sizeRoll < 0.90) {
+            return 0.5 + Math.random() * 0.5; // regular rocks (0.5 - 1.0)
         }
 
-        return 1.5 + Math.random() * 0.9; // larger boulders
+        return 1.0 + Math.random() * 0.5; // boulders (1.0 - 1.5)
     }
 
     rocksOverlap(a, b) {
@@ -73,8 +74,9 @@ export class MyRocks {
 
     display() {
         for (const rock of this.rockItems) {
+            const height = this.ground ? this.ground.getHeight(rock.x, rock.z) : 0;
             this.scene.pushMatrix();
-            this.scene.translate(rock.x, rock.size, rock.z);
+            this.scene.translate(rock.x, height + rock.size * 0.2, rock.z);
             this.scene.rotate(rock.rotation, 0, 1, 0);
             this.scene.scale(rock.size, rock.size, rock.size);
             rock.rock.display();
