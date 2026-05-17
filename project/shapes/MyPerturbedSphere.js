@@ -87,8 +87,8 @@ export class MyPerturbedSphere extends CGFobject {
                 const current = stack * (this.slices + 1) + slice;
                 const next = current + this.slices + 1;
 
-                this.indices.push(current, next, next + 1);
-                this.indices.push(current, next + 1, current + 1);
+                this.indices.push(current, next + 1, next);
+                this.indices.push(current, current + 1, next + 1);
             }
         }
 

@@ -102,6 +102,12 @@ export class MyGround {
     this.scene.pushMatrix();
     this.appearance.apply();
     this.scene.setActiveShader(this.shader);
+    
+    this.shader.setUniformsValues({
+      uLightEnabled: this.scene.lights[0].enabled,
+      uLightPosition: this.scene.lights[0].position
+    });
+
     this.heightMap.bind(1);
     this.terrain.display();
     this.scene.setActiveShader(this.scene.defaultShader);
