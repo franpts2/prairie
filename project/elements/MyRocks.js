@@ -2,8 +2,9 @@ import { MyRock } from "./MyRock.js";
 import * as PlacementUtils from "../utils/PlacementUtils.js";
 
 export class MyRocks {
-    constructor(scene) {
+    constructor(scene, ground) {
         this.scene = scene;
+        this.ground = ground;
         this.rockItems = [];
 
         this.initPlacement();
@@ -73,8 +74,9 @@ export class MyRocks {
 
     display() {
         for (const rock of this.rockItems) {
+            const height = this.ground ? this.ground.getHeight(rock.x, rock.z) : 0;
             this.scene.pushMatrix();
-            this.scene.translate(rock.x, rock.size, rock.z);
+            this.scene.translate(rock.x, height + rock.size * 0.8, rock.z);
             this.scene.rotate(rock.rotation, 0, 1, 0);
             this.scene.scale(rock.size, rock.size, rock.size);
             rock.rock.display();
