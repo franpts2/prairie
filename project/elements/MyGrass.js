@@ -72,13 +72,13 @@ export class MyGrass {
     const maxZ = halfSize;
 
     const patchGroups = PlacementUtils.generateClusteredPositions({
-      groupCount: 100,
-      minGroupSize: 15,
-      maxGroupSize: 40,
+      groupCount: 200,
+      minGroupSize: 20,
+      maxGroupSize: 50,
       minX, maxX, minZ, maxZ,
-      minGroupDistance: 20,
-      clusterRadius: { min: 10, max: 25 },
-      minItemDistance: 1.5,
+      minGroupDistance: 15,
+      clusterRadius: { min: 8, max: 25 },
+      minItemDistance: 1.2,
     });
 
     for (const group of patchGroups) {
@@ -96,11 +96,11 @@ export class MyGrass {
       }
     }
 
-    const scatteredCount = 2500;
+    const scatteredCount = 4500;
     const positions = PlacementUtils.generateScatterPositions({
       count: scatteredCount,
       minX, maxX, minZ, maxZ,
-      minDistance: 3.5,
+      minDistance: 3.0,
     });
 
     for (const pos of positions) {
