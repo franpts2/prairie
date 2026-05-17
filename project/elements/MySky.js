@@ -12,7 +12,7 @@ export class MySky {
     this.appearance.setSpecular(0.0, 0.0, 0.0, 1.0);
     this.appearance.setShininess(10.0);
     
-    this.texture = new CGFtexture(scene, "./images/sky.jpeg");
+    this.texture = new CGFtexture(scene, "./textures/sky.jpeg");
     this.appearance.setTexture(this.texture);
     this.appearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
   }

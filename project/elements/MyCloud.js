@@ -11,7 +11,7 @@ export class MyCloud {
     this.appearance.setAmbient(1.0, 1.0, 1.0, 1.0);
     this.appearance.setDiffuse(1.0, 1.0, 1.0, 1.0);
     
-    this.texture = new CGFtexture(scene, "./images/clouds.png");
+    this.texture = new CGFtexture(scene, "./textures/clouds.png");
     this.appearance.setTexture(this.texture);
     this.appearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
   }
