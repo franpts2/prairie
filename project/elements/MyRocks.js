@@ -76,7 +76,7 @@ export class MyRocks {
         for (const rock of this.rockItems) {
             const height = this.ground ? this.ground.getHeight(rock.x, rock.z) : 0;
             this.scene.pushMatrix();
-            this.scene.translate(rock.x, height + rock.size * 0.8, rock.z);
+            this.scene.translate(rock.x, height + rock.size * 0.2, rock.z);
             this.scene.rotate(rock.rotation, 0, 1, 0);
             this.scene.scale(rock.size, rock.size, rock.size);
             rock.rock.display();
