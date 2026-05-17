@@ -72,7 +72,7 @@ export class MyPerturbedSphere extends CGFobject {
                 );
 
                 // Normal points outward from center
-                this.normals.push(-x, -y, -z);
+                this.normals.push(x, y, z);
 
                 // UV coordinates
                 const u = 1 - (slice / this.slices);
