@@ -1,34 +1,31 @@
 import { CGFtexture, CGFappearance } from "../../lib/CGF.js";
-import { MyGrassPatch } from "./MyGrassPatch.js";
-import { MyGrassQuad } from "../shapes/MyGrassQuad.js";
+import { MyGrassMesh } from "../shapes/MyGrassMesh.js";
 import * as PlacementUtils from "../utils/PlacementUtils.js";
 
 export class MyGrass {
   constructor(scene) {
     this.scene = scene;
-    this.livePatches = [];
-    this.deadPatches = [];
+    this.liveMeshes = [];
+    this.deadMeshes = [];
     this.terrainSize = 400;
     this.baseHeight = 0;
     this.heightScale = 10;
     this.heightMapImage = null;
 
-    this.quad = new MyGrassQuad(scene, 1, 1.2);
-
     this.liveAppearance = new CGFappearance(scene);
     this.liveTexture = new CGFtexture(scene, "./textures/grass.png");
     this.liveAppearance.setTexture(this.liveTexture);
     this.liveAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
-    this.liveAppearance.setEmission(0.2, 0.2, 0.2, 1);
-    this.liveAppearance.setAmbient(0.8, 0.8, 0.8, 1);
+    this.liveAppearance.setEmission(0.0, 0.0, 0.0, 1);
+    this.liveAppearance.setAmbient(0.4, 0.4, 0.4, 1);
     this.liveAppearance.setDiffuse(0.8, 0.8, 0.8, 1);
 
     this.deadAppearance = new CGFappearance(scene);
     this.deadTexture = new CGFtexture(scene, "./textures/deadgrass.png");
     this.deadAppearance.setTexture(this.deadTexture);
     this.deadAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
-    this.deadAppearance.setEmission(0.2, 0.2, 0.2, 1);
-    this.deadAppearance.setAmbient(0.8, 0.8, 0.8, 1);
+    this.deadAppearance.setEmission(0.0, 0.0, 0.0, 1);
+    this.deadAppearance.setAmbient(0.4, 0.4, 0.4, 1);
     this.deadAppearance.setDiffuse(0.8, 0.8, 0.8, 1);
 
     this.loadHeightMap();
@@ -71,61 +68,69 @@ export class MyGrass {
     const minZ = -halfSize;
     const maxZ = halfSize;
 
-    const patchGroups = PlacementUtils.generateClusteredPositions({
-      groupCount: 200,
-      minGroupSize: 20,
-      maxGroupSize: 50,
+    const liveInstances = [];
+    const deadInstances = [];
+
+    const deadPatchGroups = PlacementUtils.generateClusteredPositions({
+      groupCount: 70,
+      minGroupSize: 30,
+      maxGroupSize: 80,
       minX, maxX, minZ, maxZ,
       minGroupDistance: 15,
-      clusterRadius: { min: 8, max: 25 },
-      minItemDistance: 1.2,
+      clusterRadius: { min: 8, max: 22 },
+      minItemDistance: 0.8,
     });
 
-    for (const group of patchGroups) {
-      const isDeadGroup = Math.random() < 0.35;
-      const groupSize = 0.8 + Math.random() * 0.6;
-
+    for (const group of deadPatchGroups) {
+      const groupSize = (0.7 + Math.random() * 0.4) * 1.2;
       for (const item of group.items) {
         const height = this.getTerrainHeight(item.x, item.z);
         if (height < -0.5) continue;
 
-        const patch = new MyGrassPatch(this.scene, item.x, item.z, isDeadGroup, groupSize);
-        patch.height = height;
-        if (isDeadGroup) this.deadPatches.push(patch);
-        else this.livePatches.push(patch);
+        deadInstances.push({
+          x: item.x,
+          y: height,
+          z: item.z,
+          size: groupSize * (0.8 + Math.random() * 0.4),
+          angle: Math.random() * Math.PI * 2
+        });
       }
     }
 
-    const scatteredCount = 4500;
-    const positions = PlacementUtils.generateScatterPositions({
-      count: scatteredCount,
-      minX, maxX, minZ, maxZ,
-      minDistance: 3.0,
-    });
+    const step = 1.1;
+    const jitter = 0.5;
+    const liveSizeBase = 1;
 
-    for (const pos of positions) {
-      const isDead = Math.random() < 0.25;
-      const size = 0.5 + Math.random() * 0.4;
-      const height = this.getTerrainHeight(pos.x, pos.z);
+    for (let x = minX; x <= maxX; x += step) {
+      for (let z = minZ; z <= maxZ; z += step) {
+        const px = x + (Math.random() * 2 - 1) * jitter;
+        const pz = z + (Math.random() * 2 - 1) * jitter;
 
-      if (height < -0.5) continue;
+        const height = this.getTerrainHeight(px, pz);
+        if (height < -0.5) continue;
 
-      const nearPatch = this.livePatches.some(p => {
-        const dx = p.x - pos.x;
-        const dz = p.z - pos.z;
-        return dx * dx + dz * dz < 64;
-      }) || this.deadPatches.some(p => {
-        const dx = p.x - pos.x;
-        const dz = p.z - pos.z;
-        return dx * dx + dz * dz < 64;
-      });
-      if (nearPatch) continue;
-
-      const patch = new MyGrassPatch(this.scene, pos.x, pos.z, isDead, size);
-      patch.height = height;
-      if (isDead) this.deadPatches.push(patch);
-      else this.livePatches.push(patch);
+        const size = (0.7 + Math.random() * 0.4) * liveSizeBase;
+        liveInstances.push({
+          x: px,
+          y: height,
+          z: pz,
+          size: size,
+          angle: Math.random() * Math.PI * 2
+        });
+      }
     }
+
+    const CHUNK_SIZE = 8000;
+
+    for (let i = 0; i < liveInstances.length; i += CHUNK_SIZE) {
+      this.liveMeshes.push(new MyGrassMesh(this.scene, liveInstances.slice(i, i + CHUNK_SIZE)));
+    }
+
+    for (let i = 0; i < deadInstances.length; i += CHUNK_SIZE) {
+      this.deadMeshes.push(new MyGrassMesh(this.scene, deadInstances.slice(i, i + CHUNK_SIZE)));
+    }
+
+    console.log(`Generated ${liveInstances.length} live and ${deadInstances.length} dead grass blades!`);
   }
 
   display() {
@@ -135,13 +140,13 @@ export class MyGrass {
     this.scene.gl.depthMask(false);
 
     this.liveAppearance.apply();
-    for (const patch of this.livePatches) {
-      patch.display(patch.height, this.quad);
+    for (const mesh of this.liveMeshes) {
+      mesh.display();
     }
 
     this.deadAppearance.apply();
-    for (const patch of this.deadPatches) {
-      patch.display(patch.height, this.quad);
+    for (const mesh of this.deadMeshes) {
+      mesh.display();
     }
 
     this.scene.gl.depthMask(true);
