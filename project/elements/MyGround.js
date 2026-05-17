@@ -15,7 +15,7 @@ export class MyGround {
     this.appearance.setSpecular(0.0, 0.0, 0.0, 1.0);
     this.appearance.setShininess(10.0);
 
-    this.texture = new CGFtexture(scene, "./images/grass.jpg");
+    this.texture = new CGFtexture(scene, "./images/soil.jpg");
     this.appearance.setTexture(this.texture);
     this.appearance.setTextureWrap("REPEAT", "REPEAT");
 
