@@ -41,7 +41,7 @@ export class MyPerturbedSphere extends CGFobject {
         this.texCoords = [];
 
         const alphaAng = 2 * Math.PI / this.slices;
-        const betaAng = (Math.PI / 2) / this.stacks;
+        const betaAng = Math.PI / this.stacks;
 
         // Generate vertices with procedural rock geometry
         for (let stack = 0; stack <= this.stacks; stack++) {
@@ -72,7 +72,7 @@ export class MyPerturbedSphere extends CGFobject {
                 );
 
                 // Normal points outward from center
-                this.normals.push(-x, -y, -z);
+                this.normals.push(x, y, z);
 
                 // UV coordinates
                 const u = 1 - (slice / this.slices);
