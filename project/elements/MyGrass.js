@@ -97,9 +97,9 @@ export class MyGrass {
       }
     }
 
-    const step = 1.1;
+    const step = 0.8;
     const jitter = 0.5;
-    const liveSizeBase = 1;
+    const liveSizeBase = 0.75;
 
     for (let x = minX; x <= maxX; x += step) {
       for (let z = minZ; z <= maxZ; z += step) {
