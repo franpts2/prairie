@@ -4,6 +4,7 @@ import { MyCloud } from "./elements/MyCloud.js";
 import { MySun } from "./elements/MySun.js";
 import { MyGround } from "./elements/MyGround.js";
 import { MyRocks } from "./elements/MyRocks.js";
+import { MyGrass } from "./elements/MyGrass.js";
 
 /**
  * MyScene
@@ -24,7 +25,7 @@ export class MyScene extends CGFscene {
 
     this.gl.clearDepth(100.0);
     this.gl.enable(this.gl.DEPTH_TEST);
-    //this.gl.enable(this.gl.CULL_FACE);
+    this.gl.enable(this.gl.CULL_FACE);
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
     this.gl.depthFunc(this.gl.LEQUAL);
@@ -43,6 +44,8 @@ export class MyScene extends CGFscene {
     this.sun.initLight();
 
     this.rocks = new MyRocks(this, this.ground);
+
+    this.grass = new MyGrass(this);
 
     //Objects connected to MyInterface
     this.displayAxis = true;
@@ -113,6 +116,8 @@ export class MyScene extends CGFscene {
     this.ground.display();
 
     this.rocks.display();
+
+    this.grass.display();
 
     this.sky.display();
 
