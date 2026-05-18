@@ -8,7 +8,7 @@ export class MyGround {
     this.heightScale = 10.0;
     this.baseHeight = 0.0;
     this.grassRepeat = 28.0;
-    this.pathRepeat = 56.0;
+    this.pathRepeat = 40.0;
 
     this.appearance = new CGFappearance(scene);
     this.appearance.setAmbient(0.42, 0.42, 0.36, 1.0);

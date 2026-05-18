@@ -131,7 +131,7 @@ export class MyGrass {
       }
     }
 
-    const step = 0.8;
+    const step = 0.5;
     const jitter = 0.5;
     const liveSizeBase = 0.75;
 

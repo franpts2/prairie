@@ -30,7 +30,8 @@ void main() {
 
   // Sample all textures
   vec4 grass = texture2D(uSampler, vTextureCoord * grassRepeat);
-  vec4 pathsoil = texture2D(uSamplerPath, vTextureCoord * pathRepeat);
+  vec2 pathUV = fract(vTextureCoord * pathRepeat);
+  vec4 pathsoil = texture2D(uSamplerPath, pathUV);
   float pathValue = texture2D(uSampler3, vTextureCoord).r;
   float pathMask = smoothstep(0.3, 0.7, pathValue);
 
