@@ -11,6 +11,7 @@ export class MyGrass {
     this.baseHeight = 0;
     this.heightScale = 10;
     this.heightMapImage = null;
+    this.pathMapImage = null;
 
     this.liveAppearance = new CGFappearance(scene);
     this.liveTexture = new CGFtexture(scene, "./textures/grass.png");
@@ -40,9 +41,23 @@ export class MyGrass {
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0);
       this.heightMapImage = ctx.getImageData(0, 0, img.width, img.height);
-      this.initGrass();
+      this.loadPathMap();
     };
     img.src = "./textures/terrainmap.png";
+  }
+
+  loadPathMap() {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      this.pathMapImage = ctx.getImageData(0, 0, img.width, img.height);
+      this.initGrass();
+    };
+    img.src = "./textures/pathmap.png";
   }
 
   getTerrainHeight(x, z) {
@@ -59,6 +74,22 @@ export class MyGrass {
     const height = this.heightMapImage.data[idx] / 255;
 
     return this.baseHeight + height * this.heightScale;
+  }
+
+  getPathValue(x, z) {
+    if (!this.pathMapImage) return 0;
+
+    const halfSize = this.terrainSize / 2;
+    const u = (x + halfSize) / this.terrainSize;
+    const v = (z + halfSize) / this.terrainSize;
+
+    const px = Math.floor(u * (this.pathMapImage.width - 1));
+    const py = Math.floor(v * (this.pathMapImage.height - 1));
+
+    const idx = (py * this.pathMapImage.width + px) * 4;
+    const pathValue = this.pathMapImage.data[idx] / 255;
+
+    return pathValue;
   }
 
   initGrass() {
@@ -87,6 +118,9 @@ export class MyGrass {
         const height = this.getTerrainHeight(item.x, item.z);
         if (height < -0.5) continue;
 
+        const pathValue = this.getPathValue(item.x, item.z);
+        if (pathValue > 0.5) continue;
+
         deadInstances.push({
           x: item.x,
           y: height,
@@ -97,7 +131,7 @@ export class MyGrass {
       }
     }
 
-    const step = 0.8;
+    const step = 0.5;
     const jitter = 0.5;
     const liveSizeBase = 0.75;
 
@@ -108,6 +142,9 @@ export class MyGrass {
 
         const height = this.getTerrainHeight(px, pz);
         if (height < -0.5) continue;
+
+        const pathValue = this.getPathValue(px, pz);
+        if (pathValue > 0.5) continue;
 
         const size = (0.7 + Math.random() * 0.4) * liveSizeBase;
         liveInstances.push({

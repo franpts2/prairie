@@ -7,7 +7,10 @@ varying vec3 vNormal;
 varying float vHeight;
 
 uniform sampler2D uSampler;
+uniform sampler2D uSamplerPath;
+uniform sampler2D uSampler3;
 uniform float grassRepeat;
+uniform float pathRepeat;
 
 uniform bool uLightEnabled;
 uniform vec4 uLightPosition;
@@ -25,11 +28,20 @@ void main() {
     softLight = 0.42 + diffuse * 0.58;
   }
 
+  // Sample all textures
   vec4 grass = texture2D(uSampler, vTextureCoord * grassRepeat);
+  vec2 pathUV = fract(vTextureCoord * pathRepeat);
+  vec4 pathsoil = texture2D(uSamplerPath, pathUV);
+  float pathValue = texture2D(uSampler3, vTextureCoord).r;
+  float pathMask = smoothstep(0.3, 0.7, pathValue);
+
   vec3 lowGrass = vec3(0.34, 0.43, 0.18);
   vec3 highGrass = vec3(0.62, 0.58, 0.34);
   vec3 prairieTint = mix(lowGrass, highGrass, smoothstep(0.2, 1.0, vHeight));
-  vec3 color = mix(grass.rgb, prairieTint, 0.34) * softLight;
+  vec3 grassColor = mix(grass.rgb, prairieTint, 0.34);
+  vec3 baseColor = mix(grassColor, pathsoil.rgb, pathMask);
+  float alpha = mix(grass.a, pathsoil.a, pathMask);
+  vec3 color = baseColor * softLight;
 
-  gl_FragColor = vec4(color, grass.a);
+  gl_FragColor = vec4(color, alpha);
 }

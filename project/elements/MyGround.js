@@ -8,6 +8,7 @@ export class MyGround {
     this.heightScale = 10.0;
     this.baseHeight = 0.0;
     this.grassRepeat = 28.0;
+    this.pathRepeat = 40.0;
 
     this.appearance = new CGFappearance(scene);
     this.appearance.setAmbient(0.42, 0.42, 0.36, 1.0);
@@ -19,8 +20,18 @@ export class MyGround {
     this.appearance.setTexture(this.texture);
     this.appearance.setTextureWrap("REPEAT", "REPEAT");
 
+    this.pathsoilTexture = new CGFtexture(scene, "./textures/pathsoil.png");
+    this.pathsoilTexture.bind(2);
+    this.pathsoilTexture.unbind();
+
     this.heightMapPath = "./textures/terrainmap.png";
     this.heightMap = new CGFtexture(scene, this.heightMapPath);
+    
+    this.pathMapPath = "./textures/pathmap.png";
+    this.pathMap = new CGFtexture(scene, this.pathMapPath);
+    this.pathMap.bind(3);
+    this.pathMap.unbind();
+    
     this.shader = new CGFshader(
       scene.gl,
       "./shaders/terrain.vert",
@@ -28,10 +39,13 @@ export class MyGround {
     );
     this.shader.setUniformsValues({
       uSampler2: 1,
+      uSampler3: 3,
+      uSamplerPath: 2,
       baseHeight: this.baseHeight,
       heightScale: this.heightScale,
       heightTexel: 1.0 / 257.0,
       grassRepeat: this.grassRepeat,
+      pathRepeat: this.pathRepeat,
     });
 
     this.heightData = null;
@@ -109,6 +123,8 @@ export class MyGround {
     });
 
     this.heightMap.bind(1);
+    this.pathMap.bind(3);
+    this.pathsoilTexture.bind(2);
     this.terrain.display();
     this.scene.setActiveShader(this.scene.defaultShader);
     this.scene.popMatrix();
