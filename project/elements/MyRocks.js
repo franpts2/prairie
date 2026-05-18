@@ -6,8 +6,40 @@ export class MyRocks {
         this.scene = scene;
         this.ground = ground;
         this.rockItems = [];
+        this.pathMapImage = null;
+        this.terrainSize = 400;
 
-        this.initPlacement();
+        this.loadPathMap();
+    }
+
+    loadPathMap() {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            this.pathMapImage = ctx.getImageData(0, 0, img.width, img.height);
+            this.initPlacement();
+        };
+        img.src = "./textures/pathmap.png";
+    }
+
+    getPathValue(x, z) {
+        if (!this.pathMapImage) return 0;
+
+        const halfSize = this.terrainSize / 2;
+        const u = (x + halfSize) / this.terrainSize;
+        const v = (z + halfSize) / this.terrainSize;
+
+        const px = Math.floor(u * (this.pathMapImage.width - 1));
+        const py = Math.floor(v * (this.pathMapImage.height - 1));
+
+        const idx = (py * this.pathMapImage.width + px) * 4;
+        const pathValue = this.pathMapImage.data[idx] / 255;
+
+        return pathValue;
     }
 
     getRockSize() {
@@ -66,6 +98,9 @@ export class MyRocks {
         rockCandidates
             .sort((a, b) => b.size - a.size)
             .forEach((candidate) => {
+                const pathValue = this.getPathValue(candidate.x, candidate.z);
+                if (pathValue > 0.5) return;
+
                 if (this.rockItems.every((rock) => !this.rocksOverlap(candidate, rock))) {
                     this.rockItems.push(candidate);
                 }
