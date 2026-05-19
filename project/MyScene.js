@@ -59,9 +59,9 @@ export class MyScene extends CGFscene {
     this.camera = new CGFcamera(
       0.4,
       0.1,
-      500,
+      5000,
       vec3.fromValues(0, 20, 0),
-      vec3.fromValues(0, 10, 0)
+      vec3.fromValues(100, 10, 0)
     );
   }
   setDefaultAppearance() {
