@@ -1,4 +1,5 @@
 import { MyRock } from "./MyRock.js";
+import { CGFappearance, CGFtexture } from "../../lib/CGF.js";
 import * as PlacementUtils from "../utils/PlacementUtils.js";
 
 export class MyRocks {
@@ -6,24 +7,32 @@ export class MyRocks {
         this.scene = scene;
         this.ground = ground;
         this.rockItems = [];
-        this.pathMapImage = null;
         this.terrainSize = 400;
 
-        this.loadPathMap();
+        const pathData = scene.assetManager.getPixelData('path');
+        this.pathMapImage = pathData;
+
+        this.rockAppearances = this.initAppearances();
+        this.initPlacement();
     }
 
-    loadPathMap() {
-        const img = new Image();
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
-            this.pathMapImage = ctx.getImageData(0, 0, img.width, img.height);
-            this.initPlacement();
-        };
-        img.src = "./textures/pathmap.png";
+    initAppearances() {
+        const textureKeys = ['rock1', 'rock2', 'rock3', 'rock4'];
+        const appearances = [];
+        for (let i = 0; i < textureKeys.length; i++) {
+            const appearance = new CGFappearance(this.scene);
+            appearance.setAmbient(0.3, 0.3, 0.3, 1.0);
+            appearance.setDiffuse(0.6, 0.6, 0.6, 1.0);
+            appearance.setSpecular(0.2, 0.2, 0.2, 1.0);
+            appearance.setShininess(10.0);
+
+            const texture = this.scene.assetManager.getTexture(textureKeys[i]);
+            appearance.setTexture(texture);
+            appearance.setTextureWrap("REPEAT", "REPEAT");
+
+            appearances.push(appearance);
+        }
+        return appearances;
     }
 
     getPathValue(x, z) {
@@ -89,7 +98,7 @@ export class MyRocks {
                     size: this.getRockSize(),
                     rotation: Math.random() * Math.PI * 2,
                     groupIndex,
-                    rock: new MyRock(this.scene, 1, seed),
+                    rock: new MyRock(this.scene, this.rockAppearances, 1, seed),
                 };
             })
         );
