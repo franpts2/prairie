@@ -45,13 +45,14 @@ export class MyCylinder extends CGFobject {
                 const current = j * (this.slices + 1) + i;
                 const next = current + this.slices + 1;
 
-                this.indices.push(current, next, next + 1);
-                this.indices.push(current, next + 1, current + 1);
+                // Outward facing (CCW from outside)
+                this.indices.push(current, current + 1, next + 1);
+                this.indices.push(current, next + 1, next);
 
                 // If no caps, make it double sided so we see the inside
                 if (!this.hasCaps) {
-                    this.indices.push(current, next + 1, next);
-                    this.indices.push(current, current + 1, next + 1);
+                    this.indices.push(current, next + 1, current + 1);
+                    this.indices.push(current, next, next + 1);
                 }
             }
         }
@@ -60,7 +61,7 @@ export class MyCylinder extends CGFobject {
             // --- Caps ---
             const baseIndex = this.vertices.length / 3;
 
-            // Bottom Cap (z=0)
+            // Bottom Cap (z=0, visible from -Z)
             this.vertices.push(0, 0, 0); // Center point
             this.normals.push(0, 0, -1);
             this.texCoords.push(0.5, 0.5);
@@ -76,10 +77,10 @@ export class MyCylinder extends CGFobject {
             }
 
             for (let i = 0; i < this.slices; i++) {
-                this.indices.push(baseIndex, baseIndex + i + 1, baseIndex + i + 2);
+                this.indices.push(baseIndex, baseIndex + i + 2, baseIndex + i + 1);
             }
 
-            // Top Cap (z=1)
+            // Top Cap (z=1, visible from +Z)
             const topCapBaseIndex = this.vertices.length / 3;
             this.vertices.push(0, 0, 1); // Center point
             this.normals.push(0, 0, 1);
@@ -96,7 +97,7 @@ export class MyCylinder extends CGFobject {
             }
 
             for (let i = 0; i < this.slices; i++) {
-                this.indices.push(topCapBaseIndex, topCapBaseIndex + i + 2, topCapBaseIndex + i + 1);
+                this.indices.push(topCapBaseIndex, topCapBaseIndex + i + 1, topCapBaseIndex + i + 2);
             }
         }
 

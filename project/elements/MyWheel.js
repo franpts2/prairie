@@ -1,12 +1,18 @@
-import { CGFobject, CFGappearance } from '../../lib/CGF.js';
-import { MyCylinder } from '../shapes/MyCylinder';
-import { MyUnitCube } from '../shapes/MyUnitCube';
+import { CGFobject, CGFappearance } from '../../lib/CGF.js';
+import { MyCylinder } from '../shapes/MyCylinder.js';
+import { MyUnitCube } from '../shapes/MyUnitCube.js';
+import { MyDonut } from '../shapes/MyDonut.js';
 
+/**
+ * MyWheel
+ * @constructor
+ * @param scene - Reference to MyScene object
+ */
 export class MyWheel extends CGFobject {
     constructor(scene) {
         super(scene);
-        this.hub = new MyCylinder(scene, 12, 1, true);
-        this.rim = new MyCylinder(scene, 24, 1, false); // rim is hollow
+        this.hub = new MyCylinder(scene, 12, 1, true); 
+        this.rim = new MyDonut(scene, 24, 0.8, 1.0); // 0.2 thickness
         this.spoke = new MyUnitCube(scene);
         this.numSpokes = 8;
 
@@ -29,7 +35,7 @@ export class MyWheel extends CGFobject {
 
         // --- Rim ---
         this.scene.pushMatrix();
-        this.scene.scale(1, 1, 0.3);
+        this.scene.scale(1, 1, 0.3); // Scale Z for rim width
         this.scene.translate(0, 0, -0.5); // Center the rim on Z
         this.rim.display();
         this.scene.popMatrix();
@@ -38,8 +44,8 @@ export class MyWheel extends CGFobject {
         for (let i = 0; i < this.numSpokes; i++) {
             this.scene.pushMatrix();
             this.scene.rotate((i * 2 * Math.PI) / this.numSpokes, 0, 0, 1);
-            this.scene.translate(0, 0.5, 0); // Move to middle of radius
-            this.scene.scale(0.05, 0.8, 0.1); // Thin spoke
+            this.scene.translate(0, 0.45, 0); // Move to middle of tube radius
+            this.scene.scale(0.05, 0.9, 0.1); // Thin spoke
             this.spoke.display();
             this.scene.popMatrix();
         }
