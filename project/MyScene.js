@@ -47,6 +47,19 @@ export class MyScene extends CGFscene {
     this.displayAxis = true;
     this.displayLight0 = true;
     this.scaleFactor = 1;
+
+    this.setUpdatePeriod(1000 / 60);
+    this.lastTime = 0;
+    this.time = 0;
+  }
+
+  update(t) {
+    if (this.lastTime === 0) {
+      this.lastTime = t;
+    }
+    const dt = (t - this.lastTime) / 1000;
+    this.lastTime = t;
+    this.time += dt;
   }
 
   initElements() {

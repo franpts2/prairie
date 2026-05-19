@@ -1,6 +1,7 @@
-import { CGFtexture, CGFappearance } from "../../lib/CGF.js";
+import { CGFtexture, CGFappearance, CGFshader } from "../../lib/CGF.js";
 import { MyGrassMesh } from "../shapes/MyGrassMesh.js";
 import * as PlacementUtils from "../utils/PlacementUtils.js";
+import { SpatialGrid } from "../utils/SpatialGrid.js";
 
 export class MyGrass {
   constructor(scene) {
@@ -29,6 +30,12 @@ export class MyGrass {
     this.deadAppearance.setEmission(0.0, 0.0, 0.0, 1);
     this.deadAppearance.setAmbient(0.4, 0.4, 0.4, 1);
     this.deadAppearance.setDiffuse(0.8, 0.8, 0.8, 1);
+
+    this.grassShader = new CGFshader(scene.gl, "shaders/grass.vert", "shaders/grass.frag");
+    this.grassShader.setUniformsValues({
+      uWindSpeed: 1.0,
+      uWindStrength: 0.3
+    });
 
     this.initGrass();
   }
@@ -104,6 +111,21 @@ export class MyGrass {
       }
     }
 
+    // Use SpatialGrid for efficient overlap check
+    const spatialGrid = new SpatialGrid(2);
+    
+    // Add dead grass to avoidance zones
+    for (const dead of deadInstances) {
+      spatialGrid.addObstacle(dead.x, dead.z, 0.8);
+    }
+
+    // Add rocks to avoidance zones
+    if (this.scene.rocks && this.scene.rocks.rockItems) {
+      for (const rock of this.scene.rocks.rockItems) {
+        spatialGrid.addObstacle(rock.x, rock.z, rock.size * 1.2);
+      }
+    }
+
     const step = 0.5;
     const jitter = 0.5;
     const liveSizeBase = 0.75;
@@ -118,6 +140,9 @@ export class MyGrass {
 
         const pathValue = this.getPathValue(px, pz);
         if (pathValue > 0.5) continue;
+
+        // Check if position is blocked by dead grass or rocks
+        if (spatialGrid.isBlocked(px, pz)) continue;
 
         const size = (0.7 + Math.random() * 0.4) * liveSizeBase;
         liveInstances.push({
@@ -149,6 +174,9 @@ export class MyGrass {
     this.scene.gl.blendFunc(this.scene.gl.SRC_ALPHA, this.scene.gl.ONE_MINUS_SRC_ALPHA);
     this.scene.gl.depthMask(false);
 
+    this.scene.setActiveShader(this.grassShader);
+    this.grassShader.setUniformsValues({ uTime: this.scene.time });
+
     this.liveAppearance.apply();
     for (const mesh of this.liveMeshes) {
       mesh.display();
@@ -158,6 +186,8 @@ export class MyGrass {
     for (const mesh of this.deadMeshes) {
       mesh.display();
     }
+
+    this.scene.setActiveShader(this.scene.defaultShader);
 
     this.scene.gl.depthMask(true);
     this.scene.gl.enable(this.scene.gl.CULL_FACE);
