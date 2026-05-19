@@ -1,4 +1,4 @@
-import { CGFtexture, CGFappearance } from "../../lib/CGF.js";
+import { CGFtexture, CGFappearance, CGFshader } from "../../lib/CGF.js";
 import { MyGrassMesh } from "../shapes/MyGrassMesh.js";
 import * as PlacementUtils from "../utils/PlacementUtils.js";
 
@@ -29,6 +29,12 @@ export class MyGrass {
     this.deadAppearance.setEmission(0.0, 0.0, 0.0, 1);
     this.deadAppearance.setAmbient(0.4, 0.4, 0.4, 1);
     this.deadAppearance.setDiffuse(0.8, 0.8, 0.8, 1);
+
+    this.grassShader = new CGFshader(scene.gl, "shaders/grass.vert", "shaders/grass.frag");
+    this.grassShader.setUniformsValues({
+      uWindSpeed: 1.0,
+      uWindStrength: 0.3
+    });
 
     this.initGrass();
   }
@@ -149,6 +155,9 @@ export class MyGrass {
     this.scene.gl.blendFunc(this.scene.gl.SRC_ALPHA, this.scene.gl.ONE_MINUS_SRC_ALPHA);
     this.scene.gl.depthMask(false);
 
+    this.scene.setActiveShader(this.grassShader);
+    this.grassShader.setUniformsValues({ uTime: this.scene.time });
+
     this.liveAppearance.apply();
     for (const mesh of this.liveMeshes) {
       mesh.display();
@@ -158,6 +167,8 @@ export class MyGrass {
     for (const mesh of this.deadMeshes) {
       mesh.display();
     }
+
+    this.scene.setActiveShader(this.scene.defaultShader);
 
     this.scene.gl.depthMask(true);
     this.scene.gl.enable(this.scene.gl.CULL_FACE);
