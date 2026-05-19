@@ -5,6 +5,7 @@ import { MySun } from "./elements/MySun.js";
 import { MyGround } from "./elements/MyGround.js";
 import { MyRocks } from "./elements/MyRocks.js";
 import { MyGrass } from "./elements/MyGrass.js";
+import { AssetManager } from "./utils/AssetManager.js";
 
 /**
  * MyScene
@@ -36,7 +37,19 @@ export class MyScene extends CGFscene {
     //Initialize scene objects
     this.axis = new CGFaxis(this);
 
-    // Element setup
+    //Load assets and initialize elements
+    this.assetManager = new AssetManager(this);
+    this.assetManager.load().then(() => {
+      this.initElements();
+    });
+
+    //Objects connected to MyInterface
+    this.displayAxis = true;
+    this.displayLight0 = true;
+    this.scaleFactor = 1;
+  }
+
+  initElements() {
     this.ground = new MyGround(this);
     this.sky = new MySky(this);
     this.cloud = new MyCloud(this);
@@ -44,14 +57,11 @@ export class MyScene extends CGFscene {
     this.sun.initLight();
 
     this.rocks = new MyRocks(this, this.ground);
-
     this.grass = new MyGrass(this);
-
-    //Objects connected to MyInterface
-    this.displayAxis = true;
-    this.displayLight0 = true;
-    this.scaleFactor = 1;
+    
+    this.ready = true;
   }
+
   initLights() {
     // Lights initialized in MySun
   }
@@ -72,6 +82,8 @@ export class MyScene extends CGFscene {
   }
 
   display() {
+    if (!this.ready) return;
+
     // ---- BEGIN Background, camera and axis setup
     // Clear image and depth buffer everytime we update the scene
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);

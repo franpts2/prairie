@@ -10,11 +10,12 @@ export class MyGrass {
     this.terrainSize = 400;
     this.baseHeight = 0;
     this.heightScale = 10;
-    this.heightMapImage = null;
-    this.pathMapImage = null;
+    
+    this.heightMapImage = scene.assetManager.getPixelData('terrain');
+    this.pathMapImage = scene.assetManager.getPixelData('path');
 
     this.liveAppearance = new CGFappearance(scene);
-    this.liveTexture = new CGFtexture(scene, "./textures/grass.png");
+    this.liveTexture = scene.assetManager.getTexture('grass');
     this.liveAppearance.setTexture(this.liveTexture);
     this.liveAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
     this.liveAppearance.setEmission(0.0, 0.0, 0.0, 1);
@@ -22,42 +23,14 @@ export class MyGrass {
     this.liveAppearance.setDiffuse(0.8, 0.8, 0.8, 1);
 
     this.deadAppearance = new CGFappearance(scene);
-    this.deadTexture = new CGFtexture(scene, "./textures/deadgrass.png");
+    this.deadTexture = scene.assetManager.getTexture('deadGrass');
     this.deadAppearance.setTexture(this.deadTexture);
     this.deadAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
     this.deadAppearance.setEmission(0.0, 0.0, 0.0, 1);
     this.deadAppearance.setAmbient(0.4, 0.4, 0.4, 1);
     this.deadAppearance.setDiffuse(0.8, 0.8, 0.8, 1);
 
-    this.loadHeightMap();
-  }
-
-  loadHeightMap() {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      this.heightMapImage = ctx.getImageData(0, 0, img.width, img.height);
-      this.loadPathMap();
-    };
-    img.src = "./textures/terrainmap.png";
-  }
-
-  loadPathMap() {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      this.pathMapImage = ctx.getImageData(0, 0, img.width, img.height);
-      this.initGrass();
-    };
-    img.src = "./textures/pathmap.png";
+    this.initGrass();
   }
 
   getTerrainHeight(x, z) {

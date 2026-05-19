@@ -7,55 +7,32 @@ export class MyRocks {
         this.scene = scene;
         this.ground = ground;
         this.rockItems = [];
-        this.pathMapImage = null;
         this.terrainSize = 400;
 
+        const pathData = scene.assetManager.getPixelData('path');
+        this.pathMapImage = pathData;
+
         this.rockAppearances = this.initAppearances();
-        this.loadPathMap();
+        this.initPlacement();
     }
 
     initAppearances() {
-        const textureNames = [
-            "./textures/rocks/rock1.png",
-            "./textures/rocks/rock2.png",
-            "./textures/rocks/rock3.png",
-            "./textures/rocks/rock4.png",
-        ];
-
+        const textureKeys = ['rock1', 'rock2', 'rock3', 'rock4'];
         const appearances = [];
-        for (let i = 0; i < textureNames.length; i++) {
+        for (let i = 0; i < textureKeys.length; i++) {
             const appearance = new CGFappearance(this.scene);
             appearance.setAmbient(0.3, 0.3, 0.3, 1.0);
             appearance.setDiffuse(0.6, 0.6, 0.6, 1.0);
             appearance.setSpecular(0.2, 0.2, 0.2, 1.0);
             appearance.setShininess(10.0);
 
-            try {
-                const texture = new CGFtexture(this.scene, textureNames[i]);
-                appearance.setTexture(texture);
-                appearance.setTextureWrap("REPEAT", "REPEAT");
-            } catch (e) {
-                appearance.setAmbient(0.4, 0.35, 0.3, 1.0);
-                appearance.setDiffuse(0.6, 0.5, 0.4, 1.0);
-            }
+            const texture = this.scene.assetManager.getTexture(textureKeys[i]);
+            appearance.setTexture(texture);
+            appearance.setTextureWrap("REPEAT", "REPEAT");
 
             appearances.push(appearance);
         }
         return appearances;
-    }
-
-    loadPathMap() {
-        const img = new Image();
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
-            this.pathMapImage = ctx.getImageData(0, 0, img.width, img.height);
-            this.initPlacement();
-        };
-        img.src = "./textures/pathmap.png";
     }
 
     getPathValue(x, z) {

@@ -16,21 +16,13 @@ export class MyGround {
     this.appearance.setSpecular(0.0, 0.0, 0.0, 1.0);
     this.appearance.setShininess(10.0);
 
-    this.texture = new CGFtexture(scene, "./textures/soil.jpg");
+    this.texture = scene.assetManager.getTexture('soil');
     this.appearance.setTexture(this.texture);
     this.appearance.setTextureWrap("REPEAT", "REPEAT");
 
-    this.pathsoilTexture = new CGFtexture(scene, "./textures/pathsoil.png");
-    this.pathsoilTexture.bind(2);
-    this.pathsoilTexture.unbind();
-
-    this.heightMapPath = "./textures/terrainmap.png";
-    this.heightMap = new CGFtexture(scene, this.heightMapPath);
-    
-    this.pathMapPath = "./textures/pathmap.png";
-    this.pathMap = new CGFtexture(scene, this.pathMapPath);
-    this.pathMap.bind(3);
-    this.pathMap.unbind();
+    this.pathsoilTexture = scene.assetManager.getTexture('pathSoil');
+    this.heightMap = scene.assetManager.getTexture('terrainMap');
+    this.pathMap = scene.assetManager.getTexture('pathMap');
     
     this.shader = new CGFshader(
       scene.gl,
@@ -48,29 +40,10 @@ export class MyGround {
       pathRepeat: this.pathRepeat,
     });
 
-    this.heightData = null;
-    this.mapWidth = 0;
-    this.mapHeight = 0;
-    this.loadHeightData();
-  }
-
-  loadHeightData() {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0);
-      const imageData = ctx.getImageData(0, 0, img.width, img.height);
-      this.heightData = imageData.data;
-      this.mapWidth = img.width;
-      this.mapHeight = img.height;
-      if (this.scene.onGroundLoaded) {
-        this.scene.onGroundLoaded();
-      }
-    };
-    img.src = this.heightMapPath;
+    const terrainData = scene.assetManager.getPixelData('terrain');
+    this.heightData = terrainData.data;
+    this.mapWidth = terrainData.width;
+    this.mapHeight = terrainData.height;
   }
 
   getHeight(x, z) {
