@@ -1,5 +1,6 @@
 import { CGFappearance, CGFshader, CGFtexture } from "../../lib/CGF.js";
 import { MyTerrain } from "../shapes/MyTerrain.js";
+import { loadImageData } from "../utils/ImageUtils.js";
 
 export class MyGround {
   constructor(scene) {
@@ -55,22 +56,16 @@ export class MyGround {
   }
 
   loadHeightData() {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0);
-      const imageData = ctx.getImageData(0, 0, img.width, img.height);
+    loadImageData(this.heightMapPath).then((imageData) => {
       this.heightData = imageData.data;
-      this.mapWidth = img.width;
-      this.mapHeight = img.height;
+      this.mapWidth = imageData.width;
+      this.mapHeight = imageData.height;
       if (this.scene.onGroundLoaded) {
         this.scene.onGroundLoaded();
       }
-    };
-    img.src = this.heightMapPath;
+    }).catch(error => {
+      console.error("Error loading height data for MyGround:", error);
+    });
   }
 
   getHeight(x, z) {

@@ -1,5 +1,6 @@
 import { MyRock } from "./MyRock.js";
 import * as PlacementUtils from "../utils/PlacementUtils.js";
+import { loadImageData } from "../utils/ImageUtils.js";
 
 export class MyRocks {
     constructor(scene, ground) {
@@ -13,17 +14,10 @@ export class MyRocks {
     }
 
     loadPathMap() {
-        const img = new Image();
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
-            this.pathMapImage = ctx.getImageData(0, 0, img.width, img.height);
+        loadImageData("./textures/pathmap.png").then((imageData) => {
+            this.pathMapImage = imageData;
             this.initPlacement();
-        };
-        img.src = "./textures/pathmap.png";
+        });
     }
 
     getPathValue(x, z) {

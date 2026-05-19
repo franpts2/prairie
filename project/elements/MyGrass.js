@@ -1,6 +1,7 @@
 import { CGFtexture, CGFappearance } from "../../lib/CGF.js";
 import { MyGrassMesh } from "../shapes/MyGrassMesh.js";
 import * as PlacementUtils from "../utils/PlacementUtils.js";
+import { loadImageData } from "../utils/ImageUtils.js";
 
 export class MyGrass {
   constructor(scene) {
@@ -29,35 +30,19 @@ export class MyGrass {
     this.deadAppearance.setAmbient(0.4, 0.4, 0.4, 1);
     this.deadAppearance.setDiffuse(0.8, 0.8, 0.8, 1);
 
-    this.loadHeightMap();
+    this.loadMaps();
   }
 
-  loadHeightMap() {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      this.heightMapImage = ctx.getImageData(0, 0, img.width, img.height);
-      this.loadPathMap();
-    };
-    img.src = "./textures/terrainmap.png";
-  }
-
-  loadPathMap() {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      this.pathMapImage = ctx.getImageData(0, 0, img.width, img.height);
+  async loadMaps() {
+    try {
+      [this.heightMapImage, this.pathMapImage] = await Promise.all([
+        loadImageData("./textures/terrainmap.png"),
+        loadImageData("./textures/pathmap.png")
+      ]);
       this.initGrass();
-    };
-    img.src = "./textures/pathmap.png";
+    } catch (error) {
+      console.error("Error loading maps for MyGrass:", error);
+    }
   }
 
   getTerrainHeight(x, z) {
