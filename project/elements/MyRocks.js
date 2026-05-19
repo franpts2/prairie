@@ -1,4 +1,5 @@
 import { MyRock } from "./MyRock.js";
+import { CGFappearance, CGFtexture } from "../../lib/CGF.js";
 import * as PlacementUtils from "../utils/PlacementUtils.js";
 
 export class MyRocks {
@@ -9,7 +10,38 @@ export class MyRocks {
         this.pathMapImage = null;
         this.terrainSize = 400;
 
+        this.rockAppearances = this.initAppearances();
         this.loadPathMap();
+    }
+
+    initAppearances() {
+        const textureNames = [
+            "./textures/rocks/rock1.png",
+            "./textures/rocks/rock2.png",
+            "./textures/rocks/rock3.png",
+            "./textures/rocks/rock4.png",
+        ];
+
+        const appearances = [];
+        for (let i = 0; i < textureNames.length; i++) {
+            const appearance = new CGFappearance(this.scene);
+            appearance.setAmbient(0.3, 0.3, 0.3, 1.0);
+            appearance.setDiffuse(0.6, 0.6, 0.6, 1.0);
+            appearance.setSpecular(0.2, 0.2, 0.2, 1.0);
+            appearance.setShininess(10.0);
+
+            try {
+                const texture = new CGFtexture(this.scene, textureNames[i]);
+                appearance.setTexture(texture);
+                appearance.setTextureWrap("REPEAT", "REPEAT");
+            } catch (e) {
+                appearance.setAmbient(0.4, 0.35, 0.3, 1.0);
+                appearance.setDiffuse(0.6, 0.5, 0.4, 1.0);
+            }
+
+            appearances.push(appearance);
+        }
+        return appearances;
     }
 
     loadPathMap() {
@@ -89,7 +121,7 @@ export class MyRocks {
                     size: this.getRockSize(),
                     rotation: Math.random() * Math.PI * 2,
                     groupIndex,
-                    rock: new MyRock(this.scene, 1, seed),
+                    rock: new MyRock(this.scene, this.rockAppearances, 1, seed),
                 };
             })
         );

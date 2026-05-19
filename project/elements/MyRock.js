@@ -2,7 +2,7 @@ import { CGFappearance, CGFtexture } from "../../lib/CGF.js";
 import { MyPerturbedSphere } from "../shapes/MyPerturbedSphere.js";
 
 export class MyRock {
-    constructor(scene, size = 1, seed = 0) {
+    constructor(scene, appearances, size = 1, seed = 0) {
         const SEED_MULTIPLIER = 12.9898;
         const HASH_MULTIPLIER = 43758.5453;
         const ROUGHNESS_BIAS_POWER = 1.7; // bias toward rougher rocks
@@ -12,6 +12,7 @@ export class MyRock {
         this.scene = scene;
         this.size = size;
         this.seed = seed;
+        this.appearances = appearances;
 
         // Vary roughness and perturbation based on seed for rock diversity
         const seedHash = Math.abs(Math.sin(seed * SEED_MULTIPLIER) * HASH_MULTIPLIER);
@@ -29,39 +30,6 @@ export class MyRock {
             seed,                       // seed for consistent appearance per rock
             roughness                   // roughness: 0=smooth, 1=very jagged
         );
-
-        // Array of rock textures for variety
-        this.textureNames = [
-            "./textures/rocks/rock1.png",
-            "./textures/rocks/rock2.png",
-            "./textures/rocks/rock3.png",
-            "./textures/rocks/rock4.png",
-        ];
-
-        // appearances for different rock textures
-        this.appearances = [];
-        this.setupAppearances();
-    }
-
-    setupAppearances() {
-        for (let i = 0; i < this.textureNames.length; i++) {
-            const appearance = new CGFappearance(this.scene);
-            appearance.setAmbient(0.3, 0.3, 0.3, 1.0);
-            appearance.setDiffuse(0.6, 0.6, 0.6, 1.0);
-            appearance.setSpecular(0.2, 0.2, 0.2, 1.0);
-            appearance.setShininess(10.0);
-
-            try {
-                const texture = new CGFtexture(this.scene, this.textureNames[i]);
-                appearance.setTexture(texture);
-                appearance.setTextureWrap("REPEAT", "REPEAT");
-            } catch (e) {
-                appearance.setAmbient(0.4, 0.35, 0.3, 1.0);
-                appearance.setDiffuse(0.6, 0.5, 0.4, 1.0);
-            }
-
-            this.appearances.push(appearance);
-        }
     }
 
     getAppearance() {
