@@ -1,6 +1,7 @@
 import { CGFtexture, CGFappearance, CGFshader } from "../../lib/CGF.js";
 import { MyGrassMesh } from "../shapes/MyGrassMesh.js";
 import * as PlacementUtils from "../utils/PlacementUtils.js";
+import { SpatialGrid } from "../utils/SpatialGrid.js";
 
 export class MyGrass {
   constructor(scene) {
@@ -110,6 +111,21 @@ export class MyGrass {
       }
     }
 
+    // Use SpatialGrid for efficient overlap check
+    const spatialGrid = new SpatialGrid(2);
+    
+    // Add dead grass to avoidance zones
+    for (const dead of deadInstances) {
+      spatialGrid.addObstacle(dead.x, dead.z, 0.8);
+    }
+
+    // Add rocks to avoidance zones
+    if (this.scene.rocks && this.scene.rocks.rockItems) {
+      for (const rock of this.scene.rocks.rockItems) {
+        spatialGrid.addObstacle(rock.x, rock.z, rock.size * 1.2);
+      }
+    }
+
     const step = 0.5;
     const jitter = 0.5;
     const liveSizeBase = 0.75;
@@ -124,6 +140,9 @@ export class MyGrass {
 
         const pathValue = this.getPathValue(px, pz);
         if (pathValue > 0.5) continue;
+
+        // Check if position is blocked by dead grass or rocks
+        if (spatialGrid.isBlocked(px, pz)) continue;
 
         const size = (0.7 + Math.random() * 0.4) * liveSizeBase;
         liveInstances.push({
