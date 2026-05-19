@@ -6,12 +6,14 @@ import { CGFobject } from '../../lib/CGF.js';
  * @param scene - Reference to MyScene object
  * @param slices - number of divisions around the Y axis
  * @param stacks - number of divisions along the Z axis
+ * @param hasCaps - whether to draw the top and bottom caps
  */
 export class MyCylinder extends CGFobject {
-    constructor(scene, slices, stacks) {
+    constructor(scene, slices, stacks, hasCaps = true) {
         super(scene);
         this.slices = slices;
         this.stacks = stacks;
+        this.hasCaps = hasCaps;
         this.initBuffers();
     }
 
@@ -45,49 +47,57 @@ export class MyCylinder extends CGFobject {
 
                 this.indices.push(current, next, next + 1);
                 this.indices.push(current, next + 1, current + 1);
+
+                // If no caps, make it double sided so we see the inside
+                if (!this.hasCaps) {
+                    this.indices.push(current, next + 1, next);
+                    this.indices.push(current, current + 1, next + 1);
+                }
             }
         }
 
-        // --- Caps ---
-        const baseIndex = this.vertices.length / 3;
+        if (this.hasCaps) {
+            // --- Caps ---
+            const baseIndex = this.vertices.length / 3;
 
-        // Bottom Cap (z=0)
-        this.vertices.push(0, 0, 0); // Center point
-        this.normals.push(0, 0, -1);
-        this.texCoords.push(0.5, 0.5);
-
-        for (let i = 0; i <= this.slices; i++) {
-            const ang = i * alphaAng;
-            const x = Math.cos(ang);
-            const y = Math.sin(ang);
-
-            this.vertices.push(x, y, 0);
+            // Bottom Cap (z=0)
+            this.vertices.push(0, 0, 0); // Center point
             this.normals.push(0, 0, -1);
-            this.texCoords.push(0.5 + 0.5 * x, 0.5 - 0.5 * y);
-        }
+            this.texCoords.push(0.5, 0.5);
 
-        for (let i = 0; i < this.slices; i++) {
-            this.indices.push(baseIndex, baseIndex + i + 1, baseIndex + i + 2);
-        }
+            for (let i = 0; i <= this.slices; i++) {
+                const ang = i * alphaAng;
+                const x = Math.cos(ang);
+                const y = Math.sin(ang);
 
-        // Top Cap (z=1)
-        const topCapBaseIndex = this.vertices.length / 3;
-        this.vertices.push(0, 0, 1); // Center point
-        this.normals.push(0, 0, 1);
-        this.texCoords.push(0.5, 0.5);
+                this.vertices.push(x, y, 0);
+                this.normals.push(0, 0, -1);
+                this.texCoords.push(0.5 + 0.5 * x, 0.5 - 0.5 * y);
+            }
 
-        for (let i = 0; i <= this.slices; i++) {
-            const ang = i * alphaAng;
-            const x = Math.cos(ang);
-            const y = Math.sin(ang);
+            for (let i = 0; i < this.slices; i++) {
+                this.indices.push(baseIndex, baseIndex + i + 1, baseIndex + i + 2);
+            }
 
-            this.vertices.push(x, y, 1);
+            // Top Cap (z=1)
+            const topCapBaseIndex = this.vertices.length / 3;
+            this.vertices.push(0, 0, 1); // Center point
             this.normals.push(0, 0, 1);
-            this.texCoords.push(0.5 + 0.5 * x, 0.5 - 0.5 * y);
-        }
+            this.texCoords.push(0.5, 0.5);
 
-        for (let i = 0; i < this.slices; i++) {
-            this.indices.push(topCapBaseIndex, topCapBaseIndex + i + 2, topCapBaseIndex + i + 1);
+            for (let i = 0; i <= this.slices; i++) {
+                const ang = i * alphaAng;
+                const x = Math.cos(ang);
+                const y = Math.sin(ang);
+
+                this.vertices.push(x, y, 1);
+                this.normals.push(0, 0, 1);
+                this.texCoords.push(0.5 + 0.5 * x, 0.5 - 0.5 * y);
+            }
+
+            for (let i = 0; i < this.slices; i++) {
+                this.indices.push(topCapBaseIndex, topCapBaseIndex + i + 2, topCapBaseIndex + i + 1);
+            }
         }
 
         this.primitiveType = this.scene.gl.TRIANGLES;
