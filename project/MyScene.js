@@ -153,7 +153,7 @@ export class MyScene extends CGFscene {
     this.cloud.display();
 
     this.pushMatrix();
-    this.translate(0, 0, 0); // Position wagon
+    this.translate(0, 5, 0);
     this.wagon.display();
     this.popMatrix();
   }
