@@ -1,13 +1,8 @@
-import { CGFobject, CGFappearance } from '../../lib/CGF.js';
-import { MyCylinder } from '../shapes/MyCylinder.js';
-import { MyUnitCube } from '../shapes/MyUnitCube.js';
-import { MyDonut } from '../shapes/MyDonut.js';
+import { CGFobject, CGFappearance } from '../../../lib/CGF.js';
+import { MyCylinder } from '../../shapes/MyCylinder.js';
+import { MyUnitCube } from '../../shapes/MyUnitCube.js';
+import { MyDonut } from '../../shapes/MyDonut.js';
 
-/**
- * MyWheel
- * @constructor
- * @param scene - Reference to MyScene object
- */
 export class MyWheel extends CGFobject {
     constructor(scene) {
         super(scene);

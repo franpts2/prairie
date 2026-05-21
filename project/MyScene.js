@@ -5,7 +5,7 @@ import { MySun } from "./elements/MySun.js";
 import { MyGround } from "./elements/MyGround.js";
 import { MyRocks } from "./elements/MyRocks.js";
 import { MyGrass } from "./elements/MyGrass.js";
-import { MyWheel } from "./elements/MyWheel.js";
+import { MyWagon } from "./elements/wagon/MyWagon.js";
 import { AssetManager } from "./utils/AssetManager.js";
 
 /**
@@ -73,7 +73,7 @@ export class MyScene extends CGFscene {
     this.rocks = new MyRocks(this, this.ground);
     this.grass = new MyGrass(this);
 
-    this.wheel = new MyWheel(this);
+    this.wagon = new MyWagon(this);
     
     this.ready = true;
   }
@@ -153,8 +153,8 @@ export class MyScene extends CGFscene {
     this.cloud.display();
 
     this.pushMatrix();
-    this.translate(0, 5, 0);
-    this.wheel.display();
+    this.translate(0, 0, 0); // Position wagon
+    this.wagon.display();
     this.popMatrix();
   }
 }
