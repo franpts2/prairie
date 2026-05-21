@@ -24,28 +24,28 @@ export class MyWagonBed extends CGFobject {
 
         // --- Back Wall ---
         this.scene.pushMatrix();
-        this.scene.translate(0, 1.1, 3.45);
+        this.scene.translate(0, 0.7, 3.45);
         this.scene.scale(3.4, 2.0, 0.1);
         this.cube.display();
         this.scene.popMatrix();
 
         // --- Front Wall ---
         this.scene.pushMatrix();
-        this.scene.translate(0, 1.1, -3.45);
+        this.scene.translate(0, 0.7, -3.45);
         this.scene.scale(3.4, 2.0, 0.1);
         this.cube.display();
         this.scene.popMatrix();
 
         // --- Left Wall ---
         this.scene.pushMatrix();
-        this.scene.translate(-1.65, 1.1, 0);
+        this.scene.translate(-1.65, 0.7, 0);
         this.scene.scale(0.1, 2.0, 7);
         this.cube.display();
         this.scene.popMatrix();
 
         // --- Right Wall ---
         this.scene.pushMatrix();
-        this.scene.translate(1.65, 1.1, 0);
+        this.scene.translate(1.65, 0.7, 0);
         this.scene.scale(0.1, 2.0, 7);
         this.cube.display();
         this.scene.popMatrix();
