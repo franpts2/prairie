@@ -3,12 +3,8 @@ import { MyWagonBed } from './MyWagonBed.js';
 import { MyWagonWheelSet } from './MyWheelSet.js';
 import { MyWagonTongue } from './MyWagonTongue.js';
 import { MyWagonSeat } from './MySeat.js';
+import { MyWagonCover } from './MyWagonCover.js';
 
-/**
- * MyWagon
- * @constructor
- * @param scene - Reference to MyScene object
- */
 export class MyWagon extends CGFobject {
     constructor(scene) {
         super(scene);
@@ -16,6 +12,7 @@ export class MyWagon extends CGFobject {
         this.wheelSet = new MyWagonWheelSet(scene);
         this.tongue = new MyWagonTongue(scene);
         this.seat = new MyWagonSeat(scene);
+        this.cover = new MyWagonCover(scene);
     }
 
     display() {
@@ -47,6 +44,12 @@ export class MyWagon extends CGFobject {
         this.scene.pushMatrix();
         this.scene.translate(0, 1, -2.4);
         this.tongue.display();
+        this.scene.popMatrix();
+
+        // --- Cover ---
+        this.scene.pushMatrix();
+        this.scene.translate(0, 1.2, 0); // same base translation as bed
+        this.cover.display();
         this.scene.popMatrix();
     }
 }
