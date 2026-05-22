@@ -30,6 +30,20 @@ export class MyWagonSeat extends CGFobject {
         this.cube.display();
         this.scene.popMatrix();
 
+        // Left Seat Support
+        this.scene.pushMatrix();
+        this.scene.translate(-this.width * 0.4, -0.625, 0);
+        this.scene.scale(0.2, 1.15, 0.4);
+        this.cube.display();
+        this.scene.popMatrix();
+
+        // Right Seat Support
+        this.scene.pushMatrix();
+        this.scene.translate(this.width * 0.4, -0.625, 0);
+        this.scene.scale(0.2, 1.15, 0.4);
+        this.cube.display();
+        this.scene.popMatrix();
+
         this.scene.setDefaultAppearance();
     }
 }
