@@ -2,8 +2,9 @@ import { CGFobject, CGFappearance } from '../../../lib/CGF.js';
 import { MyUnitCube } from '../../shapes/MyUnitCube.js';
 
 export class MyWagonSeat extends CGFobject {
-    constructor(scene) {
+    constructor(scene, width = 2) {
         super(scene);
+        this.width = width;
         this.cube = new MyUnitCube(scene);
 
         this.woodAppearance = new CGFappearance(scene);
@@ -18,14 +19,14 @@ export class MyWagonSeat extends CGFobject {
 
         // Seat Bench
         this.scene.pushMatrix();
-        this.scene.scale(3, 0.1, 0.6);
+        this.scene.scale(this.width, 0.1, 0.6);
         this.cube.display();
         this.scene.popMatrix();
         
         // Seat backrest
         this.scene.pushMatrix();
         this.scene.translate(0, 0.3, 0.3);
-        this.scene.scale(3, 0.6, 0.1);
+        this.scene.scale(this.width, 0.6, 0.1);
         this.cube.display();
         this.scene.popMatrix();
 
