@@ -1,7 +1,7 @@
 import { CGFobject, CGFappearance } from '../../../lib/CGF.js';
 import { MyCylinder } from '../../shapes/MyCylinder.js';
 
-export class Axle extends CGFobject {
+export class MyAxle extends CGFobject {
     constructor(scene) {
         super(scene);
         this.axle = new MyCylinder(scene, 12, 1, true);
