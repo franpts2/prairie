@@ -2,8 +2,9 @@ import { CGFobject, CGFappearance } from '../../../lib/CGF.js';
 import { MySemiCylinder } from '../../shapes/MySemiCylinder.js';
 
 export class MyWagonCover extends CGFobject {
-    constructor(scene) {
+    constructor(scene, heightScale = 2.5) {
         super(scene);
+        this.heightScale = heightScale;
         this.cloth = new MySemiCylinder(scene, 20, 20);
         this.arch = new MySemiCylinder(scene, 20, 1);
 
@@ -24,7 +25,7 @@ export class MyWagonCover extends CGFobject {
         this.scene.pushMatrix();
         this.clothAppearance.apply();
         this.scene.translate(0, 1.7, -3.5); 
-        this.scene.scale(1.7, 1.7, 3.5); 
+        this.scene.scale(1.7, this.heightScale, 3.5); 
         this.cloth.display();
         this.scene.popMatrix();
 
@@ -34,7 +35,7 @@ export class MyWagonCover extends CGFobject {
         for (let i = 0; i < numArches; i++) {
             this.scene.pushMatrix();
             this.scene.translate(0, 1.7, -i * archSpacing);
-            this.scene.scale(1.71, 1.71, 0.05); 
+            this.scene.scale(1.71, this.heightScale + 0.01, 0.05); 
             this.arch.display();
             this.scene.popMatrix();
         }

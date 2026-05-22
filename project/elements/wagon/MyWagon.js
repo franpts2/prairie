@@ -1,18 +1,18 @@
 import { CGFobject } from '../../../lib/CGF.js';
-import { MyWagonBed } from './MyWagonBed.js';
-import { MyWagonWheelSet } from './MyWheelSet.js';
-import { MyWagonTongue } from './MyWagonTongue.js';
-import { MyWagonSeat } from './MySeat.js';
-import { MyWagonCover } from './MyWagonCover.js';
+import { MyBed } from './MyBed.js';
+import { MyWheelSet } from './MyWheelSet.js';
+import { MyTongue } from './MyTongue.js';
+import { MySeat } from './MySeat.js';
+import { MyCover } from './MyCover.js';
 
 export class MyWagon extends CGFobject {
     constructor(scene) {
         super(scene);
         this.bed = new MyWagonBed(scene);
-        this.wheelSet = new MyWagonWheelSet(scene);
-        this.tongue = new MyWagonTongue(scene);
-        this.seat = new MyWagonSeat(scene);
-        this.cover = new MyWagonCover(scene);
+        this.wheelSet = new MyWheelSet(scene);
+        this.tongue = new MyTongue(scene);
+        this.seat = new MySeat(scene);
+        this.cover = new MyCover(scene);
     }
 
     display() {
