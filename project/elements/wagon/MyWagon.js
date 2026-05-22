@@ -8,7 +8,7 @@ import { MyCover } from './MyCover.js';
 export class MyWagon extends CGFobject {
     constructor(scene) {
         super(scene);
-        this.bed = new MyWagonBed(scene);
+        this.bed = new MyBed(scene);
         this.wheelSet = new MyWheelSet(scene);
         this.tongue = new MyTongue(scene);
         this.seat = new MySeat(scene);

@@ -1,7 +1,7 @@
 import { CGFobject, CGFappearance } from '../../../lib/CGF.js';
 import { MyUnitCube } from '../../shapes/MyUnitCube.js';
 
-export class MyWagonBed extends CGFobject {
+export class MyBed extends CGFobject {
     constructor(scene) {
         super(scene);
         this.cube = new MyUnitCube(scene);

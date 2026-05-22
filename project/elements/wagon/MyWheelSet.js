@@ -1,12 +1,12 @@
 import { CGFobject } from '../../../lib/CGF.js';
 import { MyWheel } from './MyWheel.js';
-import { MyWagonAxle } from './MyAxle.js';
+import { MyAxle } from './MyAxle.js';
 
-export class MyWagonWheelSet extends CGFobject {
+export class MyWheelSet extends CGFobject {
     constructor(scene) {
         super(scene);
         this.wheel = new MyWheel(scene);
-        this.axle = new MyWagonAxle(scene);
+        this.axle = new MyAxle(scene);
     }
 
     display() {

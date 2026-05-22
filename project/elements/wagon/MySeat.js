@@ -1,7 +1,7 @@
 import { CGFobject, CGFappearance } from '../../../lib/CGF.js';
 import { MyUnitCube } from '../../shapes/MyUnitCube.js';
 
-export class MyWagonSeat extends CGFobject {
+export class MySeat extends CGFobject {
     constructor(scene, width = 2) {
         super(scene);
         this.width = width;

@@ -1,7 +1,7 @@
 import { CGFobject, CGFappearance } from '../../../lib/CGF.js';
 import { MySemiCylinder } from '../../shapes/MySemiCylinder.js';
 
-export class MyWagonCover extends CGFobject {
+export class MyCover extends CGFobject {
     constructor(scene, heightScale = 2.5) {
         super(scene);
         this.heightScale = heightScale;
