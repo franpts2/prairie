@@ -126,6 +126,12 @@ export class MyGrass {
       }
     }
 
+    if (this.scene.trees && this.scene.trees.treeItems) {
+      for (const tree of this.scene.trees.treeItems) {
+        spatialGrid.addObstacle(tree.x, tree.z, tree.trunkRadius * 2.2);
+      }
+    }
+
     const step = 0.5;
     const jitter = 0.5;
     const liveSizeBase = 0.75;
