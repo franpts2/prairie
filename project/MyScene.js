@@ -7,6 +7,7 @@ import { MyRocks } from "./elements/MyRocks.js";
 import { MyTrees } from "./elements/MyTrees.js";
 import { MyGrass } from "./elements/MyGrass.js";
 import { MyWagon } from "./elements/wagon/MyWagon.js";
+import { MyHayBales } from "./elements/MyHayBales.js";
 import { AssetManager } from "./utils/AssetManager.js";
 
 /**
@@ -74,6 +75,7 @@ export class MyScene extends CGFscene {
     this.rocks = new MyRocks(this, this.ground);
     this.trees = new MyTrees(this, this.ground);
     this.grass = new MyGrass(this);
+    this.hayBales = new MyHayBales(this, this.ground);
 
     this.wagon = new MyWagon(this);
     
@@ -150,6 +152,8 @@ export class MyScene extends CGFscene {
     this.trees.display();
 
     this.grass.display();
+
+    this.hayBales.display();
 
     this.sky.display();
 
