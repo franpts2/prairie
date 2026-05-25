@@ -9,6 +9,10 @@ export class MyWagon extends CGFobject {
     constructor(scene) {
         super(scene);
 
+        this.x = 0;
+        this.z = 0;
+        this.radius = 2.0;
+
         // Centralized wood appearance
         this.woodAppearance = new CGFappearance(scene);
         this.woodAppearance.setAmbient(0.4, 0.2, 0.1, 1.0);
