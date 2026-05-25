@@ -24,7 +24,8 @@ export class AssetManager {
             rock3: "./textures/rocks/rock3.png",
             rock4: "./textures/rocks/rock4.png",
             wood: "./textures/wood.png",
-            leaves: "./textures/leaves.png"
+            leaves: "./textures/leaves.png",
+            hay: "./textures/hay.png"
         };
     }
 
