@@ -6,6 +6,7 @@ import { MyGround } from "./elements/MyGround.js";
 import { MyRocks } from "./elements/MyRocks.js";
 import { MyTrees } from "./elements/MyTrees.js";
 import { MyGrass } from "./elements/MyGrass.js";
+import { MyWagon } from "./elements/wagon/MyWagon.js";
 import { AssetManager } from "./utils/AssetManager.js";
 
 /**
@@ -73,6 +74,8 @@ export class MyScene extends CGFscene {
     this.rocks = new MyRocks(this, this.ground);
     this.trees = new MyTrees(this, this.ground);
     this.grass = new MyGrass(this);
+
+    this.wagon = new MyWagon(this);
     
     this.ready = true;
   }
@@ -85,8 +88,8 @@ export class MyScene extends CGFscene {
       0.4,
       0.1,
       5000,
-      vec3.fromValues(0, 20, 0),
-      vec3.fromValues(100, 10, 0)
+      vec3.fromValues(30, 15, 30),
+      vec3.fromValues(0, 0, 0)
     );
   }
   setDefaultAppearance() {
@@ -152,5 +155,10 @@ export class MyScene extends CGFscene {
 
     this.cloud.update();
     this.cloud.display();
+
+    this.pushMatrix();
+    this.translate(0, 5, 0);
+    this.wagon.display();
+    this.popMatrix();
   }
 }

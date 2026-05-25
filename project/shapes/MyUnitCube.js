@@ -1,0 +1,164 @@
+import { CGFobject } from '../../lib/CGF.js';
+
+/**
+ * MyUnitCube
+ * @constructor
+ * @param scene - Reference to MyScene object
+ * @param widthTex - texture scaling factor for the X axis
+ * @param heightTex - texture scaling factor for the Y axis
+ * @param depthTex - texture scaling factor for the Z axis
+ */
+export class MyUnitCube extends CGFobject {
+    constructor(scene, widthTex = 1, heightTex = 1, depthTex = 1) {
+        super(scene);
+        this.widthTex = widthTex;
+        this.heightTex = heightTex;
+        this.depthTex = depthTex;
+        this.initBuffers();
+    }
+
+    initBuffers() {
+        this.vertices = [
+            // Back (z = -0.5)
+            -0.5, -0.5, -0.5, // 0
+            0.5, -0.5, -0.5,  // 1
+            -0.5, 0.5, -0.5,  // 2
+            0.5, 0.5, -0.5,   // 3
+
+            // Front (z = 0.5)
+            -0.5, -0.5, 0.5,  // 4
+            0.5, -0.5, 0.5,   // 5
+            -0.5, 0.5, 0.5,   // 6
+            0.5, 0.5, 0.5,    // 7
+
+            // Left (x = -0.5)
+            -0.5, -0.5, -0.5, // 8
+            -0.5, 0.5, -0.5,  // 9
+            -0.5, -0.5, 0.5,  // 10
+            -0.5, 0.5, 0.5,   // 11
+
+            // Right (x = 0.5)
+            0.5, -0.5, -0.5,  // 12
+            0.5, 0.5, -0.5,   // 13
+            0.5, -0.5, 0.5,   // 14
+            0.5, 0.5, 0.5,    // 15
+
+            // Bottom (y = -0.5)
+            -0.5, -0.5, -0.5, // 16
+            0.5, -0.5, -0.5,  // 17
+            -0.5, -0.5, 0.5,  // 18
+            0.5, -0.5, 0.5,   // 19
+
+            // Top (y = 0.5)
+            -0.5, 0.5, -0.5,  // 20
+            0.5, 0.5, -0.5,   // 21
+            -0.5, 0.5, 0.5,   // 22
+            0.5, 0.5, 0.5     // 23
+        ];
+
+        this.indices = [
+            // Back
+            0, 2, 1,
+            1, 2, 3,
+
+            // Front
+            4, 5, 6,
+            6, 5, 7,
+
+            // Left
+            8, 10, 9,
+            9, 10, 11,
+
+            // Right
+            12, 13, 14,
+            14, 13, 15,
+
+            // Bottom
+            16, 17, 18,
+            18, 17, 19,
+
+            // Top
+            20, 22, 21,
+            21, 22, 23
+        ];
+
+        this.normals = [
+            // Back
+            0, 0, -1,
+            0, 0, -1,
+            0, 0, -1,
+            0, 0, -1,
+
+            // Front
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+
+            // Left
+            -1, 0, 0,
+            -1, 0, 0,
+            -1, 0, 0,
+            -1, 0, 0,
+
+            // Right
+            1, 0, 0,
+            1, 0, 0,
+            1, 0, 0,
+            1, 0, 0,
+
+            // Bottom
+            0, -1, 0,
+            0, -1, 0,
+            0, -1, 0,
+            0, -1, 0,
+
+            // Top
+            0, 1, 0,
+            0, 1, 0,
+            0, 1, 0,
+            0, 1, 0
+        ];
+
+        this.texCoords = [
+            // Back (X, Y)
+            this.widthTex, this.heightTex,
+            0, this.heightTex,
+            this.widthTex, 0,
+            0, 0,
+
+            // Front (X, Y)
+            0, this.heightTex,
+            this.widthTex, this.heightTex,
+            0, 0,
+            this.widthTex, 0,
+
+            // Left (Z, Y)
+            0, this.heightTex,
+            0, 0,
+            this.depthTex, this.heightTex,
+            this.depthTex, 0,
+
+            // Right (Z, Y)
+            this.depthTex, this.heightTex,
+            this.depthTex, 0,
+            0, this.heightTex,
+            0, 0,
+
+            // Bottom (X, Z)
+            0, 0,
+            this.widthTex, 0,
+            0, this.depthTex,
+            this.widthTex, this.depthTex,
+
+            // Top (X, Z)
+            0, this.depthTex,
+            this.widthTex, this.depthTex,
+            0, 0,
+            this.widthTex, 0
+        ];
+
+        this.primitiveType = this.scene.gl.TRIANGLES;
+        this.initGLBuffers();
+    }
+}
