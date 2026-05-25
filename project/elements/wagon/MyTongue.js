@@ -11,6 +11,8 @@ export class MyTongue extends CGFobject {
         this.woodAppearance.setDiffuse(0.5, 0.3, 0.1, 1.0);
         this.woodAppearance.setSpecular(0.1, 0.1, 0.1, 1.0);
         this.woodAppearance.setShininess(5.0);
+        this.woodAppearance.setTexture(this.scene.assetManager.getTexture('wood'));
+        this.woodAppearance.setTextureWrap('REPEAT', 'REPEAT');
     }
 
     display() {
