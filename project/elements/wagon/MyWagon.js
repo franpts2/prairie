@@ -41,6 +41,7 @@ export class MyWagon extends CGFobject {
         this.maxSpeed = 15;
         this.acceleration = 6;
         this.brakeDecel = 12;
+        this.friction = 2;
 
         // steering variables
         this.steerAngle = 0;
@@ -71,6 +72,13 @@ export class MyWagon extends CGFobject {
 
     brake(dt) {
         this.speed -= this.brakeDecel * dt;
+        if (this.speed < 0) {
+            this.speed = 0;
+        }
+    }
+
+    decelerate(dt) {
+        this.speed -= this.friction * dt;
         if (this.speed < 0) {
             this.speed = 0;
         }

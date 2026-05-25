@@ -75,6 +75,8 @@ export class MyScene extends CGFscene {
         this.wagon.accelerate(dt);
       } else if (this.gui.isKeyPressed("KeyS")) {
         this.wagon.brake(dt);
+      } else {
+        this.wagon.decelerate(dt);
       }
     }
   }
