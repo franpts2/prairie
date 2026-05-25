@@ -62,6 +62,34 @@ export class MyScene extends CGFscene {
     const dt = (t - this.lastTime) / 1000;
     this.lastTime = t;
     this.time += dt;
+
+    if (this.ready) {
+      this.checkKeys(dt);
+      this.wagon.update(dt);
+    }
+  }
+
+  checkKeys(dt) {
+    if (this.gui && typeof this.gui.isKeyPressed === 'function') {
+      if (this.gui.isKeyPressed("KeyW")) {
+        this.wagon.accelerate(dt);
+      } else if (this.gui.isKeyPressed("KeyS")) {
+        this.wagon.brake(dt);
+      } else {
+        this.wagon.decelerate(dt);
+      }
+
+      if (this.gui.isKeyPressed("KeyA")) {
+        this.wagon.steer(1, dt);
+      } else if (this.gui.isKeyPressed("KeyD")) {
+        this.wagon.steer(-1, dt);
+      } else {
+        this.wagon.steer(0, dt);
+      }
+    } else {
+      this.wagon.decelerate(dt);
+      this.wagon.steer(0, dt);
+    }
   }
 
   initElements() {
@@ -157,7 +185,6 @@ export class MyScene extends CGFscene {
     this.cloud.display();
 
     this.pushMatrix();
-    this.translate(0, 5, 0);
     this.wagon.display();
     this.popMatrix();
   }
