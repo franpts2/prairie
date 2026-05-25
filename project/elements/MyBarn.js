@@ -19,8 +19,8 @@ export class MyBarn extends CGFobject {
         this.roof = new MyPrism(scene, 4, 2, 5);
 
         this.woodAppearance = new CGFappearance(scene);
-        this.woodAppearance.setAmbient(0.4, 0.3, 0.2, 1.0);
-        this.woodAppearance.setDiffuse(0.7, 0.5, 0.3, 1.0);
+        this.woodAppearance.setAmbient(0.5, 0.15, 0.15, 1.0);
+        this.woodAppearance.setDiffuse(0.7, 0.2, 0.2, 1.0);
         this.woodAppearance.setSpecular(0.1, 0.1, 0.1, 1.0);
         this.woodAppearance.setShininess(5.0);
         this.woodAppearance.setTexture(scene.assetManager.getTexture('wood'));
