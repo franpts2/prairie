@@ -30,9 +30,49 @@ export class MyWagon extends CGFobject {
         this.tongue = new MyTongue(scene, this.woodAppearance);
         this.seat = new MySeat(scene, 2, this.woodAppearance);
         this.cover = new MyCover(scene, 2.5, this.woodAppearance, this.metalAppearance);
+
+        // position and motion variables
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+        this.angle = 0;
+
+        this.speed = 0;
+        this.maxSpeed = 15;
+        this.acceleration = 6;
+        
+        // steering variables
+        this.steerAngle = 0;
+    }
+
+    update(dt) {
+        // move wagon forward along local negative Z axis, rotated by this.angle
+        this.x += -this.speed * Math.sin(this.angle) * dt;
+        this.z += -this.speed * Math.cos(this.angle) * dt;
+
+        // adjust wagon orientation based on speed and steering angle
+        // bicycle model: d(theta)/dt = (speed / L) * Math.sin(steerAngle)
+        // wheelbase (L) between front and back axle is 4.8
+        this.angle += (this.speed * dt / 4.8) * Math.sin(this.steerAngle);
+
+        // align height to terrain
+        if (this.scene.ground) {
+            this.y = this.scene.ground.getHeight(this.x, this.z);
+        }
+    }
+
+    accelerate(dt) {
+        this.speed += this.acceleration * dt;
+        if (this.speed > this.maxSpeed) {
+            this.speed = this.maxSpeed;
+        }
     }
 
     display() {
+        this.scene.pushMatrix();
+        this.scene.translate(this.x, this.y, this.z);
+        this.scene.rotate(this.angle, 0, 1, 0);
+
         // --- Bed ---
         this.scene.pushMatrix();
         this.scene.translate(0, 1.2, 0);
@@ -67,6 +107,8 @@ export class MyWagon extends CGFobject {
         this.scene.pushMatrix();
         this.scene.translate(0, 1.2, 0); // same base translation as bed
         this.cover.display();
+        this.scene.popMatrix();
+
         this.scene.popMatrix();
     }
 }
