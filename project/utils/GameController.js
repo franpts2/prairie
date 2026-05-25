@@ -7,19 +7,21 @@ export class GameController {
         this.MAX_BALES = 2;
         this.BALE_HEAL_VALUE = 50;
 
+        // UI elements
+        this.overlay = document.getElementById('game-over-overlay');
+        this.scoreDisplay = document.getElementById('final-score');
+        this.restartBtn = document.getElementById('restart-button');
+
+        if (this.restartBtn) {
+            this.restartBtn.onclick = () => this.reset();
+        }
+
         // game state
-        this.hp = this.INITIAL_HP;
-        this.score = 0;
-        this.wagonBales = 0;
-        this.lastDamage = 0;
-        this.lastHeal = 0;
-        this.balesDelivered = 0;
-        
-        this.isGameOver = false;
+        this.reset();
     }
 
     /**
-     * Resets the game state
+     * Resets the game state and hides the overlay
      */
     reset() {
         this.hp = this.INITIAL_HP;
@@ -29,6 +31,10 @@ export class GameController {
         this.lastHeal = 0;
         this.balesDelivered = 0;
         this.isGameOver = false;
+
+        if (this.overlay) {
+            this.overlay.style.display = 'none';
+        }
     }
 
     /**
@@ -53,10 +59,15 @@ export class GameController {
     }
 
     /**
-     * Handles game over state
+     * Handles game over state: shows overlay and final score
      */
     onGameOver() {
         console.log("Game Over! Final Score: " + Math.floor(this.score));
+        
+        if (this.overlay && this.scoreDisplay) {
+            this.scoreDisplay.innerText = Math.floor(this.score);
+            this.overlay.style.display = 'flex';
+        }
     }
 
     /**
@@ -64,6 +75,7 @@ export class GameController {
      * @param {number} amount - HP to lose
      */
     applyDamage(amount) {
+        if (this.isGameOver) return;
         this.hp -= amount;
         this.lastDamage = amount;
         if (this.hp < 0) this.hp = 0;
@@ -73,6 +85,7 @@ export class GameController {
      * Deliver hay bales to the barn
      */
     deliverBales() {
+        if (this.isGameOver) return;
         if (this.wagonBales > 0) {
             const healing = this.wagonBales * this.BALE_HEAL_VALUE;
             this.hp += healing;
@@ -80,7 +93,7 @@ export class GameController {
             this.balesDelivered += this.wagonBales;
             this.wagonBales = 0;
             
-            // limit HP (max 200)
+            // Limit HP if needed, e.g., max 200
             if (this.hp > 200) this.hp = 200;
         }
     }
@@ -89,6 +102,7 @@ export class GameController {
      * Capture a hay bale
      */
     captureBale() {
+        if (this.isGameOver) return;
         if (this.wagonBales < this.MAX_BALES) {
             this.wagonBales++;
             return true;
