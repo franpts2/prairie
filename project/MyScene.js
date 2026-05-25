@@ -7,6 +7,7 @@ import { MyRocks } from "./elements/rocks/MyRocks.js";
 import { MyTrees } from "./elements/trees/MyTrees.js";
 import { MyGrass } from "./elements/MyGrass.js";
 import { MyWagon } from "./elements/wagon/MyWagon.js";
+import { MyBarn } from "./elements/MyBarn.js";
 import { AssetManager } from "./utils/AssetManager.js";
 
 /**
@@ -104,6 +105,7 @@ export class MyScene extends CGFscene {
     this.grass = new MyGrass(this);
 
     this.wagon = new MyWagon(this);
+    this.barn = new MyBarn(this, -20, -100);
     
     this.ready = true;
   }
@@ -186,6 +188,10 @@ export class MyScene extends CGFscene {
 
     this.pushMatrix();
     this.wagon.display();
+    this.popMatrix();
+
+    this.pushMatrix();
+    this.barn.display();
     this.popMatrix();
   }
 }
