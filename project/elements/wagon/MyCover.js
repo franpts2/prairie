@@ -21,6 +21,8 @@ export class MyCover extends CGFobject {
         this.archAppearance.setDiffuse(0.4, 0.3, 0.2, 1.0);
         this.archAppearance.setSpecular(0.1, 0.1, 0.1, 1.0);
         this.archAppearance.setShininess(5.0);
+        this.archAppearance.setTexture(this.scene.assetManager.getTexture('wood'));
+        this.archAppearance.setTextureWrap('REPEAT', 'REPEAT');
     }
 
     display() {
