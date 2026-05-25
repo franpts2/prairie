@@ -1,27 +1,20 @@
-import { CGFobject, CGFappearance } from '../../../lib/CGF.js';
+import { CGFobject } from '../../../lib/CGF.js';
 import { MyCylinder } from '../../shapes/MyCylinder.js';
 import { MyUnitCube } from '../../shapes/MyUnitCube.js';
 import { MyDonut } from '../../shapes/MyDonut.js';
 
 export class MyWheel extends CGFobject {
-    constructor(scene) {
+    constructor(scene, woodAppearance) {
         super(scene);
         this.hub = new MyCylinder(scene, 12, 1, true); 
         this.rim = new MyDonut(scene, 24, 0.8, 1.0); // 0.2 thickness
         this.spoke = new MyUnitCube(scene);
         this.numSpokes = 8;
-
-        this.woodAppearance = new CGFappearance(scene);
-        this.woodAppearance.setAmbient(0.4, 0.2, 0.1, 1.0);
-        this.woodAppearance.setDiffuse(0.5, 0.3, 0.1, 1.0);
-        this.woodAppearance.setSpecular(0.1, 0.1, 0.1, 1.0);
-        this.woodAppearance.setShininess(5.0);
-        this.woodAppearance.setTexture(this.scene.assetManager.getTexture('wood'));
-        this.woodAppearance.setTextureWrap('REPEAT', 'REPEAT');
+        this.woodAppearance = woodAppearance;
     }
 
     display() {
-        this.woodAppearance.apply();
+        if (this.woodAppearance) this.woodAppearance.apply();
 
         // --- Hub ---
         this.scene.pushMatrix();

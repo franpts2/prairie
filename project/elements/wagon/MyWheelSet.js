@@ -3,10 +3,10 @@ import { MyWheel } from './MyWheel.js';
 import { MyAxle } from './MyAxle.js';
 
 export class MyWheelSet extends CGFobject {
-    constructor(scene) {
+    constructor(scene, woodAppearance) {
         super(scene);
-        this.wheel = new MyWheel(scene);
-        this.axle = new MyAxle(scene);
+        this.wheel = new MyWheel(scene, woodAppearance);
+        this.axle = new MyAxle(scene, woodAppearance);
     }
 
     display() {

@@ -1,23 +1,16 @@
-import { CGFobject, CGFappearance } from '../../../lib/CGF.js';
+import { CGFobject } from '../../../lib/CGF.js';
 import { MyUnitCube } from '../../shapes/MyUnitCube.js';
 
 export class MySeat extends CGFobject {
-    constructor(scene, width = 2) {
+    constructor(scene, width = 2, woodAppearance) {
         super(scene);
         this.width = width;
         this.cube = new MyUnitCube(scene);
-
-        this.woodAppearance = new CGFappearance(scene);
-        this.woodAppearance.setAmbient(0.4, 0.2, 0.1, 1.0);
-        this.woodAppearance.setDiffuse(0.5, 0.3, 0.1, 1.0);
-        this.woodAppearance.setSpecular(0.1, 0.1, 0.1, 1.0);
-        this.woodAppearance.setShininess(5.0);
-        this.woodAppearance.setTexture(this.scene.assetManager.getTexture('wood'));
-        this.woodAppearance.setTextureWrap('REPEAT', 'REPEAT');
+        this.woodAppearance = woodAppearance;
     }
 
     display() {
-        this.woodAppearance.apply();
+        if (this.woodAppearance) this.woodAppearance.apply();
 
         // Seat Bench
         this.scene.pushMatrix();

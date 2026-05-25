@@ -1,4 +1,4 @@
-import { CGFobject } from '../../../lib/CGF.js';
+import { CGFobject, CGFappearance } from '../../../lib/CGF.js';
 import { MyBed } from './MyBed.js';
 import { MyWheelSet } from './MyWheelSet.js';
 import { MyTongue } from './MyTongue.js';
@@ -8,11 +8,21 @@ import { MyCover } from './MyCover.js';
 export class MyWagon extends CGFobject {
     constructor(scene) {
         super(scene);
-        this.bed = new MyBed(scene);
-        this.wheelSet = new MyWheelSet(scene);
-        this.tongue = new MyTongue(scene);
-        this.seat = new MySeat(scene);
-        this.cover = new MyCover(scene);
+
+        // Centralized wood appearance
+        this.woodAppearance = new CGFappearance(scene);
+        this.woodAppearance.setAmbient(0.4, 0.2, 0.1, 1.0);
+        this.woodAppearance.setDiffuse(0.5, 0.3, 0.1, 1.0);
+        this.woodAppearance.setSpecular(0.1, 0.1, 0.1, 1.0);
+        this.woodAppearance.setShininess(5.0);
+        this.woodAppearance.setTexture(this.scene.assetManager.getTexture('wood'));
+        this.woodAppearance.setTextureWrap('REPEAT', 'REPEAT');
+
+        this.bed = new MyBed(scene, this.woodAppearance);
+        this.wheelSet = new MyWheelSet(scene, this.woodAppearance);
+        this.tongue = new MyTongue(scene, this.woodAppearance);
+        this.seat = new MySeat(scene, 2, this.woodAppearance);
+        this.cover = new MyCover(scene, 2.5, this.woodAppearance);
     }
 
     display() {

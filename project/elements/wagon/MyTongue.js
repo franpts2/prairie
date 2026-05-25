@@ -1,22 +1,15 @@
-import { CGFobject, CGFappearance } from '../../../lib/CGF.js';
+import { CGFobject } from '../../../lib/CGF.js';
 import { MyUnitCube } from '../../shapes/MyUnitCube.js';
 
 export class MyTongue extends CGFobject {
-    constructor(scene) {
+    constructor(scene, woodAppearance) {
         super(scene);
         this.cube = new MyUnitCube(scene);
-
-        this.woodAppearance = new CGFappearance(scene);
-        this.woodAppearance.setAmbient(0.4, 0.2, 0.1, 1.0);
-        this.woodAppearance.setDiffuse(0.5, 0.3, 0.1, 1.0);
-        this.woodAppearance.setSpecular(0.1, 0.1, 0.1, 1.0);
-        this.woodAppearance.setShininess(5.0);
-        this.woodAppearance.setTexture(this.scene.assetManager.getTexture('wood'));
-        this.woodAppearance.setTextureWrap('REPEAT', 'REPEAT');
+        this.woodAppearance = woodAppearance;
     }
 
     display() {
-        this.woodAppearance.apply();
+        if (this.woodAppearance) this.woodAppearance.apply();
 
         // Left main beam
         this.scene.pushMatrix();
