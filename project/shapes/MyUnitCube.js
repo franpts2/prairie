@@ -4,10 +4,16 @@ import { CGFobject } from '../../lib/CGF.js';
  * MyUnitCube
  * @constructor
  * @param scene - Reference to MyScene object
+ * @param widthTex - texture scaling factor for the X axis
+ * @param heightTex - texture scaling factor for the Y axis
+ * @param depthTex - texture scaling factor for the Z axis
  */
 export class MyUnitCube extends CGFobject {
-    constructor(scene) {
+    constructor(scene, widthTex = 1, heightTex = 1, depthTex = 1) {
         super(scene);
+        this.widthTex = widthTex;
+        this.heightTex = heightTex;
+        this.depthTex = depthTex;
         this.initBuffers();
     }
 
@@ -115,41 +121,41 @@ export class MyUnitCube extends CGFobject {
         ];
 
         this.texCoords = [
-            // Back
-            1, 1,
-            0, 1,
-            1, 0,
+            // Back (X, Y)
+            this.widthTex, this.heightTex,
+            0, this.heightTex,
+            this.widthTex, 0,
             0, 0,
 
-            // Front
-            0, 1,
-            1, 1,
+            // Front (X, Y)
+            0, this.heightTex,
+            this.widthTex, this.heightTex,
             0, 0,
-            1, 0,
+            this.widthTex, 0,
 
-            // Left
-            0, 1,
+            // Left (Z, Y)
+            0, this.heightTex,
             0, 0,
-            1, 1,
-            1, 0,
+            this.depthTex, this.heightTex,
+            this.depthTex, 0,
 
-            // Right
-            1, 1,
-            1, 0,
-            0, 1,
+            // Right (Z, Y)
+            this.depthTex, this.heightTex,
+            this.depthTex, 0,
+            0, this.heightTex,
             0, 0,
 
-            // Bottom
+            // Bottom (X, Z)
             0, 0,
-            1, 0,
-            0, 1,
-            1, 1,
+            this.widthTex, 0,
+            0, this.depthTex,
+            this.widthTex, this.depthTex,
 
-            // Top
-            0, 1,
-            1, 1,
+            // Top (X, Z)
+            0, this.depthTex,
+            this.widthTex, this.depthTex,
             0, 0,
-            1, 0
+            this.widthTex, 0
         ];
 
         this.primitiveType = this.scene.gl.TRIANGLES;

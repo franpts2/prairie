@@ -4,7 +4,10 @@ import { MyUnitCube } from '../../shapes/MyUnitCube.js';
 export class MyTongue extends CGFobject {
     constructor(scene, woodAppearance) {
         super(scene);
-        this.cube = new MyUnitCube(scene);
+        // Beams: 0.15 x 0.15 x 4.5
+        this.beamCube = new MyUnitCube(scene, 0.15, 0.15, 4.5);
+        // Cross-bar: 2.5 x 0.15 x 0.15
+        this.crossBarCube = new MyUnitCube(scene, 2.5, 0.15, 0.15);
         this.woodAppearance = woodAppearance;
     }
 
@@ -15,21 +18,21 @@ export class MyTongue extends CGFobject {
         this.scene.pushMatrix();
         this.scene.translate(-0.3, 0, -2.1);
         this.scene.scale(0.15, 0.15, 4.5);
-        this.cube.display();
+        this.beamCube.display();
         this.scene.popMatrix();
 
         // Right main beam
         this.scene.pushMatrix();
         this.scene.translate(0.3, 0, -2.1);
         this.scene.scale(0.15, 0.15, 4.5);
-        this.cube.display();
+        this.beamCube.display();
         this.scene.popMatrix();
 
         // Cross-bar at the end
         this.scene.pushMatrix();
         this.scene.translate(0, 0, -4.2);
         this.scene.scale(2.5, 0.15, 0.15);
-        this.cube.display();
+        this.crossBarCube.display();
         this.scene.popMatrix();
 
         this.scene.setDefaultAppearance();
