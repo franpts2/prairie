@@ -26,7 +26,9 @@ export class AssetManager {
             wood: "./textures/wood.png",
             leaves: "./textures/leaves.png",
             barnDoor: "./textures/barndoor.png",
-            barnWindow: "./textures/barnwindow.png"
+            barnWindow: "./textures/barnwindow.png",
+            circleInactive: "./textures/circle_inactive.png",
+            circleActive: "./textures/circle_active.png"
         };
     }
 
