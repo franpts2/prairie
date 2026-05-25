@@ -67,6 +67,10 @@ export class MyScene extends CGFscene {
     const dt = (t - this.lastTime) / 1000;
     this.lastTime = t;
     this.time += dt;
+
+    if (this.ready) {
+      this.gameController.update(dt);
+    }
   }
 
   initElements() {

@@ -3,6 +3,7 @@ export class GameController {
         this.scene = scene;
         
         this.INITIAL_HP = 100;
+        this.HP_DECAY_RATE = 1; // 1 HP per second
         this.MAX_BALES = 2;
         this.BALE_HEAL_VALUE = 50;
 
@@ -36,6 +37,26 @@ export class GameController {
      */
     update(dt) {
         if (this.isGameOver) return;
+
+        // update score (= time passed)
+        this.score += dt;
+
+        // apply HP Decay
+        this.hp -= this.HP_DECAY_RATE * dt;
+
+        // check Game Over
+        if (this.hp <= 0) {
+            this.hp = 0;
+            this.isGameOver = true;
+            this.onGameOver();
+        }
+    }
+
+    /**
+     * Handles game over state
+     */
+    onGameOver() {
+        console.log("Game Over! Final Score: " + Math.floor(this.score));
     }
 
     /**
@@ -58,6 +79,9 @@ export class GameController {
             this.lastHeal = healing;
             this.balesDelivered += this.wagonBales;
             this.wagonBales = 0;
+            
+            // limit HP (max 200)
+            if (this.hp > 200) this.hp = 200;
         }
     }
 
