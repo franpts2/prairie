@@ -9,6 +9,7 @@ import { MyGrass } from "./elements/MyGrass.js";
 import { MyWagon } from "./elements/wagon/MyWagon.js";
 import { MyHayBales } from "./elements/MyHayBales.js";
 import { AssetManager } from "./utils/AssetManager.js";
+import { GameController } from "./utils/GameController.js";
 
 /**
  * MyScene
@@ -45,6 +46,9 @@ export class MyScene extends CGFscene {
     this.assetManager.load().then(() => {
       this.initElements();
     });
+
+    // Game Logic
+    this.gameController = new GameController(this);
 
     //Objects connected to MyInterface
     this.displayAxis = true;

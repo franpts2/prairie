@@ -24,6 +24,15 @@ export class MyInterface extends CGFinterface {
         //Slider element in GUI
         this.gui.add(this.scene, 'scaleFactor', 0.1, 5).name('Scale Factor');
 
+        // Game Stats Folder
+        const gameFolder = this.gui.addFolder("Game Stats");
+        gameFolder.add(this.scene.gameController, 'hp', 0, 100).name('Health Points').listen();
+        gameFolder.add(this.scene.gameController, 'lastDamage', 0, 15).name('Instant. Damage').listen();
+        gameFolder.add(this.scene.gameController, 'lastHeal', 0, 100).name('Instant. Health Restore').listen();
+        gameFolder.add(this.scene.gameController, 'balesDelivered').name('Bales Delivered').listen();
+        gameFolder.add(this.scene.gameController, 'score').name('Score (Time)').listen();
+        gameFolder.open();
+
         return true;
     }
 }
