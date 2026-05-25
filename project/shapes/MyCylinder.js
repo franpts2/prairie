@@ -104,4 +104,10 @@ export class MyCylinder extends CGFobject {
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
     }
+
+    updateBuffers(complexity) {
+        this.slices = 3 + Math.round(9 * complexity);
+        this.initBuffers();
+        this.initNormalVizBuffers();
+    }
 }

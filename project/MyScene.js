@@ -4,6 +4,7 @@ import { MyCloud } from "./elements/MyCloud.js";
 import { MySun } from "./elements/MySun.js";
 import { MyGround } from "./elements/MyGround.js";
 import { MyRocks } from "./elements/MyRocks.js";
+import { MyTrees } from "./elements/MyTrees.js";
 import { MyGrass } from "./elements/MyGrass.js";
 import { MyWagon } from "./elements/wagon/MyWagon.js";
 import { AssetManager } from "./utils/AssetManager.js";
@@ -71,6 +72,7 @@ export class MyScene extends CGFscene {
     this.sun.initLight();
 
     this.rocks = new MyRocks(this, this.ground);
+    this.trees = new MyTrees(this, this.ground);
     this.grass = new MyGrass(this);
 
     this.wagon = new MyWagon(this);
@@ -144,6 +146,8 @@ export class MyScene extends CGFscene {
     this.ground.display();
 
     this.rocks.display();
+
+    this.trees.display();
 
     this.grass.display();
 
