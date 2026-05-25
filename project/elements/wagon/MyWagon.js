@@ -45,6 +45,9 @@ export class MyWagon extends CGFobject {
 
         // steering variables
         this.steerAngle = 0;
+        this.maxSteerAngle = 45 * Math.PI / 180; // 45 degrees
+        this.steerSpeed = 1.0;
+        this.steerReturnSpeed = 2.0;
     }
 
     update(dt) {
@@ -84,6 +87,35 @@ export class MyWagon extends CGFobject {
         }
     }
 
+    steer(dir, dt) {
+        if (dir > 0) {
+            // Steer left
+            this.steerAngle += this.steerSpeed * dt;
+            if (this.steerAngle > this.maxSteerAngle) {
+                this.steerAngle = this.maxSteerAngle;
+            }
+        } else if (dir < 0) {
+            // Steer right
+            this.steerAngle -= this.steerSpeed * dt;
+            if (this.steerAngle < -this.maxSteerAngle) {
+                this.steerAngle = -this.maxSteerAngle;
+            }
+        } else {
+            // Return to center
+            if (this.steerAngle > 0) {
+                this.steerAngle -= this.steerReturnSpeed * dt;
+                if (this.steerAngle < 0) {
+                    this.steerAngle = 0;
+                }
+            } else if (this.steerAngle < 0) {
+                this.steerAngle += this.steerReturnSpeed * dt;
+                if (this.steerAngle > 0) {
+                    this.steerAngle = 0;
+                }
+            }
+        }
+    }
+
     display() {
         this.scene.pushMatrix();
         this.scene.translate(this.x, this.y, this.z);
@@ -110,12 +142,14 @@ export class MyWagon extends CGFobject {
         // --- Front Wheel Set ---
         this.scene.pushMatrix();
         this.scene.translate(0, 1, -2.4);
+        this.scene.rotate(this.steerAngle, 0, 1, 0);
         this.wheelSet.display();
         this.scene.popMatrix();
 
         // --- Front Tongue ---
         this.scene.pushMatrix();
         this.scene.translate(0, 1, -2.4);
+        this.scene.rotate(this.steerAngle, 0, 1, 0);
         this.tongue.display();
         this.scene.popMatrix();
 

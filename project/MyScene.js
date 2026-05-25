@@ -78,6 +78,17 @@ export class MyScene extends CGFscene {
       } else {
         this.wagon.decelerate(dt);
       }
+
+      if (this.gui.isKeyPressed("KeyA")) {
+        this.wagon.steer(1, dt);
+      } else if (this.gui.isKeyPressed("KeyD")) {
+        this.wagon.steer(-1, dt);
+      } else {
+        this.wagon.steer(0, dt);
+      }
+    } else {
+      this.wagon.decelerate(dt);
+      this.wagon.steer(0, dt);
     }
   }
 
