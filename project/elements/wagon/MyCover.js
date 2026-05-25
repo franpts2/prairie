@@ -3,13 +3,14 @@ import { MySemiCylinder } from '../../shapes/MySemiCylinder.js';
 import { MyTilt } from '../../shapes/MyTilt.js';
 
 export class MyCover extends CGFobject {
-    constructor(scene, heightScale = 2.5, woodAppearance) {
+    constructor(scene, heightScale = 2.5, woodAppearance, metalAppearance) {
         super(scene);
         this.heightScale = heightScale;
         this.numArches = 4;
         this.cloth = new MyTilt(scene, 40, 60, this.numArches, 0.08);
         this.arch = new MySemiCylinder(scene, 40, 1);
         this.woodAppearance = woodAppearance;
+        this.metalAppearance = metalAppearance;
 
         this.clothAppearance = new CGFappearance(scene);
         this.clothAppearance.setAmbient(0.8, 0.75, 0.7, 1.0);

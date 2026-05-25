@@ -18,11 +18,18 @@ export class MyWagon extends CGFobject {
         this.woodAppearance.setTexture(this.scene.assetManager.getTexture('wood'));
         this.woodAppearance.setTextureWrap('REPEAT', 'REPEAT');
 
-        this.bed = new MyBed(scene, this.woodAppearance);
+        // Centralized metal appearance
+        this.metalAppearance = new CGFappearance(scene);
+        this.metalAppearance.setAmbient(0.2, 0.2, 0.2, 1.0);
+        this.metalAppearance.setDiffuse(0.3, 0.3, 0.3, 1.0);
+        this.metalAppearance.setSpecular(0.8, 0.8, 0.8, 1.0);
+        this.metalAppearance.setShininess(20.0);
+
+        this.bed = new MyBed(scene, this.woodAppearance, this.metalAppearance);
         this.wheelSet = new MyWheelSet(scene, this.woodAppearance);
         this.tongue = new MyTongue(scene, this.woodAppearance);
         this.seat = new MySeat(scene, 2, this.woodAppearance);
-        this.cover = new MyCover(scene, 2.5, this.woodAppearance);
+        this.cover = new MyCover(scene, 2.5, this.woodAppearance, this.metalAppearance);
     }
 
     display() {
