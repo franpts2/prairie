@@ -30,7 +30,7 @@ export class SpatialGrid {
         const gx = Math.floor(x / this.cellSize);
         const gz = Math.floor(z / this.cellSize);
         const cell = this.grid[`${gx},${gz}`];
-        
+
         if (!cell) return false;
 
         for (const obstacle of cell) {
