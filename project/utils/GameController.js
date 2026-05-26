@@ -27,7 +27,6 @@ export class GameController {
         this.hp = this.INITIAL_HP;
         this.score = 0;
         this.wagonBales = 0;
-        this.wagonBaleScales = [];
         this.lastDamage = 0;
         this.lastHeal = 0;
         this.balesDelivered = 0;
@@ -93,11 +92,23 @@ export class GameController {
             this.lastHeal = healing;
             this.balesDelivered += this.wagonBales;
             this.wagonBales = 0;
-            this.wagonBaleScales = []; // Reset scales on delivery
             
-            // Limit HP if needed, e.g., max 200
+            // limit HP to 200
             if (this.hp > 200) this.hp = 200;
         }
+    }
+
+    /**
+     * Drop a carried hay bale
+     * @returns {number|null} - The scale of the dropped bale
+     */
+    dropBale() {
+        if (this.isGameOver) return null;
+        if (this.wagonBales > 0) {
+            this.wagonBales--;
+            return this.wagonBaleScales.pop(); // Remove and return the last bale's scale
+        }
+        return null;
     }
 
     /**

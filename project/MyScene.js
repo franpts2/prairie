@@ -49,6 +49,7 @@ export class MyScene extends CGFscene {
 
     // Game Logic
     this.gameController = new GameController(this);
+    this.keyCooldown = 0; // Cooldown to prevent key spamming
 
     //Objects connected to MyInterface
     this.displayAxis = true;
@@ -73,8 +74,25 @@ export class MyScene extends CGFscene {
       this.checkKeys(dt);
       this.wagon.update(dt);
 
-      // Check collision with hay bales
-      this.hayBales.checkCollisions(this.wagon, this.gameController);
+      // Handle key cooldown
+      if (this.keyCooldown > 0) {
+        this.keyCooldown -= dt;
+      }
+
+      const isP = this.keyCooldown <= 0 && this.gui && typeof this.gui.isKeyPressed === 'function' && this.gui.isKeyPressed("KeyP");
+      const isL = this.keyCooldown <= 0 && this.gui && typeof this.gui.isKeyPressed === 'function' && this.gui.isKeyPressed("KeyL");
+      
+      if (isP || isL) {
+        this.keyCooldown = 0.3; // 300ms input cooldown
+      }
+
+      // Check collision with hay bales (only active if P is pressed)
+      this.hayBales.checkCollisions(this.wagon, this.gameController, isP);
+
+      // Check drop action
+      if (isL) {
+        this.hayBales.dropBale(this.wagon, this.gameController);
+      }
     }
   }
 

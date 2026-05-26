@@ -50,7 +50,9 @@ export class MyHayBales {
         });
     }
 
-    checkCollisions(wagon, gameController) {
+    checkCollisions(wagon, gameController, isKeyPressedP) {
+        if (!isKeyPressedP) return; // only capture if P is pressed!
+
         // Wagon radius is 2.0. Bale scale is roughly 1.5 - 2.0.
         // collision distance threshold = 2.5
         const captureDistance = 2.5;
@@ -70,6 +72,23 @@ export class MyHayBales {
                     console.log("Captured hay bale! Total carried: " + gameController.wagonBales);
                 }
             }
+        }
+    }
+
+    dropBale(wagon, gameController) {
+        if (gameController.wagonBales <= 0) return;
+
+        const baleToDrop = this.hayBales.find(b => b.captured);
+        if (baleToDrop) {
+            const droppedScale = gameController.dropBale();
+            
+            // place the bale back on the ground at the wagon's coordinates
+            baleToDrop.x = wagon.x;
+            baleToDrop.z = wagon.z;
+            baleToDrop.scale = droppedScale || 1.8;
+            baleToDrop.captured = false;
+            
+            console.log("Dropped hay bale at: (" + wagon.x.toFixed(1) + ", " + wagon.z.toFixed(1) + ")");
         }
     }
 
