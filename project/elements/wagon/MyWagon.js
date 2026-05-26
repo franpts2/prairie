@@ -74,6 +74,69 @@ export class MyWagon extends CGFobject {
         if (this.collider) {
             this.collider.setPosition(this.x, this.y, this.z);
         }
+
+        this.resolveCollisions();
+    }
+
+    resolveCollisions() {
+        if (!this.collider) return;
+
+        const colliders = [];
+
+        if (this.scene.rocks && this.scene.rocks.rockItems) {
+            for (const rock of this.scene.rocks.rockItems) {
+                if (rock.collider) {
+                    colliders.push(rock.collider);
+                }
+            }
+        }
+
+        if (this.scene.trees && this.scene.trees.treeItems) {
+            for (const tree of this.scene.trees.treeItems) {
+                if (tree.collider) {
+                    colliders.push(tree.collider);
+                }
+            }
+        }
+
+        let collided = false;
+
+        for (const staticCollider of colliders) {
+            if (this.collider.collidesWith(staticCollider)) {
+                collided = true;
+
+                // 3D push-out vector
+                const dx = this.x - staticCollider.x;
+                const dy = this.y - staticCollider.y;
+                const dz = this.z - staticCollider.z;
+                const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+                const radiusSum = this.collider.radius + staticCollider.radius;
+
+                if (distance > 0.001) {
+                    const overlap = radiusSum - distance;
+                    // push the wagon out
+                    this.x += (dx / distance) * overlap;
+                    this.z += (dz / distance) * overlap;
+                } else {
+                    // fallback to avoid division by zero
+                    this.x += this.collider.radius + staticCollider.radius;
+                }
+
+                // update height to align with terrain at new position
+                if (this.scene.ground) {
+                    this.y = this.scene.ground.getHeight(this.x, this.z);
+                }
+
+                // update the wagon's collider position
+                this.collider.setPosition(this.x, this.y, this.z);
+            }
+        }
+
+        if (collided) {
+            // stop the wagon on impact
+            this.speed = 0;
+        }
     }
 
     accelerate(dt) {
