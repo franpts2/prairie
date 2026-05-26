@@ -38,12 +38,14 @@ export class MyFlowers {
         const maxZ = halfSize;
 
         const flowerColors = [
-            [0.87, 0.02, 0.15],  // Red good
-            [0.93, 0.49, 0.06],  // Orange good
-            //[0.94, 0.94, 0.18],  // Yellow
-            //[0.90, 0.22, 0.60],  // Magenta/Pink
-            //[0.65, 0.18, 0.85],  // Purple
-            //[0.22, 0.45, 0.92],  // Blue
+            [0.87, 0.02, 0.15],  // Red
+            [0.82, 0.44, 0.06],  // Orange
+            [1, 0.91, 0.36],     // Yellow
+            [0.35, 0.51, 0.28],  // Green
+            [0.20, 0.35, 0.46],  // Blue
+            [0.87, 0.07, 0.33],  // Magenta
+            [1, 0.44, 0.55],     // Pink
+            [0.46, 0.41, 0.71],  // Lilac
         ];
 
         // generate clusters of flowers
