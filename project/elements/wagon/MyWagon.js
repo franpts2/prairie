@@ -174,23 +174,23 @@ export class MyWagon extends CGFobject {
         const wagonBales = this.scene.gameController.wagonBales;
         const baleScales = this.scene.gameController.wagonBaleScales || [];
         
-        // Bale 1 (placed in the front section of the bed, behind the seat)
+        // Bale 1 
         if (wagonBales >= 1) {
-            const scale = baleScales[0] || 1.75;
+            const scale = baleScales[0] || 1.8;
             this.scene.pushMatrix();
-            // Bed floor is at 1.3 relative to wagon. Bale local height is 0.6.
-            // Center the bale dynamically so it sits perfectly flat on the bed.
-            this.scene.translate(0, 1.3 + (0.6 * scale) / 2, 0.5);
+            this.scene.translate(-0.75, 1.3 + (0.6 * scale) / 2, 1.8); // X = -0.75 (left wall side), Z = 1.8 (leaving space to the back wall)
+            this.scene.rotate(Math.PI / 2, 0, 1, 0); // Rotate lengthwise
             this.scene.scale(scale, scale, scale);
             this.hayBale.display();
             this.scene.popMatrix();
         }
         
-        // Bale 2 (placed in the back section of the bed)
+        // Bale 2 
         if (wagonBales >= 2) {
-            const scale = baleScales[1] || 1.75;
+            const scale = baleScales[1] || 1.8;
             this.scene.pushMatrix();
-            this.scene.translate(0, 1.3 + (0.6 * scale) / 2, 2.0);
+            this.scene.translate(0.75, 1.3 + (0.6 * scale) / 2, 1.8); // X = 0.75 (right wall side), Z = 1.8 (leaving space to the back wall)
+            this.scene.rotate(Math.PI / 2, 0, 1, 0); // Rotate lengthwise
             this.scene.scale(scale, scale, scale);
             this.hayBale.display();
             this.scene.popMatrix();
