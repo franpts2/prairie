@@ -89,7 +89,7 @@ export class MyScene extends CGFscene {
     this.hayBales = new MyHayBales(this, this.ground);
 
     this.wagon = new MyWagon(this);
-    
+
     // Collision debug elements
     this.colliderSphere = new MySphere(this, 16, 8, 1.0);
 

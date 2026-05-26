@@ -13,7 +13,9 @@ export class GameController {
         this.restartBtn = document.getElementById('restart-button');
 
         if (this.restartBtn) {
-            this.restartBtn.onclick = () => this.reset();
+            this.restartBtn.onclick = () => {
+                window.location.reload();
+            };
         }
 
         // game state
