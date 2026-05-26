@@ -37,7 +37,7 @@ export class MySphere extends CGFobject {
                 this.vertices.push(x * this.radius, y * this.radius, z * this.radius);
                 
                 // Normal (points outward from center - same as vertex for unit sphere)
-                this.normals.push(-x, -y, -z);
+                this.normals.push(x, y, z);
 
                 // UV coordinates for spherical mapping
                 const u = 1 - (slice / this.slices);
