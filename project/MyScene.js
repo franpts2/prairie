@@ -93,20 +93,6 @@ export class MyScene extends CGFscene {
 
     this.wagon = new MyWagon(this);
 
-    this.greenCollisionAppearance = new CGFappearance(this);
-    this.greenCollisionAppearance.setAmbient(0.0, 0.8, 0.0, 0.3);
-    this.greenCollisionAppearance.setDiffuse(0.0, 0.8, 0.0, 0.3);
-    this.greenCollisionAppearance.setSpecular(0.0, 1.0, 0.0, 0.3);
-    this.greenCollisionAppearance.setShininess(10.0);
-    this.greenCollisionAppearance.setEmission(0.0, 0.3, 0.0, 1.0);
-
-    this.redCollisionAppearance = new CGFappearance(this);
-    this.redCollisionAppearance.setAmbient(0.8, 0.0, 0.0, 0.3);
-    this.redCollisionAppearance.setDiffuse(0.8, 0.0, 0.0, 0.3);
-    this.redCollisionAppearance.setSpecular(1.0, 0.0, 0.0, 0.3);
-    this.redCollisionAppearance.setShininess(10.0);
-    this.redCollisionAppearance.setEmission(0.4, 0.0, 0.0, 1.0);
-
     this.deliveryCircle = new MyDeliveryCircle(this);
 
     this.ready = true;
