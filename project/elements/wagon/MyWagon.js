@@ -39,9 +39,10 @@ export class MyWagon extends CGFobject {
         this.y = 0;
         this.z = 0;
         this.angle = 0;
-        this.radius = 4.0;
+        this.radius = 5;
         
         this.collider = new CollisionSphere(this.x, this.y, this.z, this.radius);
+        this.currentlyColliding = new Set();
 
         this.speed = 0;
         this.maxSpeed = 15;
@@ -81,12 +82,12 @@ export class MyWagon extends CGFobject {
     resolveCollisions() {
         if (!this.collider) return;
 
-        const colliders = [];
+        const obstacles = [];
 
         if (this.scene.rocks && this.scene.rocks.rockItems) {
             for (const rock of this.scene.rocks.rockItems) {
                 if (rock.collider) {
-                    colliders.push(rock.collider);
+                    obstacles.push({ type: 'rock', item: rock, collider: rock.collider });
                 }
             }
         }
@@ -94,16 +95,31 @@ export class MyWagon extends CGFobject {
         if (this.scene.trees && this.scene.trees.treeItems) {
             for (const tree of this.scene.trees.treeItems) {
                 if (tree.collider) {
-                    colliders.push(tree.collider);
+                    obstacles.push({ type: 'tree', item: tree, collider: tree.collider });
                 }
             }
         }
 
+        const newColliding = new Set();
         let collided = false;
 
-        for (const staticCollider of colliders) {
+        for (const obstacle of obstacles) {
+            const staticCollider = obstacle.collider;
             if (this.collider.collidesWith(staticCollider)) {
                 collided = true;
+                
+                // track this active collision
+                newColliding.add(obstacle.item);
+
+                // if this is the FIRST FRAME OF CONTACT (was not colliding in the previous frame)
+                if (!this.currentlyColliding.has(obstacle.item)) {
+                    // generate a random damage number between 5 and 15
+                    const damage = Math.floor(Math.random() * (15 - 5 + 1)) + 5;
+                    if (this.scene.gameController) {
+                        this.scene.gameController.applyDamage(damage);
+                        console.log(`Wagon hit a ${obstacle.type}! Took ${damage} HP damage. Remaining HP: ${this.scene.gameController.hp.toFixed(1)}`);
+                    }
+                }
 
                 // 3D push-out vector
                 const dx = this.x - staticCollider.x;
@@ -132,6 +148,9 @@ export class MyWagon extends CGFobject {
                 this.collider.setPosition(this.x, this.y, this.z);
             }
         }
+
+        // update the set of currently colliding objects for the next frame
+        this.currentlyColliding = newColliding;
 
         if (collided) {
             // stop the wagon on impact
