@@ -1,6 +1,7 @@
 import { MyHayBale } from "./MyHayBale.js";
 import { CGFappearance } from "../../../lib/CGF.js";
 import * as PlacementUtils from "../../utils/PlacementUtils.js";
+import { CollisionSphere } from "../../utils/CollisionSphere.js";
 
 export class MyHayBales {
     constructor(scene, ground) {
@@ -39,13 +40,17 @@ export class MyHayBales {
         });
 
         this.hayBales = positions.map(pos => {
+            const scale = 1.8;
+            const height = this.ground ? this.ground.getHeight(pos.x, pos.z) : 0;
+            const baleY = height + scale * 0.5;
             return {
                 x: pos.x,
                 z: pos.z,
                 rotation: Math.random() * Math.PI * 2,
-                scale: 1.8,
+                scale: scale,
                 bale: new MyHayBale(this.scene, this.appearance),
-                captured: false
+                captured: false,
+                collider: new CollisionSphere(pos.x, baleY, pos.z, scale)
             };
         });
     }
@@ -53,23 +58,16 @@ export class MyHayBales {
     checkCollisions(wagon, gameController, isKeyPressedP) {
         if (!isKeyPressedP) return;
 
-        const wagonRadius = wagon.radius || 2.0;
-        const baleRadius = 1.8;
-        const collisionThreshold = wagonRadius + baleRadius; //3.8
-
         for (const bale of this.hayBales) {
             if (bale.captured) continue;
 
             const baleHeight = this.ground ? this.ground.getHeight(bale.x, bale.z) : 0;
             const baleY = baleHeight + bale.scale * 0.5;
-
-            const dx = wagon.x - bale.x;
-            const dy = wagon.y - baleY;
-            const dz = wagon.z - bale.z;
             
-            const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            // keep the bale's collider in sync (important after dropping)
+            bale.collider.setPosition(bale.x, baleY, bale.z);
 
-            if (distance < collisionThreshold) {
+            if (wagon.collider && wagon.collider.collidesWith(bale.collider)) {
                 const success = gameController.captureBale(bale.scale);
                 if (success) {
                     bale.captured = true;
@@ -91,6 +89,12 @@ export class MyHayBales {
             baleToDrop.z = wagon.z;
             baleToDrop.scale = droppedScale || 1.8;
             baleToDrop.captured = false;
+
+            // sync the collider's coordinates on drop
+            const height = this.ground ? this.ground.getHeight(wagon.x, wagon.z) : 0;
+            const baleY = height + baleToDrop.scale * 0.5;
+            baleToDrop.collider.setPosition(wagon.x, baleY, wagon.z);
+            baleToDrop.collider.radius = baleToDrop.scale;
             
             console.log("Dropped hay bale at: (" + wagon.x.toFixed(1) + ", " + wagon.z.toFixed(1) + ")");
         }

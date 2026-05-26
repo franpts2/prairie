@@ -5,6 +5,7 @@ import { MyTongue } from './MyTongue.js';
 import { MySeat } from './MySeat.js';
 import { MyCover } from './MyCover.js';
 import { MyCollectedHaybales } from './MyCollectedHaybales.js';
+import { CollisionSphere } from '../../utils/CollisionSphere.js';
 
 export class MyWagon extends CGFobject {
     constructor(scene) {
@@ -39,6 +40,8 @@ export class MyWagon extends CGFobject {
         this.z = 0;
         this.angle = 0;
         this.radius = 4.0;
+        
+        this.collider = new CollisionSphere(this.x, this.y, this.z, this.radius);
 
         this.speed = 0;
         this.maxSpeed = 15;
@@ -66,6 +69,10 @@ export class MyWagon extends CGFobject {
         // align height to terrain
         if (this.scene.ground) {
             this.y = this.scene.ground.getHeight(this.x, this.z);
+        }
+
+        if (this.collider) {
+            this.collider.setPosition(this.x, this.y, this.z);
         }
     }
 
