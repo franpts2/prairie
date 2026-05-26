@@ -35,18 +35,5 @@ export class MyCollectedHaybales extends CGFobject {
             this.hayBale.display();
             this.scene.popMatrix();
         }
-        
-        // bale 3 (placed on top of both bales, forming a pyramid)
-        if (wagonBales >= 3) {
-            const scaleBottom = baleScales[0] || 1.8;
-            const scaleTop = baleScales[2] || 1.8;
-            this.scene.pushMatrix();
-            const yPos = 1.3 + (0.6 * scaleBottom) + (0.6 * scaleTop) / 2; // X = 0.0 (centered), Z = 1.5 (aligned with bottom layer), Y = atop the first layer
-            this.scene.translate(0.0, yPos, 1.8);
-            this.scene.rotate(Math.PI / 2, 0, 1, 0); // Rotate lengthwise
-            this.scene.scale(scaleTop, scaleTop, scaleTop);
-            this.hayBale.display();
-            this.scene.popMatrix();
-        }
     }
 }
