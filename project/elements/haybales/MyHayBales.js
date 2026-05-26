@@ -1,6 +1,6 @@
 import { MyHayBale } from "./MyHayBale.js";
-import { CGFappearance } from "../../lib/CGF.js";
-import * as PlacementUtils from "../utils/PlacementUtils.js";
+import { CGFappearance } from "../../../lib/CGF.js";
+import * as PlacementUtils from "../../utils/PlacementUtils.js";
 
 export class MyHayBales {
     constructor(scene, ground) {

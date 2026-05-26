@@ -1,5 +1,5 @@
 import { CGFobject, CGFappearance } from '../../../lib/CGF.js';
-import { MyHayBale } from '../MyHayBale.js';
+import { MyHayBale } from '../haybales/MyHayBale.js';
 
 export class MyCollectedHaybales extends CGFobject {
     constructor(scene, hayAppearance) {

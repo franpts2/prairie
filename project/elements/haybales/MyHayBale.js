@@ -1,5 +1,5 @@
-import { MyUnitCube } from "../shapes/MyUnitCube.js";
-import { CGFappearance } from "../../lib/CGF.js";
+import { MyUnitCube } from "../../shapes/MyUnitCube.js";
+import { CGFappearance } from "../../../lib/CGF.js";
 
 export class MyHayBale {
     constructor(scene, appearance) {

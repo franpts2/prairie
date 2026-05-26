@@ -7,7 +7,7 @@ import { MyRocks } from "./elements/rocks/MyRocks.js";
 import { MyTrees } from "./elements/trees/MyTrees.js";
 import { MyGrass } from "./elements/MyGrass.js";
 import { MyWagon } from "./elements/wagon/MyWagon.js";
-import { MyHayBales } from "./elements/MyHayBales.js";
+import { MyHayBales } from "./elements/haybales/MyHayBales.js";
 import { AssetManager } from "./utils/AssetManager.js";
 import { GameController } from "./utils/GameController.js";
 
