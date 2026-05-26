@@ -1,5 +1,6 @@
 import * as PlacementUtils from "../../utils/PlacementUtils.js";
 import { CollisionSphere } from "../../utils/CollisionSphere.js";
+import { MyHayBale } from "./MyHayBale.js";
 
 export class BaleManager {
     constructor(scene) {
@@ -26,7 +27,7 @@ export class BaleManager {
 
         const ground = this.scene.ground;
         this.hayBales = positions.map(pos => {
-            const scale = 1.8;
+            const scale = MyHayBale.SCALE;
             const height = ground ? ground.getHeight(pos.x, pos.z) : 0;
             const baleY = height + scale * 0.5;
             return {
@@ -78,7 +79,7 @@ export class BaleManager {
             // place the bale back on the ground at the wagon's coordinates
             baleToDrop.x = wagon.x;
             baleToDrop.z = wagon.z;
-            baleToDrop.scale = droppedScale || 1.8;
+            baleToDrop.scale = droppedScale || MyHayBale.SCALE;
             baleToDrop.captured = false;
 
             // sync the collider's coordinates on drop

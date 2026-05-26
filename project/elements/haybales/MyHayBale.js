@@ -2,6 +2,8 @@ import { MyUnitCube } from "../../shapes/MyUnitCube.js";
 import { CGFappearance } from "../../../lib/CGF.js";
 
 export class MyHayBale {
+    static SCALE = 1.8;
+
     constructor(scene, appearance) {
         this.scene = scene;
         this.appearance = appearance;

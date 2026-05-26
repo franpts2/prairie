@@ -1,4 +1,5 @@
 import { MyHaybalePlatform } from "../elements/MyHaybalePlatform.js";
+import { MyHayBale } from "../elements/haybales/MyHayBale.js";
 
 export class GameController {
     constructor(scene) {
@@ -200,7 +201,7 @@ export class GameController {
         if (this.isGameOver) return null;
         if (this.wagonBales > 0) {
             this.wagonBales--;
-            return 1.8; // all haybales have a uniform scale of 1.8
+            return MyHayBale.SCALE;
         }
         return null;
     }

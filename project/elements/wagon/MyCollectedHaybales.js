@@ -12,7 +12,7 @@ export class MyCollectedHaybales extends CGFobject {
 
     display() {
         const wagonBales = this.scene.gameController.wagonBales;
-        const scale = 1.8;
+        const scale = MyHayBale.SCALE;
         
         // bale 1 (close to the left wall)
         if (wagonBales >= 1) {
