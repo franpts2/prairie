@@ -1,4 +1,4 @@
-import { CGFobject, CGFappearance } from '../../../lib/CGF.js';
+import { CGFobject } from '../../../lib/CGF.js';
 import { MyHayBale } from '../haybales/MyHayBale.js';
 
 export class MyCollectedHaybales extends CGFobject {

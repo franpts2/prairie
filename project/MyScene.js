@@ -12,7 +12,6 @@ import { MyHayBales } from "./elements/haybales/MyHayBales.js";
 import { BaleManager } from "./elements/haybales/MyBaleManager.js";
 import { AssetManager } from "./utils/AssetManager.js";
 import { GameController } from "./utils/GameController.js";
-import { MySphere } from "./shapes/MySphere.js";
 import { MyDeliveryCircle } from "./elements/MyDeliveryCircle.js";
 
 /**
@@ -57,7 +56,6 @@ export class MyScene extends CGFscene {
     //Objects connected to MyInterface
     this.displayAxis = true;
     this.displayLight0 = true;
-    this.displayColliders = true;
     this.scaleFactor = 1;
 
     this.setUpdatePeriod(1000 / 60);
@@ -120,20 +118,6 @@ export class MyScene extends CGFscene {
     this.wagon = new MyWagon(this);
     this.barn = new MyBarn(this, -20, -100);
 
-
-    this.greenCollisionAppearance = new CGFappearance(this);
-    this.greenCollisionAppearance.setAmbient(0.0, 0.8, 0.0, 0.3);
-    this.greenCollisionAppearance.setDiffuse(0.0, 0.8, 0.0, 0.3);
-    this.greenCollisionAppearance.setSpecular(0.0, 1.0, 0.0, 0.3);
-    this.greenCollisionAppearance.setShininess(10.0);
-    this.greenCollisionAppearance.setEmission(0.0, 0.3, 0.0, 1.0);
-
-    this.redCollisionAppearance = new CGFappearance(this);
-    this.redCollisionAppearance.setAmbient(0.8, 0.0, 0.0, 0.3);
-    this.redCollisionAppearance.setDiffuse(0.8, 0.0, 0.0, 0.3);
-    this.redCollisionAppearance.setSpecular(1.0, 0.0, 0.0, 0.3);
-    this.redCollisionAppearance.setShininess(10.0);
-    this.redCollisionAppearance.setEmission(0.4, 0.0, 0.0, 1.0);
 
     this.deliveryCircle = new MyDeliveryCircle(this);
 
