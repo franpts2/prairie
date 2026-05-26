@@ -90,13 +90,15 @@ export class GameController {
         if (this.wagonBales > 0) {
             const healing = this.wagonBales * this.BALE_HEAL_VALUE;
             this.hp += healing;
-            this.lastHeal = healing;
-            this.balesDelivered += this.wagonBales;
-            this.wagonBales = 0;
-            this.wagonBaleScales = [];
-            
             // limit HP to 200
             if (this.hp > 200) this.hp = 200;
+
+            this.lastHeal = healing;
+            this.balesDelivered += this.wagonBales;
+            console.log(`Delivered ${this.wagonBales} hay bales! Healed ${healing} HP. Current HP: ${this.hp.toFixed(1)}`);
+            
+            this.wagonBales = 0;
+            this.wagonBaleScales = [];
         }
     }
 

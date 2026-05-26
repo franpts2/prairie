@@ -96,6 +96,11 @@ export class MyScene extends CGFscene {
       if (isL) {
         this.hayBales.dropBale(this.wagon, this.gameController);
       }
+
+      // Check if wagon is intersecting the delivery circle, and if so, deliver hay bales
+      if (this.deliveryCircle.isIntersecting(this.wagon)) {
+        this.gameController.deliverBales();
+      }
     }
   }
 
