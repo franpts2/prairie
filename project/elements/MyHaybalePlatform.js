@@ -5,7 +5,7 @@ export class MyDepositedHaybalesArea {
     constructor(scene) {
         this.scene = scene;
 
-        this.centerX = -60;
+        this.centerX = -55;
         this.centerZ = -90;
 
         this.cols = 4;
@@ -63,7 +63,9 @@ export class MyDepositedHaybalesArea {
                 this.woodAppearance.setTextureWrap('REPEAT', 'REPEAT');
             }
 
-            this.plankCube = new MyUnitCube(this.scene);
+            // Set texture scaling matching physical plank and support dimensions to prevent stretching (matching wagon bed aspect ratio)
+            this.plankCube = new MyUnitCube(this.scene, 0.9, 0.15, 6.0);
+            this.supportCube = new MyUnitCube(this.scene, 5.9, 0.1, 0.25);
         }
 
         if (this.woodAppearance) {
@@ -93,14 +95,14 @@ export class MyDepositedHaybalesArea {
             this.scene.pushMatrix();
             this.scene.translate(this.centerX, sy, sz);
             this.scene.scale(supportLengthX, supportThickness, supportWidthZ);
-            this.plankCube.display();
+            this.supportCube.display();
             this.scene.popMatrix();
         }
 
         for (let i = 0; i < totalPlanks; i++) {
             const px = startX + i * (plankWidth + plankGap);
             const pz = this.centerZ;
-            
+
             const py = groundHeight + this.plankThickness / 2;
 
             this.scene.pushMatrix();

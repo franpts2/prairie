@@ -1,4 +1,4 @@
-import { MyDepositedHaybalesArea } from "../elements/MyDepositedHaybalesArea.js";
+import { MyDepositedHaybalesArea } from "../elements/MyHaybalePlatform.js";
 
 export class GameController {
     constructor(scene) {
