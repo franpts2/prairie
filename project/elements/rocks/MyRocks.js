@@ -1,6 +1,7 @@
 import { MyRock } from "./MyRock.js";
 import { CGFappearance, CGFtexture } from "../../../lib/CGF.js";
 import * as PlacementUtils from "../../utils/PlacementUtils.js";
+import { CollisionSphere } from "../../utils/CollisionSphere.js";
 
 export class MyRocks {
     constructor(scene, ground) {
@@ -92,13 +93,17 @@ export class MyRocks {
         const rockCandidates = groups.flatMap((group, groupIndex) =>
             group.items.map((item, itemIndex) => {
                 const seed = groupIndex * 100 + itemIndex;
+                const size = this.getRockSize();
+                const height = this.ground ? this.ground.getHeight(item.x, item.z) : 0;
+                const rockY = height + size * 0.2;
                 return {
                     x: item.x,
                     z: item.z,
-                    size: this.getRockSize(),
+                    size: size,
                     rotation: Math.random() * Math.PI * 2,
                     groupIndex,
                     rock: new MyRock(this.scene, this.rockAppearances, 1, seed),
+                    collider: new CollisionSphere(item.x, rockY, item.z, size * 1.6)
                 };
             })
         );
