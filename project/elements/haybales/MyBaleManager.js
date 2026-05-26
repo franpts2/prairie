@@ -48,16 +48,12 @@ export class BaleManager {
     checkCollisions(wagon, gameController, isKeyPressedP) {
         if (!isKeyPressedP) return;
 
-        const ground = this.scene.ground;
         for (const bale of this.hayBales) {
             if (bale.captured) continue;
             if (!bale.collider) continue;
 
-            const baleHeight = ground ? ground.getHeight(bale.x, bale.z) : 0;
-            const baleY = baleHeight + bale.scale * 0.5;
-
             // keep the bale's collider in sync (important after dropping)
-            bale.collider.setPosition(bale.x, baleY, bale.z);
+            bale.collider.setPosition(bale.x, bale.y, bale.z);
 
             if (wagon.collider && wagon.collider.collidesWith(bale.collider)) {
                 const success = gameController.captureBale();
