@@ -1,6 +1,7 @@
 import { MyTree } from "./MyTree.js";
 import { CGFappearance } from "../../../lib/CGF.js";
 import * as PlacementUtils from "../../utils/PlacementUtils.js";
+import { CollisionSphere } from "../../utils/CollisionSphere.js";
 
 export class MyTrees {
     constructor(scene, ground) {
@@ -105,6 +106,9 @@ export class MyTrees {
                 canopyRadius
             );
 
+            const treeY = height + trunkHeight * 0.5;
+            const treeColliderRadius = trunkRadius * 4.0;
+
             this.treeItems.push({
                 x,
                 y: height,
@@ -112,7 +116,8 @@ export class MyTrees {
                 rotation: rotationAngle,
                 trunkRadius,
                 canopyRadius,
-                tree: treeInstance
+                tree: treeInstance,
+                collider: new CollisionSphere(x, treeY, z, treeColliderRadius)
             });
         }
     }

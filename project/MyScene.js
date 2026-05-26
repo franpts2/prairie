@@ -1,4 +1,4 @@
-import { CGFscene, CGFcamera, CGFaxis } from "../lib/CGF.js";
+import { CGFscene, CGFcamera, CGFaxis, CGFappearance } from "../lib/CGF.js";
 import { MySky } from "./elements/MySky.js";
 import { MyCloud } from "./elements/MyCloud.js";
 import { MySun } from "./elements/MySun.js";
@@ -7,8 +7,13 @@ import { MyRocks } from "./elements/rocks/MyRocks.js";
 import { MyTrees } from "./elements/trees/MyTrees.js";
 import { MyGrass } from "./elements/MyGrass.js";
 import { MyWagon } from "./elements/wagon/MyWagon.js";
+import { MyBarn } from "./elements/MyBarn.js";
+import { MyHayBales } from "./elements/haybales/MyHayBales.js";
+import { BaleManager } from "./elements/haybales/MyBaleManager.js";
 import { AssetManager } from "./utils/AssetManager.js";
 import { MyFlowers } from "./elements/MyFlowers.js";
+import { GameController } from "./utils/GameController.js";
+import { MyDeliveryCircle } from "./elements/MyDeliveryCircle.js";
 
 /**
  * MyScene
@@ -46,6 +51,9 @@ export class MyScene extends CGFscene {
       this.initElements();
     });
 
+    // Game Logic
+    this.gameController = new GameController(this);
+
     //Objects connected to MyInterface
     this.displayAxis = true;
     this.displayLight0 = true;
@@ -68,6 +76,7 @@ export class MyScene extends CGFscene {
       this.checkKeys(dt);
       this.wagon.update(dt);
       if (this.flowers) this.flowers.update(this.time);
+      this.gameController.update(dt);
     }
   }
 
@@ -105,10 +114,18 @@ export class MyScene extends CGFscene {
     this.trees = new MyTrees(this, this.ground);
     this.grass = new MyGrass(this);
 
+    this.baleManager = new BaleManager(this);
+    this.hayBales = new MyHayBales(this, this.baleManager);
+
     this.wagon = new MyWagon(this);
 
     this.flowers = new MyFlowers(this, this.ground);
     
+    this.barn = new MyBarn(this, -20, -100);
+
+
+    this.deliveryCircle = new MyDeliveryCircle(this);
+
     this.ready = true;
   }
 
@@ -183,10 +200,18 @@ export class MyScene extends CGFscene {
 
     this.grass.display();
 
+    if (this.gameController && this.gameController.haybaleplatform) {
+      this.gameController.haybaleplatform.display();
+    }
+
+    this.hayBales.display();
+
     this.sky.display();
 
     this.cloud.update();
     this.cloud.display();
+
+    this.deliveryCircle.display(this.wagon);
 
     this.pushMatrix();
     this.wagon.display();
@@ -194,5 +219,8 @@ export class MyScene extends CGFscene {
 
     if (this.flowers) this.flowers.display();
 
+    this.pushMatrix();
+    this.barn.display();
+    this.popMatrix();
   }
 }
