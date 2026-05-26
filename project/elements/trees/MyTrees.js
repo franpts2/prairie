@@ -1,6 +1,6 @@
 import { MyTree } from "./MyTree.js";
-import { CGFappearance } from "../../lib/CGF.js";
-import * as PlacementUtils from "../utils/PlacementUtils.js";
+import { CGFappearance } from "../../../lib/CGF.js";
+import * as PlacementUtils from "../../utils/PlacementUtils.js";
 
 export class MyTrees {
     constructor(scene, ground) {

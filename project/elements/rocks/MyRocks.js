@@ -1,6 +1,6 @@
 import { MyRock } from "./MyRock.js";
-import { CGFappearance, CGFtexture } from "../../lib/CGF.js";
-import * as PlacementUtils from "../utils/PlacementUtils.js";
+import { CGFappearance, CGFtexture } from "../../../lib/CGF.js";
+import * as PlacementUtils from "../../utils/PlacementUtils.js";
 
 export class MyRocks {
     constructor(scene, ground) {

@@ -32,7 +32,28 @@ export class MyInterface extends CGFinterface {
         gameFolder.add(this.scene.gameController, 'balesDelivered').name('Bales Delivered').listen();
         gameFolder.add(this.scene.gameController, 'score').name('Score (Time)').listen();
         gameFolder.open();
+        
+        // init keyboard keys
+        this.initKeys();
 
         return true;
+    }
+
+    initKeys() {
+        this.scene.gui = this;
+        this.processKeyboard = function(){};
+        this.activeKeys = {};
+    }
+
+    processKeyDown(event) {
+        this.activeKeys[event.code] = true;
+    }
+
+    processKeyUp(event) {
+        this.activeKeys[event.code] = false;
+    }
+
+    isKeyPressed(keyCode) {
+        return this.activeKeys[keyCode] || false;
     }
 }

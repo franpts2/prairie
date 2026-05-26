@@ -1,5 +1,5 @@
-import { MyCylinder } from "../shapes/MyCylinder.js";
-import { MyCone } from "../shapes/MyCone.js";
+import { MyCylinder } from "../../shapes/MyCylinder.js";
+import { MyCone } from "../../shapes/MyCone.js";
 
 export class MyTree {
     constructor(scene, trunkHeight, trunkRadius, canopyHeight, canopyRadius) {

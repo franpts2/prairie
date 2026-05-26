@@ -1,5 +1,5 @@
-import { CGFappearance, CGFtexture } from "../../lib/CGF.js";
-import { MyPerturbedSphere } from "../shapes/MyPerturbedSphere.js";
+import { CGFappearance, CGFtexture } from "../../../lib/CGF.js";
+import { MyPerturbedSphere } from "../../shapes/MyPerturbedSphere.js";
 
 export class MyRock {
     constructor(scene, appearances, size = 1, seed = 0) {
