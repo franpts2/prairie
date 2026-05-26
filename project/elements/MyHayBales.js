@@ -63,8 +63,8 @@ export class MyHayBales {
             const distance = Math.sqrt(dx * dx + dz * dz);
 
             if (distance < captureDistance) {
-                // try to capture. captureBale() returns true if below capacity limit (2).
-                const success = gameController.captureBale();
+                // Try to capture. captureBale() returns true if below capacity limit (2).
+                const success = gameController.captureBale(bale.scale);
                 if (success) {
                     bale.captured = true;
                     console.log("Captured hay bale! Total carried: " + gameController.wagonBales);

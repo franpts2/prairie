@@ -27,6 +27,7 @@ export class GameController {
         this.hp = this.INITIAL_HP;
         this.score = 0;
         this.wagonBales = 0;
+        this.wagonBaleScales = []; // Array to store exact scales of carried bales
         this.lastDamage = 0;
         this.lastHeal = 0;
         this.balesDelivered = 0;
@@ -92,6 +93,7 @@ export class GameController {
             this.lastHeal = healing;
             this.balesDelivered += this.wagonBales;
             this.wagonBales = 0;
+            this.wagonBaleScales = []; // Reset scales on delivery
             
             // Limit HP if needed, e.g., max 200
             if (this.hp > 200) this.hp = 200;
@@ -101,10 +103,11 @@ export class GameController {
     /**
      * Capture a hay bale
      */
-    captureBale() {
+    captureBale(scale = 1.75) {
         if (this.isGameOver) return;
         if (this.wagonBales < this.MAX_BALES) {
             this.wagonBales++;
+            this.wagonBaleScales.push(scale); // Store the bale's exact scale
             return true;
         }
         return false;

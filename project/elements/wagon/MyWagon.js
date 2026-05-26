@@ -4,6 +4,7 @@ import { MyWheelSet } from './MyWheelSet.js';
 import { MyTongue } from './MyTongue.js';
 import { MySeat } from './MySeat.js';
 import { MyCover } from './MyCover.js';
+import { MyHayBale } from '../MyHayBale.js';
 
 export class MyWagon extends CGFobject {
     constructor(scene) {
@@ -25,11 +26,21 @@ export class MyWagon extends CGFobject {
         this.metalAppearance.setSpecular(0.8, 0.8, 0.8, 1.0);
         this.metalAppearance.setShininess(20.0);
 
+        // Hay appearance for carried bales
+        this.hayAppearance = new CGFappearance(scene);
+        this.hayAppearance.setAmbient(0.3, 0.3, 0.3, 1.0);
+        this.hayAppearance.setDiffuse(0.8, 0.8, 0.8, 1.0);
+        this.hayAppearance.setSpecular(0.1, 0.1, 0.1, 1.0);
+        this.hayAppearance.setShininess(5.0);
+        this.hayAppearance.setTexture(this.scene.assetManager.getTexture('hay'));
+        this.hayAppearance.setTextureWrap("REPEAT", "REPEAT");
+
         this.bed = new MyBed(scene, this.woodAppearance, this.metalAppearance);
         this.wheelSet = new MyWheelSet(scene, this.woodAppearance);
         this.tongue = new MyTongue(scene, this.woodAppearance);
         this.seat = new MySeat(scene, 2, this.woodAppearance);
         this.cover = new MyCover(scene, 2.5, this.woodAppearance, this.metalAppearance);
+        this.hayBale = new MyHayBale(scene, this.hayAppearance);
 
         // position and motion variables
         this.x = 0;
@@ -158,6 +169,32 @@ export class MyWagon extends CGFobject {
         this.scene.translate(0, 1.2, 0); // same base translation as bed
         this.cover.display();
         this.scene.popMatrix();
+
+        // --- Render Carried Hay Bales ---
+        const wagonBales = this.scene.gameController.wagonBales;
+        const baleScales = this.scene.gameController.wagonBaleScales || [];
+        
+        // Bale 1 (placed in the front section of the bed, behind the seat)
+        if (wagonBales >= 1) {
+            const scale = baleScales[0] || 1.75;
+            this.scene.pushMatrix();
+            // Bed floor is at 1.3 relative to wagon. Bale local height is 0.6.
+            // Center the bale dynamically so it sits perfectly flat on the bed.
+            this.scene.translate(0, 1.3 + (0.6 * scale) / 2, 0.5);
+            this.scene.scale(scale, scale, scale);
+            this.hayBale.display();
+            this.scene.popMatrix();
+        }
+        
+        // Bale 2 (placed in the back section of the bed)
+        if (wagonBales >= 2) {
+            const scale = baleScales[1] || 1.75;
+            this.scene.pushMatrix();
+            this.scene.translate(0, 1.3 + (0.6 * scale) / 2, 2.0);
+            this.scene.scale(scale, scale, scale);
+            this.hayBale.display();
+            this.scene.popMatrix();
+        }
 
         this.scene.popMatrix();
     }
