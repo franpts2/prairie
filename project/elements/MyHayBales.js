@@ -44,13 +44,39 @@ export class MyHayBales {
                 z: pos.z,
                 rotation: Math.random() * Math.PI * 2,
                 scale: 1.5 + Math.random() * 0.5,
-                bale: new MyHayBale(this.scene, this.appearance)
+                bale: new MyHayBale(this.scene, this.appearance),
+                captured: false
             };
         });
     }
 
+    checkCollisions(wagon, gameController) {
+        // Wagon radius is 2.0. Bale scale is roughly 1.5 - 2.0.
+        // collision distance threshold = 2.5
+        const captureDistance = 2.5;
+
+        for (const bale of this.hayBales) {
+            if (bale.captured) continue;
+
+            const dx = wagon.x - bale.x;
+            const dz = wagon.z - bale.z;
+            const distance = Math.sqrt(dx * dx + dz * dz);
+
+            if (distance < captureDistance) {
+                // try to capture. captureBale() returns true if below capacity limit (2).
+                const success = gameController.captureBale();
+                if (success) {
+                    bale.captured = true;
+                    console.log("Captured hay bale! Total carried: " + gameController.wagonBales);
+                }
+            }
+        }
+    }
+
     display() {
         for (const bale of this.hayBales) {
+            if (bale.captured) continue;
+            
             const height = this.ground ? this.ground.getHeight(bale.x, bale.z) : 0;
             this.scene.pushMatrix();
             this.scene.translate(bale.x, height + bale.scale * 0.5, bale.z);

@@ -72,6 +72,9 @@ export class MyScene extends CGFscene {
       this.gameController.update(dt);
       this.checkKeys(dt);
       this.wagon.update(dt);
+
+      // Check collision with hay bales
+      this.hayBales.checkCollisions(this.wagon, this.gameController);
     }
   }
 
