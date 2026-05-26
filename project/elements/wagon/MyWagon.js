@@ -10,10 +10,10 @@ import { WagonPhysics } from './WagonPhysics.js';
 export class MyWagon extends CGFobject {
     constructor(scene, physics) {
         super(scene);
-        
+
         // Inject or automatically instantiate the physics simulation
         this.physics = physics || new WagonPhysics(scene);
-        
+
         // Centralized wood appearance
         this.woodAppearance = new CGFappearance(scene);
         this.woodAppearance.setAmbient(0.4, 0.2, 0.1, 1.0);
@@ -36,6 +36,10 @@ export class MyWagon extends CGFobject {
         this.seat = new MySeat(scene, 2, this.woodAppearance);
         this.cover = new MyCover(scene, 2.5, this.woodAppearance, this.metalAppearance);
         this.collectedBales = new MyCollectedHaybales(scene);
+
+        // Damage flash feedback state
+        this.damageFlashTimer = 0;
+        this.damageFlashDuration = 0.5; // Fades out over 0.5 seconds
     }
 
     // --- Getters & Setters ---
@@ -92,6 +96,33 @@ export class MyWagon extends CGFobject {
 
     update(dt) {
         this.physics.update(dt);
+
+        // update damage flash timer
+        if (this.damageFlashTimer > 0) {
+            this.damageFlashTimer = Math.max(0, this.damageFlashTimer - dt);
+
+            // flash intensity (fading linearly from 1.0 to 0.0)
+            const intensity = this.damageFlashTimer / this.damageFlashDuration;
+            const redGlow = intensity * 0.6;
+
+            // apply red emission tint to wagon materials
+            if (this.woodAppearance) this.woodAppearance.setEmission(redGlow, 0.0, 0.0, 1.0);
+            if (this.metalAppearance) this.metalAppearance.setEmission(redGlow, 0.0, 0.0, 1.0);
+            if (this.cover && this.cover.clothAppearance) {
+                this.cover.clothAppearance.setEmission(redGlow, 0.0, 0.0, 1.0);
+            }
+        } else {
+            // reset emission to 0 when flash is over
+            if (this.woodAppearance) this.woodAppearance.setEmission(0.0, 0.0, 0.0, 1.0);
+            if (this.metalAppearance) this.metalAppearance.setEmission(0.0, 0.0, 0.0, 1.0);
+            if (this.cover && this.cover.clothAppearance) {
+                this.cover.clothAppearance.setEmission(0.0, 0.0, 0.0, 1.0);
+            }
+        }
+    }
+
+    triggerDamageFlash() {
+        this.damageFlashTimer = this.damageFlashDuration;
     }
 
     resolveCollisions() {
@@ -118,7 +149,7 @@ export class MyWagon extends CGFobject {
 
     display() {
         this.scene.pushMatrix();
-        
+
         this.scene.translate(this.x, this.y, this.z);
         this.scene.rotate(this.angle, 0, 1, 0);
 

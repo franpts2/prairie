@@ -4,7 +4,7 @@ export class GameController {
     constructor(scene) {
         this.scene = scene;
 
-        this.INITIAL_HP = 100;
+        this.INITIAL_HP = 200;
         this.HP_DECAY_RATE = 1; // 1 HP per second
         this.MAX_BALES = 2;
         this.BALE_HEAL_VALUE = 50;
@@ -21,7 +21,7 @@ export class GameController {
         }
 
         // Target area to pile delivered hay bales neatly
-        this.depositedArea = new MyHaybalePlatform(scene);
+        this.haybaleplatform = new MyHaybalePlatform(scene);
 
         // game state
         this.reset();
@@ -154,6 +154,11 @@ export class GameController {
         this.hp -= amount;
         this.lastDamage = amount;
         if (this.hp < 0) this.hp = 0;
+
+        // trigger red damage flash feedback on the wagon
+        if (this.scene.wagon && this.scene.wagon.triggerDamageFlash) {
+            this.scene.wagon.triggerDamageFlash();
+        }
     }
 
     /**
@@ -172,7 +177,7 @@ export class GameController {
             // relocate and release delivered bales in MyHayBales using the new MyHaybalePlatform class
             if (this.scene.hayBales && this.scene.hayBales.hayBales) {
                 const capturedBales = this.scene.hayBales.hayBales.filter(b => b.captured);
-                this.depositedArea.depositBales(capturedBales, this.balesDelivered);
+                this.haybaleplatform.depositBales(capturedBales, this.balesDelivered);
             }
 
             this.balesDelivered += this.wagonBales;
@@ -190,7 +195,7 @@ export class GameController {
         if (this.isGameOver) return null;
         if (this.wagonBales > 0) {
             this.wagonBales--;
-            return 1.8; // All haybales have a uniform scale of 1.8
+            return 1.8; // all haybales have a uniform scale of 1.8
         }
         return null;
     }

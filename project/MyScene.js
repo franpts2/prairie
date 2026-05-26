@@ -180,8 +180,8 @@ export class MyScene extends CGFscene {
 
     this.grass.display();
 
-    if (this.gameController && this.gameController.depositedArea) {
-      this.gameController.depositedArea.display();
+    if (this.gameController && this.gameController.haybaleplatform) {
+      this.gameController.haybaleplatform.display();
     }
 
     this.hayBales.display();
