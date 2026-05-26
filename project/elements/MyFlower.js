@@ -1,13 +1,12 @@
 import { CGFappearance } from "../../lib/CGF.js";
 import { MyCylinder } from "../shapes/MyCylinder.js";
-import { MyCone } from "../shapes/MyCone.js";
 import { MySphere } from "../shapes/MySphere.js";
 
 /**
  * MyFlower
  * @constructor
  * @param scene - Reference to MyScene object
- * @param petalCount - Number of petals (default 12)
+ * @param petalCount - Number of petals per layer (default 12)
  * @param petalColor - Array of 3 floats [r, g, b] (default pink)
  * @param flowerScale - Scale factor for the flower head (default 1.0)
  * @param windStrength - Strength of the swaying animation (default 1.0)
@@ -37,7 +36,8 @@ export class MyFlower {
         this.petalWidth = 0.25;
         this.petalLength = 0.85;
         this.petalThickness = 0.05;
-        this.petalTilt = 0.10;
+        this.petalTiltOuter = 0.10;
+        this.petalTiltInner = 0.10;
 
         this.time = 0;
 
@@ -93,7 +93,7 @@ export class MyFlower {
         const windAngleX = baseSway * 0.035 * this.windStrength;
         const windAngleZ = Math.cos(this.time * swayFreq * 0.7) * 0.02 * this.windStrength;
 
-        // Render the stem segments hierarchically
+        // render the stem segments hierarchically
         for (let i = 0; i < this.numStemSegments; i++) {
             // apply sway rotation
             this.scene.rotate(windAngleX, 1, 0, 0);
@@ -123,6 +123,7 @@ export class MyFlower {
         this.scene.popMatrix();
 
         // draw petals
+        // outer layer of petals
         const numOuter = Math.max(4, this.petalCount);
         for (let i = 0; i < numOuter; i++) {
             this.scene.pushMatrix();
@@ -133,12 +134,34 @@ export class MyFlower {
             this.scene.translate(this.centerRadius * 0.45, 0, 0);
 
             // rotate around Z to align length with radial axis and tilt upward
-            this.scene.rotate(this.petalTilt - Math.PI / 2, 0, 0, 1);
+            this.scene.rotate(this.petalTiltOuter - Math.PI / 2, 0, 0, 1);
             // rotate around Y to lay the flat face of the petal parallel to XOZ plane
             this.scene.rotate(Math.PI / 2, 0, 1, 0);
 
             this.scene.scale(-this.petalWidth, this.petalLength, this.petalThickness);
             
+            this.petalMaterial.apply();
+            this.sphere.display();
+
+            this.scene.popMatrix();
+        }
+
+        // inner layer of petals
+        const numInner = Math.max(4, Math.floor(this.petalCount * 0.85));
+        for (let i = 0; i < numInner; i++) {
+            this.scene.pushMatrix();
+
+            // offset the angle by half a step to fill the gaps between outer petals
+            const angle = ((i + 0.5) * 2 * Math.PI) / numInner;
+            this.scene.rotate(angle, 0, 1, 0);
+
+            this.scene.translate(this.centerRadius * 0.35, 0.05, 0);
+
+            this.scene.rotate(this.petalTiltInner - Math.PI / 2, 0, 0, 1);
+            this.scene.rotate(Math.PI / 2, 0, 1, 0);
+
+            this.scene.scale(-this.petalWidth * 0.85, this.petalLength * 0.8, this.petalThickness * 0.85);
+
             this.petalMaterial.apply();
             this.sphere.display();
 
