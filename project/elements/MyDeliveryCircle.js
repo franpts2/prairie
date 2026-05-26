@@ -5,12 +5,11 @@ export class MyDeliveryCircle extends CGFobject {
     super(scene);
     this.scene = scene;
     
-    // Position of the delivery circle
-    this.x = 0;
-    this.z = -40;
+    this.x = -40;
+    this.z = -90;
     this.radius = 10.0;
-    this.width = 0.5; // Width of the ring boundary
-    this.slices = 120; // Number of subdivisions around the circle
+    this.width = 0.5; // width of the ring boundary
+    this.slices = 120; // number of subdivisions around the circle
 
     // Inactive appearance: glowing cyan
     this.appearance = new CGFappearance(scene);
