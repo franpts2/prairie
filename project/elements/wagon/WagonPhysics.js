@@ -76,8 +76,6 @@ export class WagonPhysics {
         for (const obstacle of obstacles) {
             const staticCollider = obstacle.collider;
             if (this.collider.collidesWith(staticCollider)) {
-                collided = true;
-                
                 // track this active collision
                 newColliding.add(obstacle.item);
 
@@ -91,31 +89,36 @@ export class WagonPhysics {
                     }
                 }
 
-                // 3D push-out vector
-                const dx = this.x - staticCollider.x;
-                const dy = this.y - staticCollider.y;
-                const dz = this.z - staticCollider.z;
-                const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                // Push-out and stop logic only applies to non-rock obstacles (e.g. trees)
+                if (obstacle.type !== 'rock') {
+                    collided = true;
 
-                const radiusSum = this.collider.radius + staticCollider.radius;
+                    // 3D push-out vector
+                    const dx = this.x - staticCollider.x;
+                    const dy = this.y - staticCollider.y;
+                    const dz = this.z - staticCollider.z;
+                    const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-                if (distance > 0.001) {
-                    const overlap = radiusSum - distance;
-                    // push the wagon out
-                    this.x += (dx / distance) * overlap;
-                    this.z += (dz / distance) * overlap;
-                } else {
-                    // fallback to avoid division by zero
-                    this.x += this.collider.radius + staticCollider.radius;
+                    const radiusSum = this.collider.radius + staticCollider.radius;
+
+                    if (distance > 0.001) {
+                        const overlap = radiusSum - distance;
+                        // push the wagon out
+                        this.x += (dx / distance) * overlap;
+                        this.z += (dz / distance) * overlap;
+                    } else {
+                        // fallback to avoid division by zero
+                        this.x += this.collider.radius + staticCollider.radius;
+                    }
+
+                    // update height to align with terrain at new position
+                    if (this.scene.ground) {
+                        this.y = this.scene.ground.getHeight(this.x, this.z);
+                    }
+
+                    // update the wagon's collider position
+                    this.collider.setPosition(this.x, this.y, this.z);
                 }
-
-                // update height to align with terrain at new position
-                if (this.scene.ground) {
-                    this.y = this.scene.ground.getHeight(this.x, this.z);
-                }
-
-                // update the wagon's collider position
-                this.collider.setPosition(this.x, this.y, this.z);
             }
         }
 
@@ -123,7 +126,7 @@ export class WagonPhysics {
         this.currentlyColliding = newColliding;
 
         if (collided) {
-            // stop the wagon on impact
+            // stop the wagon on impact (only for non-rock obstacles)
             this.speed = 0;
         }
     }
