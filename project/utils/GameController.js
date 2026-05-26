@@ -1,7 +1,9 @@
+import { MyDepositedHaybalesArea } from "../elements/MyDepositedHaybalesArea.js";
+
 export class GameController {
     constructor(scene) {
         this.scene = scene;
-        
+
         this.INITIAL_HP = 100;
         this.HP_DECAY_RATE = 1; // 1 HP per second
         this.MAX_BALES = 2;
@@ -17,6 +19,9 @@ export class GameController {
                 window.location.reload();
             };
         }
+
+        // Target area to pile delivered hay bales neatly
+        this.depositedArea = new MyDepositedHaybalesArea(scene);
 
         // game state
         this.reset();
@@ -134,7 +139,7 @@ export class GameController {
      */
     onGameOver() {
         console.log("Game Over! Final Score: " + Math.floor(this.score));
-        
+
         if (this.overlay && this.scoreDisplay) {
             this.scoreDisplay.innerText = Math.floor(this.score);
             this.overlay.style.display = 'flex';
@@ -164,6 +169,13 @@ export class GameController {
             if (this.hp > 200) this.hp = 200;
 
             this.lastHeal = healing;
+
+            // relocate and release delivered bales in MyHayBales using the new MyDepositedHaybalesArea class
+            if (this.scene.hayBales && this.scene.hayBales.hayBales) {
+                const capturedBales = this.scene.hayBales.hayBales.filter(b => b.captured);
+                this.depositedArea.depositBales(capturedBales, this.balesDelivered);
+            }
+
             this.balesDelivered += this.wagonBales;
             console.log(`Delivered ${this.wagonBales} hay bales! Healed ${healing} HP. Current HP: ${this.hp.toFixed(1)}`);
             

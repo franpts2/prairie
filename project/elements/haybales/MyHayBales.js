@@ -60,10 +60,11 @@ export class MyHayBales {
 
         for (const bale of this.hayBales) {
             if (bale.captured) continue;
+            if (!bale.collider) continue;
 
             const baleHeight = this.ground ? this.ground.getHeight(bale.x, bale.z) : 0;
             const baleY = baleHeight + bale.scale * 0.5;
-            
+
             // keep the bale's collider in sync (important after dropping)
             bale.collider.setPosition(bale.x, baleY, bale.z);
 
@@ -83,7 +84,7 @@ export class MyHayBales {
         const baleToDrop = this.hayBales.find(b => b.captured);
         if (baleToDrop) {
             const droppedScale = gameController.dropBale();
-            
+
             // place the bale back on the ground at the wagon's coordinates
             baleToDrop.x = wagon.x;
             baleToDrop.z = wagon.z;
@@ -95,7 +96,7 @@ export class MyHayBales {
             const baleY = height + baleToDrop.scale * 0.5;
             baleToDrop.collider.setPosition(wagon.x, baleY, wagon.z);
             baleToDrop.collider.radius = baleToDrop.scale;
-            
+
             console.log("Dropped hay bale at: (" + wagon.x.toFixed(1) + ", " + wagon.z.toFixed(1) + ")");
         }
     }
@@ -103,10 +104,10 @@ export class MyHayBales {
     display() {
         for (const bale of this.hayBales) {
             if (bale.captured) continue;
-            
+
             const height = this.ground ? this.ground.getHeight(bale.x, bale.z) : 0;
             this.scene.pushMatrix();
-            this.scene.translate(bale.x, height + bale.scale * 0.5, bale.z);
+            this.scene.translate(bale.x, height + bale.scale * 0.5 + (bale.yOffset || 0), bale.z);
             this.scene.rotate(bale.rotation, 0, 1, 0);
             this.scene.scale(bale.scale, bale.scale, bale.scale);
             bale.bale.display();
