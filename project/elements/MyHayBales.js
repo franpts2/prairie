@@ -43,7 +43,7 @@ export class MyHayBales {
                 x: pos.x,
                 z: pos.z,
                 rotation: Math.random() * Math.PI * 2,
-                scale: 1.5 + Math.random() * 0.5,
+                scale: 1.8,
                 bale: new MyHayBale(this.scene, this.appearance),
                 captured: false
             };

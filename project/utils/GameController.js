@@ -27,7 +27,7 @@ export class GameController {
         this.hp = this.INITIAL_HP;
         this.score = 0;
         this.wagonBales = 0;
-        this.wagonBaleScales = []; // Array to store exact scales of carried bales
+        this.wagonBaleScales = [];
         this.lastDamage = 0;
         this.lastHeal = 0;
         this.balesDelivered = 0;
