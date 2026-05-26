@@ -92,14 +92,13 @@ export class MyScene extends CGFscene {
       // Check collision with hay bales (only active if P is pressed)
       this.hayBales.checkCollisions(this.wagon, this.gameController, isP);
 
-      // Check drop action
+      // Check drop/delivery action
       if (isL) {
-        this.hayBales.dropBale(this.wagon, this.gameController);
-      }
-
-      // Check if wagon is intersecting the delivery circle, and if so, deliver hay bales
-      if (this.deliveryCircle.isIntersecting(this.wagon)) {
-        this.gameController.deliverBales();
+        if (this.deliveryCircle.isIntersecting(this.wagon)) {
+          this.gameController.deliverBales();
+        } else {
+          this.hayBales.dropBale(this.wagon, this.gameController);
+        }
       }
     }
   }
