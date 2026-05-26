@@ -90,9 +90,6 @@ export class MyScene extends CGFscene {
 
     this.wagon = new MyWagon(this);
 
-    // Collision debug elements
-    this.colliderSphere = new MySphere(this, 16, 8, 1.0);
-
     this.greenCollisionAppearance = new CGFappearance(this);
     this.greenCollisionAppearance.setAmbient(0.0, 0.8, 0.0, 0.3);
     this.greenCollisionAppearance.setDiffuse(0.0, 0.8, 0.0, 0.3);
@@ -195,119 +192,5 @@ export class MyScene extends CGFscene {
     this.pushMatrix();
     this.wagon.display();
     this.popMatrix();
-
-    if (this.displayColliders) {
-      this.drawCollisionSpheres();
-    }
-  }
-
-  drawCollisionSpheres() {
-    if (!this.wagon || !this.wagon.collider) return;
-
-    // Check if the wagon collides with any active (non-captured) bale, rock, or tree
-    let isWagonColliding = false;
-    const activeBales = this.hayBales ? this.hayBales.hayBales.filter(bale => !bale.captured) : [];
-    const rockItems = this.rocks ? this.rocks.rockItems : [];
-    const treeItems = this.trees ? this.trees.treeItems : [];
-
-    for (const bale of activeBales) {
-      if (bale.collider && this.wagon.collider.collidesWith(bale.collider)) {
-        isWagonColliding = true;
-        break;
-      }
-    }
-
-    if (!isWagonColliding) {
-      for (const rock of rockItems) {
-        if (rock.collider && this.wagon.collider.collidesWith(rock.collider)) {
-          isWagonColliding = true;
-          break;
-        }
-      }
-    }
-
-    if (!isWagonColliding) {
-      for (const tree of treeItems) {
-        if (tree.collider && this.wagon.collider.collidesWith(tree.collider)) {
-          isWagonColliding = true;
-          break;
-        }
-      }
-    }
-
-    // Disable depth writing so transparent spheres blend beautifully
-    this.gl.depthMask(false);
-
-    // Draw wagon's collision sphere
-    this.pushMatrix();
-    this.translate(this.wagon.collider.x, this.wagon.collider.y, this.wagon.collider.z);
-    this.scale(this.wagon.collider.radius, this.wagon.collider.radius, this.wagon.collider.radius);
-    if (isWagonColliding) {
-      this.redCollisionAppearance.apply();
-    } else {
-      this.greenCollisionAppearance.apply();
-    }
-    this.colliderSphere.display();
-    this.popMatrix();
-
-    // Draw hay bale collision spheres
-    for (const bale of activeBales) {
-      if (!bale.collider) continue;
-
-      const isBaleColliding = this.wagon.collider.collidesWith(bale.collider);
-
-      this.pushMatrix();
-      this.translate(bale.collider.x, bale.collider.y, bale.collider.z);
-      this.scale(bale.collider.radius, bale.collider.radius, bale.collider.radius);
-      if (isBaleColliding) {
-        this.redCollisionAppearance.apply();
-      } else {
-        this.greenCollisionAppearance.apply();
-      }
-      this.colliderSphere.display();
-      this.popMatrix();
-    }
-
-    // Draw rock collision spheres
-    for (const rock of rockItems) {
-      if (!rock.collider) continue;
-
-      const isRockColliding = this.wagon.collider.collidesWith(rock.collider);
-
-      this.pushMatrix();
-      this.translate(rock.collider.x, rock.collider.y, rock.collider.z);
-      this.scale(rock.collider.radius, rock.collider.radius, rock.collider.radius);
-      if (isRockColliding) {
-        this.redCollisionAppearance.apply();
-      } else {
-        this.greenCollisionAppearance.apply();
-      }
-      this.colliderSphere.display();
-      this.popMatrix();
-    }
-
-    // Draw tree collision spheres
-    for (const tree of treeItems) {
-      if (!tree.collider) continue;
-
-      const isTreeColliding = this.wagon.collider.collidesWith(tree.collider);
-
-      this.pushMatrix();
-      this.translate(tree.collider.x, tree.collider.y, tree.collider.z);
-      this.scale(tree.collider.radius, tree.collider.radius, tree.collider.radius);
-      if (isTreeColliding) {
-        this.redCollisionAppearance.apply();
-      } else {
-        this.greenCollisionAppearance.apply();
-      }
-      this.colliderSphere.display();
-      this.popMatrix();
-    }
-
-    // Re-enable depth writing
-    this.gl.depthMask(true);
-
-    // Restore default appearance
-    this.setDefaultAppearance();
   }
 }
