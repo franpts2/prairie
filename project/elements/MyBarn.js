@@ -129,8 +129,8 @@ export class MyBarn extends CGFobject {
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
-        this.scene.translate(0, 10.0, 6.0 + zFightOffset);
-        this.scene.scale(1.8, 1.8, 1);
+        this.scene.translate(0, 9.5, 6.0 + zFightOffset);
+        this.scene.scale(1.4, 1.4, 1);
         this.windowAppearance.apply();
         this.quad.display();
         this.scene.popMatrix();
@@ -174,9 +174,9 @@ export class MyBarn extends CGFobject {
         }
 
         this.scene.pushMatrix();
-        this.scene.translate(0, 10.0, -6.0 - zFightOffset);
+        this.scene.translate(0, 9.5, -6.0 - zFightOffset);
         this.scene.rotate(Math.PI, 0, 1, 0);
-        this.scene.scale(1.8, 1.8, 1);
+        this.scene.scale(1.4, 1.4, 1);
         this.windowAppearance.apply();
         this.quad.display();
         this.scene.popMatrix();
