@@ -51,7 +51,6 @@ export class MyScene extends CGFscene {
 
     // Game Logic
     this.gameController = new GameController(this);
-    this.keyCooldown = 0; // Cooldown to prevent key spamming
 
     //Objects connected to MyInterface
     this.displayAxis = true;
@@ -74,55 +73,6 @@ export class MyScene extends CGFscene {
 
     if (this.ready) {
       this.gameController.update(dt);
-      this.checkKeys(dt);
-      this.wagon.update(dt);
-
-      // Handle key cooldown
-      if (this.keyCooldown > 0) {
-        this.keyCooldown -= dt;
-      }
-
-      const isP = this.keyCooldown <= 0 && this.gui && typeof this.gui.isKeyPressed === 'function' && this.gui.isKeyPressed("KeyP");
-      const isL = this.keyCooldown <= 0 && this.gui && typeof this.gui.isKeyPressed === 'function' && this.gui.isKeyPressed("KeyL");
-      
-      if (isP || isL) {
-        this.keyCooldown = 0.3; // 300ms input cooldown
-      }
-
-      // Check collision with hay bales (only active if P is pressed)
-      this.hayBales.checkCollisions(this.wagon, this.gameController, isP);
-
-      // Check drop/delivery action
-      if (isL) {
-        if (this.deliveryCircle.isIntersecting(this.wagon)) {
-          this.gameController.deliverBales();
-        } else {
-          this.hayBales.dropBale(this.wagon, this.gameController);
-        }
-      }
-    }
-  }
-
-  checkKeys(dt) {
-    if (this.gui && typeof this.gui.isKeyPressed === 'function') {
-      if (this.gui.isKeyPressed("KeyW")) {
-        this.wagon.accelerate(dt);
-      } else if (this.gui.isKeyPressed("KeyS")) {
-        this.wagon.brake(dt);
-      } else {
-        this.wagon.decelerate(dt);
-      }
-
-      if (this.gui.isKeyPressed("KeyA")) {
-        this.wagon.steer(1, dt);
-      } else if (this.gui.isKeyPressed("KeyD")) {
-        this.wagon.steer(-1, dt);
-      } else {
-        this.wagon.steer(0, dt);
-      }
-    } else {
-      this.wagon.decelerate(dt);
-      this.wagon.steer(0, dt);
     }
   }
 
@@ -157,7 +107,6 @@ export class MyScene extends CGFscene {
     this.redCollisionAppearance.setShininess(10.0);
     this.redCollisionAppearance.setEmission(0.4, 0.0, 0.0, 1.0);
 
-    // Delivery Circle Element
     this.deliveryCircle = new MyDeliveryCircle(this);
 
     this.ready = true;

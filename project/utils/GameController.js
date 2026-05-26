@@ -32,6 +32,7 @@ export class GameController {
         this.lastHeal = 0;
         this.balesDelivered = 0;
         this.isGameOver = false;
+        this.keyCooldown = 0; // Input check cooldown
 
         if (this.overlay) {
             this.overlay.style.display = 'none';
@@ -39,7 +40,7 @@ export class GameController {
     }
 
     /**
-     * Updates game state based on time elapsed
+     * Updates game state based on time elapsed, handles inputs and updates scene models
      * @param {number} dt - Time since last update in seconds
      */
     update(dt) {
@@ -56,6 +57,73 @@ export class GameController {
             this.hp = 0;
             this.isGameOver = true;
             this.onGameOver();
+            return;
+        }
+
+        // process wagon movement inputs
+        this.checkKeys(dt);
+
+        // update wagon physical positions & terrain alignments
+        if (this.scene.wagon) {
+            this.scene.wagon.update(dt);
+        }
+
+        // process key interactions (P and L) with cooldown
+        if (this.keyCooldown > 0) {
+            this.keyCooldown -= dt;
+        }
+
+        const gui = this.scene.gui;
+        const isP = this.keyCooldown <= 0 && gui && typeof gui.isKeyPressed === 'function' && gui.isKeyPressed("KeyP");
+        const isL = this.keyCooldown <= 0 && gui && typeof gui.isKeyPressed === 'function' && gui.isKeyPressed("KeyL");
+
+        if (isP || isL) {
+            this.keyCooldown = 0.3; // 300ms input cooldown
+        }
+
+        // check collision with hay bales
+        if (this.scene.hayBales && this.scene.wagon) {
+            this.scene.hayBales.checkCollisions(this.scene.wagon, this, isP);
+        }
+
+        // check drop/delivery action (when L is pressed)
+        if (isL && this.scene.hayBales && this.scene.wagon) {
+            if (this.scene.deliveryCircle && this.scene.deliveryCircle.isIntersecting(this.scene.wagon)) {
+                this.deliverBales();
+            } else {
+                this.scene.hayBales.dropBale(this.scene.wagon, this);
+            }
+        }
+    }
+
+    /**
+     * Checks driving input keys and calls wagon acceleration/steering methods
+     * @param {number} dt - Time delta in seconds
+     */
+    checkKeys(dt) {
+        const gui = this.scene.gui;
+        const wagon = this.scene.wagon;
+        if (!wagon) return;
+
+        if (gui && typeof gui.isKeyPressed === 'function') {
+            if (gui.isKeyPressed("KeyW")) {
+                wagon.accelerate(dt);
+            } else if (gui.isKeyPressed("KeyS")) {
+                wagon.brake(dt);
+            } else {
+                wagon.decelerate(dt);
+            }
+
+            if (gui.isKeyPressed("KeyA")) {
+                wagon.steer(1, dt);
+            } else if (gui.isKeyPressed("KeyD")) {
+                wagon.steer(-1, dt);
+            } else {
+                wagon.steer(0, dt);
+            }
+        } else {
+            wagon.decelerate(dt);
+            wagon.steer(0, dt);
         }
     }
 
