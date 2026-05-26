@@ -38,6 +38,7 @@ export class MyWagon extends CGFobject {
         this.y = 0;
         this.z = 0;
         this.angle = 0;
+        this.radius = 4.0;
 
         this.speed = 0;
         this.maxSpeed = 15;

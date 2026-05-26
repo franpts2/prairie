@@ -51,21 +51,25 @@ export class MyHayBales {
     }
 
     checkCollisions(wagon, gameController, isKeyPressedP) {
-        if (!isKeyPressedP) return; // only capture if P is pressed!
+        if (!isKeyPressedP) return;
 
-        // Wagon radius is 2.0. Bale scale is roughly 1.5 - 2.0.
-        // collision distance threshold = 2.5
-        const captureDistance = 2.5;
+        const wagonRadius = wagon.radius || 2.0;
+        const baleRadius = 1.8;
+        const collisionThreshold = wagonRadius + baleRadius; //3.8
 
         for (const bale of this.hayBales) {
             if (bale.captured) continue;
 
-            const dx = wagon.x - bale.x;
-            const dz = wagon.z - bale.z;
-            const distance = Math.sqrt(dx * dx + dz * dz);
+            const baleHeight = this.ground ? this.ground.getHeight(bale.x, bale.z) : 0;
+            const baleY = baleHeight + bale.scale * 0.5;
 
-            if (distance < captureDistance) {
-                // Try to capture. captureBale() returns true if below capacity limit (2).
+            const dx = wagon.x - bale.x;
+            const dy = wagon.y - baleY;
+            const dz = wagon.z - bale.z;
+            
+            const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+            if (distance < collisionThreshold) {
                 const success = gameController.captureBale(bale.scale);
                 if (success) {
                     bale.captured = true;

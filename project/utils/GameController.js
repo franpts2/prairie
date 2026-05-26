@@ -27,6 +27,7 @@ export class GameController {
         this.hp = this.INITIAL_HP;
         this.score = 0;
         this.wagonBales = 0;
+        this.wagonBaleScales = []; // Array to store exact scales of carried bales
         this.lastDamage = 0;
         this.lastHeal = 0;
         this.balesDelivered = 0;
@@ -92,6 +93,7 @@ export class GameController {
             this.lastHeal = healing;
             this.balesDelivered += this.wagonBales;
             this.wagonBales = 0;
+            this.wagonBaleScales = [];
             
             // limit HP to 200
             if (this.hp > 200) this.hp = 200;
