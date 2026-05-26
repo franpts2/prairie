@@ -48,12 +48,12 @@ export class MyFlowers {
 
         // generate clusters of flowers
         const groups = PlacementUtils.generateClusteredPositions({
-            groupCount: 8,
-            minGroupSize: 4,
-            maxGroupSize: 12,
+            groupCount: 80,
+            minGroupSize: 8,
+            maxGroupSize: 30,
             minX, maxX, minZ, maxZ,
-            minGroupDistance: 35,
-            clusterRadius: 10,
+            minGroupDistance: 20,
+            clusterRadius: 30,
             minItemDistance: 2.0,
         });
 
