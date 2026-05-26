@@ -237,7 +237,7 @@ export class MyScene extends CGFscene {
     this.cloud.update();
     this.cloud.display();
 
-    this.deliveryCircle.display();
+    this.deliveryCircle.display(this.wagon);
 
     this.pushMatrix();
     this.wagon.display();
