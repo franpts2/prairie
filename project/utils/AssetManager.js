@@ -9,7 +9,7 @@ export class AssetManager {
         this.textures = {};
         this.pixelData = {};
         this.isReady = false;
-        
+
         this.texturePaths = {
             sky: "./textures/sky.jpeg",
             cloud: "./textures/clouds.png",
@@ -67,7 +67,7 @@ export class AssetManager {
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0);
                 const imageData = ctx.getImageData(0, 0, img.width, img.height);
-                
+
                 this.pixelData[key] = {
                     data: imageData.data,
                     width: img.width,

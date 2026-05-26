@@ -174,7 +174,7 @@ export class GameController {
 
             this.lastHeal = healing;
 
-            // relocate and release delivered bales in MyHayBales using the new MyHaybalePlatform class
+            // relocate and release delivered bales in MyHayBales
             if (this.scene.hayBales && this.scene.hayBales.hayBales) {
                 const capturedBales = this.scene.hayBales.hayBales.filter(b => b.captured);
                 this.haybaleplatform.depositBales(capturedBales, this.balesDelivered);
@@ -187,7 +187,7 @@ export class GameController {
 
             this.balesDelivered += this.wagonBales;
             console.log(`Delivered ${this.wagonBales} hay bales! Healed ${healing} HP. Current HP: ${this.hp.toFixed(1)}`);
-            
+
             this.wagonBales = 0;
         }
     }

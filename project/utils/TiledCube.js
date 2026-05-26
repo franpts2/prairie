@@ -6,7 +6,7 @@ export class TiledCube {
         this.width = width;
         this.height = height;
         this.depth = depth;
-        
+
         // Match texture coordinate scaling (widthTex, heightTex, depthTex) to the physical scale
         this.cube = new MyUnitCube(scene, width, height, depth);
     }
