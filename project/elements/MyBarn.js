@@ -9,7 +9,7 @@ export class MyBarn extends CGFobject {
         this.x = x;
         this.z = z;
         this.y = 0;
-        
+
         this.width = 10;
         this.height = 8;
         this.length = 12;
@@ -60,37 +60,112 @@ export class MyBarn extends CGFobject {
         const zFightOffset = 0.015;
 
         this.scene.pushMatrix();
-        this.scene.translate(this.x, this.y + this.height / 2, this.z);
-        this.scene.scale(this.width, this.height, this.length);
+        this.scene.translate(this.x, this.y, this.z);
+        this.scene.scale(2, 2, 2);
+
+        this.scene.pushMatrix();
+        this.scene.translate(0, 4.25, 0);
+        this.scene.scale(6, 8.5, 12);
         this.woodAppearance.apply();
         this.walls.display();
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
-        this.scene.translate(this.x, this.y + this.height, this.z);
-        this.scene.scale(this.width + 0.6, this.roofHeight, this.length + 0.4);
+        this.scene.translate(0, 8.5, 0);
+        this.scene.scale(6.6, 3.0, 12.4);
         this.darkWoodAppearance.apply();
         this.roof.display();
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
-        this.scene.translate(this.x, this.y + 2.25, this.z + this.length / 2 + zFightOffset);
+        this.scene.translate(-4.5, 2.5, 0);
+        this.scene.scale(3, 5.0, 12);
+        this.woodAppearance.apply();
+        this.walls.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+        this.scene.translate(-3, 5.0, 0);
+        this.scene.scale(6, 1.5, 12);
+        this.woodAppearance.apply();
+        this.roof.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+        this.scene.translate(-4.5, 5.75, 0);
+        this.scene.rotate(0.4636, 0, 0, 1);
+        this.scene.scale(3.6, 0.15, 12.4);
+        this.darkWoodAppearance.apply();
+        this.walls.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+        this.scene.translate(4.5, 2.5, 0);
+        this.scene.scale(3, 5.0, 12);
+        this.woodAppearance.apply();
+        this.walls.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+        this.scene.translate(3, 5.0, 0);
+        this.scene.scale(6, 1.5, 12);
+        this.woodAppearance.apply();
+        this.roof.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+        this.scene.translate(4.5, 5.75, 0);
+        this.scene.rotate(-0.4636, 0, 0, 1);
+        this.scene.scale(3.6, 0.15, 12.4);
+        this.darkWoodAppearance.apply();
+        this.walls.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+        this.scene.translate(0, 2.25, 6.0 + zFightOffset);
         this.scene.scale(4, 4.5, 1);
         this.doorAppearance.apply();
         this.quad.display();
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
-        this.scene.translate(this.x, this.y + this.height + 1.8, this.z + this.length / 2 + zFightOffset);
+        this.scene.translate(0, 10.0, 6.0 + zFightOffset);
         this.scene.scale(1.8, 1.8, 1);
         this.windowAppearance.apply();
         this.quad.display();
         this.scene.popMatrix();
 
-        const leftWindowZs = [this.z - 3, this.z + 3];
-        for (const wZ of leftWindowZs) {
+        this.scene.pushMatrix();
+        this.scene.translate(0, 6.5, 6.0 + zFightOffset);
+        this.scene.scale(1.8, 1.8, 1);
+        this.windowAppearance.apply();
+        this.quad.display();
+        this.scene.popMatrix();
+
+        const frontWingXs = [-4.5, 4.5];
+        for (const wX of frontWingXs) {
             this.scene.pushMatrix();
-            this.scene.translate(this.x + this.width / 2 + zFightOffset, this.y + 4.5, wZ);
+            this.scene.translate(wX, 2.5, 6.0 + zFightOffset);
+            this.scene.scale(1.6, 1.6, 1);
+            this.windowAppearance.apply();
+            this.quad.display();
+            this.scene.popMatrix();
+        }
+
+        const sideWindowZs = [-3, 3];
+        for (const wZ of sideWindowZs) {
+            this.scene.pushMatrix();
+            this.scene.translate(-6.0 - zFightOffset, 2.5, wZ);
+            this.scene.rotate(-Math.PI / 2, 0, 1, 0);
+            this.scene.scale(2, 2, 1);
+            this.windowAppearance.apply();
+            this.quad.display();
+            this.scene.popMatrix();
+        }
+
+        for (const wZ of sideWindowZs) {
+            this.scene.pushMatrix();
+            this.scene.translate(6.0 + zFightOffset, 2.5, wZ);
             this.scene.rotate(Math.PI / 2, 0, 1, 0);
             this.scene.scale(2, 2, 1);
             this.windowAppearance.apply();
@@ -98,15 +173,45 @@ export class MyBarn extends CGFobject {
             this.scene.popMatrix();
         }
 
-        const rightWindowZs = [this.z - 3, this.z + 3];
-        for (const wZ of rightWindowZs) {
+        this.scene.pushMatrix();
+        this.scene.translate(0, 10.0, -6.0 - zFightOffset);
+        this.scene.rotate(Math.PI, 0, 1, 0);
+        this.scene.scale(1.8, 1.8, 1);
+        this.windowAppearance.apply();
+        this.quad.display();
+        this.scene.popMatrix();
+
+        const backWingXs = [-4.5, 4.5];
+        for (const wX of backWingXs) {
             this.scene.pushMatrix();
-            this.scene.translate(this.x - this.width / 2 - zFightOffset, this.y + 4.5, wZ);
-            this.scene.rotate(-Math.PI / 2, 0, 1, 0);
-            this.scene.scale(2, 2, 1);
+            this.scene.translate(wX, 2.5, -6.0 - zFightOffset);
+            this.scene.rotate(Math.PI, 0, 1, 0);
+            this.scene.scale(1.6, 1.6, 1);
             this.windowAppearance.apply();
             this.quad.display();
             this.scene.popMatrix();
         }
+
+        for (const wZ of sideWindowZs) {
+            this.scene.pushMatrix();
+            this.scene.translate(-3.0 - zFightOffset, 7.5, wZ);
+            this.scene.rotate(-Math.PI / 2, 0, 1, 0);
+            this.scene.scale(1.2, 1.2, 1);
+            this.windowAppearance.apply();
+            this.quad.display();
+            this.scene.popMatrix();
+        }
+
+        for (const wZ of sideWindowZs) {
+            this.scene.pushMatrix();
+            this.scene.translate(3.0 + zFightOffset, 7.5, wZ);
+            this.scene.rotate(Math.PI / 2, 0, 1, 0);
+            this.scene.scale(1.2, 1.2, 1);
+            this.windowAppearance.apply();
+            this.quad.display();
+            this.scene.popMatrix();
+        }
+
+        this.scene.popMatrix();
     }
 }

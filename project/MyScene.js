@@ -108,7 +108,7 @@ export class MyScene extends CGFscene {
 
     this.wagon = new MyWagon(this);
     this.barn = new MyBarn(this, -20, -100);
-    this.delimitedArea = new MyDelimitedArea(this, this.barn.x, this.barn.z + this.barn.length + 6, 6);
+    this.delimitedArea = new MyDelimitedArea(this, this.barn.x, this.barn.z, 16);
     
     this.ready = true;
   }
@@ -177,8 +177,6 @@ export class MyScene extends CGFscene {
     this.multMatrix(sca);
 
     this.ground.display();
-
-    this.delimitedArea.display();
 
     this.rocks.display();
 
