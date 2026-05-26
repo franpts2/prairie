@@ -1,4 +1,4 @@
-import { CGFscene, CGFcamera, CGFaxis } from "../lib/CGF.js";
+import { CGFscene, CGFcamera, CGFaxis, CGFappearance } from "../lib/CGF.js";
 import { MySky } from "./elements/MySky.js";
 import { MyCloud } from "./elements/MyCloud.js";
 import { MySun } from "./elements/MySun.js";
@@ -10,6 +10,7 @@ import { MyWagon } from "./elements/wagon/MyWagon.js";
 import { MyHayBales } from "./elements/haybales/MyHayBales.js";
 import { AssetManager } from "./utils/AssetManager.js";
 import { GameController } from "./utils/GameController.js";
+import { MySphere } from "./shapes/MySphere.js";
 
 /**
  * MyScene
@@ -54,6 +55,7 @@ export class MyScene extends CGFscene {
     //Objects connected to MyInterface
     this.displayAxis = true;
     this.displayLight0 = true;
+    this.displayColliders = true;
     this.scaleFactor = 1;
 
     this.setUpdatePeriod(1000 / 60);
@@ -133,6 +135,23 @@ export class MyScene extends CGFscene {
 
     this.wagon = new MyWagon(this);
     
+    // Collision debug elements
+    this.colliderSphere = new MySphere(this, 16, 8, 1.0);
+
+    this.greenCollisionAppearance = new CGFappearance(this);
+    this.greenCollisionAppearance.setAmbient(0.0, 0.8, 0.0, 0.3);
+    this.greenCollisionAppearance.setDiffuse(0.0, 0.8, 0.0, 0.3);
+    this.greenCollisionAppearance.setSpecular(0.0, 1.0, 0.0, 0.3);
+    this.greenCollisionAppearance.setShininess(10.0);
+    this.greenCollisionAppearance.setEmission(0.0, 0.3, 0.0, 1.0);
+
+    this.redCollisionAppearance = new CGFappearance(this);
+    this.redCollisionAppearance.setAmbient(0.8, 0.0, 0.0, 0.3);
+    this.redCollisionAppearance.setDiffuse(0.8, 0.0, 0.0, 0.3);
+    this.redCollisionAppearance.setSpecular(1.0, 0.0, 0.0, 0.3);
+    this.redCollisionAppearance.setShininess(10.0);
+    this.redCollisionAppearance.setEmission(0.4, 0.0, 0.0, 1.0);
+
     this.ready = true;
   }
 
@@ -217,5 +236,63 @@ export class MyScene extends CGFscene {
     this.pushMatrix();
     this.wagon.display();
     this.popMatrix();
+
+    if (this.displayColliders) {
+      this.drawCollisionSpheres();
+    }
+  }
+
+  drawCollisionSpheres() {
+    if (!this.wagon || !this.wagon.collider) return;
+
+    // Check if the wagon collides with any active (non-captured) bale
+    let isWagonColliding = false;
+    const activeBales = this.hayBales ? this.hayBales.hayBales.filter(bale => !bale.captured) : [];
+
+    for (const bale of activeBales) {
+      if (bale.collider && this.wagon.collider.collidesWith(bale.collider)) {
+        isWagonColliding = true;
+        break;
+      }
+    }
+
+    // Disable depth writing so transparent spheres blend beautifully
+    this.gl.depthMask(false);
+
+    // Draw wagon's collision sphere
+    this.pushMatrix();
+    this.translate(this.wagon.collider.x, this.wagon.collider.y, this.wagon.collider.z);
+    this.scale(this.wagon.collider.radius, this.wagon.collider.radius, this.wagon.collider.radius);
+    if (isWagonColliding) {
+      this.redCollisionAppearance.apply();
+    } else {
+      this.greenCollisionAppearance.apply();
+    }
+    this.colliderSphere.display();
+    this.popMatrix();
+
+    // Draw hay bale collision spheres
+    for (const bale of activeBales) {
+      if (!bale.collider) continue;
+
+      const isBaleColliding = this.wagon.collider.collidesWith(bale.collider);
+
+      this.pushMatrix();
+      this.translate(bale.collider.x, bale.collider.y, bale.collider.z);
+      this.scale(bale.collider.radius, bale.collider.radius, bale.collider.radius);
+      if (isBaleColliding) {
+        this.redCollisionAppearance.apply();
+      } else {
+        this.greenCollisionAppearance.apply();
+      }
+      this.colliderSphere.display();
+      this.popMatrix();
+    }
+
+    // Re-enable depth writing
+    this.gl.depthMask(true);
+
+    // Restore default appearance
+    this.setDefaultAppearance();
   }
 }
