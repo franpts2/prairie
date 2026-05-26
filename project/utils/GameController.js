@@ -4,7 +4,7 @@ export class GameController {
         
         this.INITIAL_HP = 100;
         this.HP_DECAY_RATE = 1; // 1 HP per second
-        this.MAX_BALES = 2;
+        this.MAX_BALES = 3;
         this.BALE_HEAL_VALUE = 50;
 
         // UI elements
