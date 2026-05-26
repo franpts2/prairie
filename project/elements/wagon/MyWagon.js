@@ -37,9 +37,12 @@ export class MyWagon extends CGFobject {
         this.cover = new MyCover(scene, 2.5, this.woodAppearance, this.metalAppearance);
         this.collectedBales = new MyCollectedHaybales(scene);
 
-        // Damage flash feedback state
+        // Damage & Heal flash feedback states
         this.damageFlashTimer = 0;
         this.damageFlashDuration = 0.5; // Fades out over 0.5 seconds
+
+        this.healFlashTimer = 0;
+        this.healFlashDuration = 0.5;   // Fades out over 0.5 seconds
     }
 
     // --- Getters & Setters ---
@@ -97,32 +100,31 @@ export class MyWagon extends CGFobject {
     update(dt) {
         this.physics.update(dt);
 
-        // update damage flash timer
+        // decrement flash timers
         if (this.damageFlashTimer > 0) {
             this.damageFlashTimer = Math.max(0, this.damageFlashTimer - dt);
+        }
+        if (this.healFlashTimer > 0) {
+            this.healFlashTimer = Math.max(0, this.healFlashTimer - dt);
+        }
 
-            // flash intensity (fading linearly from 1.0 to 0.0)
-            const intensity = this.damageFlashTimer / this.damageFlashDuration;
-            const redGlow = intensity * 0.6;
+        // apply emissive glows based on active timers
+        const intensityRed = this.damageFlashTimer > 0 ? (this.damageFlashTimer / this.damageFlashDuration) * 0.6 : 0.0;
+        const intensityGreen = this.healFlashTimer > 0 ? (this.healFlashTimer / this.healFlashDuration) * 0.6 : 0.0;
 
-            // apply red emission tint to wagon materials
-            if (this.woodAppearance) this.woodAppearance.setEmission(redGlow, 0.0, 0.0, 1.0);
-            if (this.metalAppearance) this.metalAppearance.setEmission(redGlow, 0.0, 0.0, 1.0);
-            if (this.cover && this.cover.clothAppearance) {
-                this.cover.clothAppearance.setEmission(redGlow, 0.0, 0.0, 1.0);
-            }
-        } else {
-            // reset emission to 0 when flash is over
-            if (this.woodAppearance) this.woodAppearance.setEmission(0.0, 0.0, 0.0, 1.0);
-            if (this.metalAppearance) this.metalAppearance.setEmission(0.0, 0.0, 0.0, 1.0);
-            if (this.cover && this.cover.clothAppearance) {
-                this.cover.clothAppearance.setEmission(0.0, 0.0, 0.0, 1.0);
-            }
+        if (this.woodAppearance) this.woodAppearance.setEmission(intensityRed, intensityGreen, 0.0, 1.0);
+        if (this.metalAppearance) this.metalAppearance.setEmission(intensityRed, intensityGreen, 0.0, 1.0);
+        if (this.cover && this.cover.clothAppearance) {
+            this.cover.clothAppearance.setEmission(intensityRed, intensityGreen, 0.0, 1.0);
         }
     }
 
     triggerDamageFlash() {
         this.damageFlashTimer = this.damageFlashDuration;
+    }
+
+    triggerHealFlash() {
+        this.healFlashTimer = this.healFlashDuration;
     }
 
     resolveCollisions() {

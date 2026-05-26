@@ -180,6 +180,11 @@ export class GameController {
                 this.haybaleplatform.depositBales(capturedBales, this.balesDelivered);
             }
 
+            // trigger green healing flash feedback on the wagon
+            if (this.scene.wagon && this.scene.wagon.triggerHealFlash) {
+                this.scene.wagon.triggerHealFlash();
+            }
+
             this.balesDelivered += this.wagonBales;
             console.log(`Delivered ${this.wagonBales} hay bales! Healed ${healing} HP. Current HP: ${this.hp.toFixed(1)}`);
             
