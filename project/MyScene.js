@@ -11,6 +11,7 @@ import { MyHayBales } from "./elements/haybales/MyHayBales.js";
 import { AssetManager } from "./utils/AssetManager.js";
 import { GameController } from "./utils/GameController.js";
 import { MySphere } from "./shapes/MySphere.js";
+import { MyDeliveryCircle } from "./elements/MyDeliveryCircle.js";
 
 /**
  * MyScene
@@ -152,6 +153,9 @@ export class MyScene extends CGFscene {
     this.redCollisionAppearance.setShininess(10.0);
     this.redCollisionAppearance.setEmission(0.4, 0.0, 0.0, 1.0);
 
+    // Delivery Circle Element
+    this.deliveryCircle = new MyDeliveryCircle(this);
+
     this.ready = true;
   }
 
@@ -232,6 +236,8 @@ export class MyScene extends CGFscene {
 
     this.cloud.update();
     this.cloud.display();
+
+    this.deliveryCircle.display();
 
     this.pushMatrix();
     this.wagon.display();
