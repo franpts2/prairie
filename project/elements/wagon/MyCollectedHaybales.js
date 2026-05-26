@@ -2,19 +2,12 @@ import { CGFobject, CGFappearance } from '../../../lib/CGF.js';
 import { MyHayBale } from '../MyHayBale.js';
 
 export class MyCollectedHaybales extends CGFobject {
-    constructor(scene) {
+    constructor(scene, hayAppearance) {
         super(scene);
 
-        // Hay appearance for carried bales
-        this.hayAppearance = new CGFappearance(scene);
-        this.hayAppearance.setAmbient(0.3, 0.3, 0.3, 1.0);
-        this.hayAppearance.setDiffuse(0.8, 0.8, 0.8, 1.0);
-        this.hayAppearance.setSpecular(0.1, 0.1, 0.1, 1.0);
-        this.hayAppearance.setShininess(5.0);
-        this.hayAppearance.setTexture(this.scene.assetManager.getTexture('hay'));
-        this.hayAppearance.setTextureWrap("REPEAT", "REPEAT");
-
-        this.hayBale = new MyHayBale(scene, this.hayAppearance);
+        // reuse the appearance from the ground haybales
+        const appearance = hayAppearance || (scene.hayBales ? scene.hayBales.appearance : null);
+        this.hayBale = new MyHayBale(scene, appearance);
     }
 
     display() {
