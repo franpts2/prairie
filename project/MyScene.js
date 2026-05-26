@@ -11,6 +11,7 @@ import { MyBarn } from "./elements/MyBarn.js";
 import { MyHayBales } from "./elements/haybales/MyHayBales.js";
 import { BaleManager } from "./elements/haybales/MyBaleManager.js";
 import { AssetManager } from "./utils/AssetManager.js";
+import { MyFlowers } from "./elements/MyFlowers.js";
 import { GameController } from "./utils/GameController.js";
 import { MyDeliveryCircle } from "./elements/MyDeliveryCircle.js";
 
@@ -74,6 +75,7 @@ export class MyScene extends CGFscene {
     if (this.ready) {
       this.checkKeys(dt);
       this.wagon.update(dt);
+      if (this.flowers) this.flowers.update(this.time);
       this.gameController.update(dt);
     }
   }
@@ -116,6 +118,9 @@ export class MyScene extends CGFscene {
     this.hayBales = new MyHayBales(this, this.baleManager);
 
     this.wagon = new MyWagon(this);
+
+    this.flowers = new MyFlowers(this, this.ground);
+    
     this.barn = new MyBarn(this, -20, -100);
 
 
@@ -211,6 +216,8 @@ export class MyScene extends CGFscene {
     this.pushMatrix();
     this.wagon.display();
     this.popMatrix();
+
+    if (this.flowers) this.flowers.display();
 
     this.pushMatrix();
     this.barn.display();
