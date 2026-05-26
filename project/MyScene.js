@@ -11,7 +11,6 @@ import { MyHayBales } from "./elements/haybales/MyHayBales.js";
 import { BaleManager } from "./elements/haybales/MyBaleManager.js";
 import { AssetManager } from "./utils/AssetManager.js";
 import { GameController } from "./utils/GameController.js";
-import { MySphere } from "./shapes/MySphere.js";
 import { MyDeliveryCircle } from "./elements/MyDeliveryCircle.js";
 
 /**
@@ -56,7 +55,6 @@ export class MyScene extends CGFscene {
     //Objects connected to MyInterface
     this.displayAxis = true;
     this.displayLight0 = true;
-    this.displayColliders = true;
     this.scaleFactor = 1;
 
     this.setUpdatePeriod(1000 / 60);
