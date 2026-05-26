@@ -8,7 +8,6 @@ import { MyTrees } from "./elements/trees/MyTrees.js";
 import { MyGrass } from "./elements/MyGrass.js";
 import { MyWagon } from "./elements/wagon/MyWagon.js";
 import { MyBarn } from "./elements/MyBarn.js";
-import { MyDelimitedArea } from "./elements/MyDelimitedArea.js";
 import { MyHayBales } from "./elements/haybales/MyHayBales.js";
 import { BaleManager } from "./elements/haybales/MyBaleManager.js";
 import { AssetManager } from "./utils/AssetManager.js";
@@ -77,7 +76,6 @@ export class MyScene extends CGFscene {
     if (this.ready) {
       this.checkKeys(dt);
       this.wagon.update(dt);
-      this.delimitedArea.update(this.wagon);
       this.gameController.update(dt);
     }
   }
@@ -121,7 +119,6 @@ export class MyScene extends CGFscene {
 
     this.wagon = new MyWagon(this);
     this.barn = new MyBarn(this, -20, -100);
-    this.delimitedArea = new MyDelimitedArea(this, this.barn.x, this.barn.z, 16);
 
 
     this.greenCollisionAppearance = new CGFappearance(this);
