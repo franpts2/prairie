@@ -7,6 +7,7 @@ import { MyRocks } from "./elements/rocks/MyRocks.js";
 import { MyTrees } from "./elements/trees/MyTrees.js";
 import { MyGrass } from "./elements/MyGrass.js";
 import { MyWagon } from "./elements/wagon/MyWagon.js";
+import { MyBarn } from "./elements/MyBarn.js";
 import { MyHayBales } from "./elements/haybales/MyHayBales.js";
 import { BaleManager } from "./elements/haybales/MyBaleManager.js";
 import { AssetManager } from "./utils/AssetManager.js";
@@ -73,7 +74,32 @@ export class MyScene extends CGFscene {
     this.time += dt;
 
     if (this.ready) {
+      this.checkKeys(dt);
+      this.wagon.update(dt);
       this.gameController.update(dt);
+    }
+  }
+
+  checkKeys(dt) {
+    if (this.gui && typeof this.gui.isKeyPressed === 'function') {
+      if (this.gui.isKeyPressed("KeyW")) {
+        this.wagon.accelerate(dt);
+      } else if (this.gui.isKeyPressed("KeyS")) {
+        this.wagon.brake(dt);
+      } else {
+        this.wagon.decelerate(dt);
+      }
+
+      if (this.gui.isKeyPressed("KeyA")) {
+        this.wagon.steer(1, dt);
+      } else if (this.gui.isKeyPressed("KeyD")) {
+        this.wagon.steer(-1, dt);
+      } else {
+        this.wagon.steer(0, dt);
+      }
+    } else {
+      this.wagon.decelerate(dt);
+      this.wagon.steer(0, dt);
     }
   }
 
@@ -87,11 +113,13 @@ export class MyScene extends CGFscene {
     this.rocks = new MyRocks(this, this.ground);
     this.trees = new MyTrees(this, this.ground);
     this.grass = new MyGrass(this);
-    
+
     this.baleManager = new BaleManager(this);
     this.hayBales = new MyHayBales(this, this.baleManager);
 
     this.wagon = new MyWagon(this);
+    this.barn = new MyBarn(this, -20, -100);
+
 
     this.greenCollisionAppearance = new CGFappearance(this);
     this.greenCollisionAppearance.setAmbient(0.0, 0.8, 0.0, 0.3);
@@ -198,6 +226,10 @@ export class MyScene extends CGFscene {
 
     this.pushMatrix();
     this.wagon.display();
+    this.popMatrix();
+
+    this.pushMatrix();
+    this.barn.display();
     this.popMatrix();
   }
 }
