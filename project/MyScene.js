@@ -8,6 +8,7 @@ import { MyTrees } from "./elements/trees/MyTrees.js";
 import { MyGrass } from "./elements/MyGrass.js";
 import { MyWagon } from "./elements/wagon/MyWagon.js";
 import { MyHayBales } from "./elements/haybales/MyHayBales.js";
+import { BaleManager } from "./elements/haybales/MyBaleManager.js";
 import { AssetManager } from "./utils/AssetManager.js";
 import { GameController } from "./utils/GameController.js";
 import { MySphere } from "./shapes/MySphere.js";
@@ -86,7 +87,9 @@ export class MyScene extends CGFscene {
     this.rocks = new MyRocks(this, this.ground);
     this.trees = new MyTrees(this, this.ground);
     this.grass = new MyGrass(this);
-    this.hayBales = new MyHayBales(this, this.ground);
+    
+    this.baleManager = new BaleManager(this);
+    this.hayBales = new MyHayBales(this, this.baleManager);
 
     this.wagon = new MyWagon(this);
 

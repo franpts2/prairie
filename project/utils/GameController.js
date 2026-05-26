@@ -88,16 +88,16 @@ export class GameController {
         }
 
         // check collision with hay bales
-        if (this.scene.hayBales && this.scene.wagon) {
-            this.scene.hayBales.checkCollisions(this.scene.wagon, this, isP);
+        if (this.scene.baleManager && this.scene.wagon) {
+            this.scene.baleManager.checkCollisions(this.scene.wagon, this, isP);
         }
 
         // check drop/delivery action (when L is pressed)
-        if (isL && this.scene.hayBales && this.scene.wagon) {
+        if (isL && this.scene.baleManager && this.scene.wagon) {
             if (this.scene.deliveryCircle && this.scene.deliveryCircle.isIntersecting(this.scene.wagon)) {
                 this.deliverBales();
             } else {
-                this.scene.hayBales.dropBale(this.scene.wagon, this);
+                this.scene.baleManager.dropBale(this.scene.wagon, this);
             }
         }
     }
@@ -174,9 +174,9 @@ export class GameController {
 
             this.lastHeal = healing;
 
-            // relocate and release delivered bales in MyHayBales
-            if (this.scene.hayBales && this.scene.hayBales.hayBales) {
-                const capturedBales = this.scene.hayBales.hayBales.filter(b => b.captured);
+            // relocate and release delivered bales in BaleManager
+            if (this.scene.baleManager && this.scene.baleManager.hayBales) {
+                const capturedBales = this.scene.baleManager.hayBales.filter(b => b.captured);
                 this.haybaleplatform.depositBales(capturedBales, this.balesDelivered);
             }
 

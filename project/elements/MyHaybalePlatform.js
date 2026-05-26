@@ -39,6 +39,7 @@ export class MyHaybalePlatform {
 
             // Calculate height correction to cancel sloped terrain differences and align hay bales to the flat wooden floor
             const localHeight = this.scene.ground ? this.scene.ground.getHeight(bale.x, bale.z) : 0;
+            bale.y = localHeight + bale.scale * 0.5;
             const heightCorrection = unifiedGroundHeight - localHeight;
 
             // Shift haybales up by plankThickness, correct for terrain slope, and subtract half-height discrepancy so they sit directly on the wood planks (no space)
