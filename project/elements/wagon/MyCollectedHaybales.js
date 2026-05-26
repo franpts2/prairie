@@ -12,11 +12,10 @@ export class MyCollectedHaybales extends CGFobject {
 
     display() {
         const wagonBales = this.scene.gameController.wagonBales;
-        const baleScales = this.scene.gameController.wagonBaleScales || [];
+        const scale = 1.8;
         
         // bale 1 (close to the left wall)
         if (wagonBales >= 1) {
-            const scale = baleScales[0] || 1.8;
             this.scene.pushMatrix();
             this.scene.translate(-0.75, 1.3 + (0.6 * scale) / 2, 1.8); // X = -0.75 (left wall side), Z = 1.8 (leaving space to the back wall)
             this.scene.rotate(Math.PI / 2, 0, 1, 0); // Rotate lengthwise
@@ -27,7 +26,6 @@ export class MyCollectedHaybales extends CGFobject {
         
         // bale 2 (side-by-side with bale 1)
         if (wagonBales >= 2) {
-            const scale = baleScales[1] || 1.8;
             this.scene.pushMatrix();
             this.scene.translate(0.75, 1.3 + (0.6 * scale) / 2, 1.8); // X = 0.75 (right wall side), Z = 1.8 (leaving space to the back wall)
             this.scene.rotate(Math.PI / 2, 0, 1, 0); // Rotate lengthwise

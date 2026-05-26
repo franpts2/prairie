@@ -1,7 +1,7 @@
 import { CGFappearance } from "../../lib/CGF.js";
 import { TiledCube } from "../utils/TiledCube.js";
 
-export class MyDepositedHaybalesArea {
+export class MyHaybalePlatform {
     constructor(scene) {
         this.scene = scene;
 

@@ -1,4 +1,4 @@
-import { MyDepositedHaybalesArea } from "../elements/MyHaybalePlatform.js";
+import { MyHaybalePlatform } from "../elements/MyHaybalePlatform.js";
 
 export class GameController {
     constructor(scene) {
@@ -21,7 +21,7 @@ export class GameController {
         }
 
         // Target area to pile delivered hay bales neatly
-        this.depositedArea = new MyDepositedHaybalesArea(scene);
+        this.depositedArea = new MyHaybalePlatform(scene);
 
         // game state
         this.reset();
@@ -34,7 +34,6 @@ export class GameController {
         this.hp = this.INITIAL_HP;
         this.score = 0;
         this.wagonBales = 0;
-        this.wagonBaleScales = []; // Array to store exact scales of carried bales
         this.lastDamage = 0;
         this.lastHeal = 0;
         this.balesDelivered = 0;
@@ -170,7 +169,7 @@ export class GameController {
 
             this.lastHeal = healing;
 
-            // relocate and release delivered bales in MyHayBales using the new MyDepositedHaybalesArea class
+            // relocate and release delivered bales in MyHayBales using the new MyHaybalePlatform class
             if (this.scene.hayBales && this.scene.hayBales.hayBales) {
                 const capturedBales = this.scene.hayBales.hayBales.filter(b => b.captured);
                 this.depositedArea.depositBales(capturedBales, this.balesDelivered);
@@ -180,7 +179,6 @@ export class GameController {
             console.log(`Delivered ${this.wagonBales} hay bales! Healed ${healing} HP. Current HP: ${this.hp.toFixed(1)}`);
             
             this.wagonBales = 0;
-            this.wagonBaleScales = [];
         }
     }
 
@@ -192,7 +190,7 @@ export class GameController {
         if (this.isGameOver) return null;
         if (this.wagonBales > 0) {
             this.wagonBales--;
-            return this.wagonBaleScales.pop(); // Remove and return the last bale's scale
+            return 1.8; // All haybales have a uniform scale of 1.8
         }
         return null;
     }
@@ -200,11 +198,10 @@ export class GameController {
     /**
      * Capture a hay bale
      */
-    captureBale(scale = 1.75) {
-        if (this.isGameOver) return;
+    captureBale() {
+        if (this.isGameOver) return false;
         if (this.wagonBales < this.MAX_BALES) {
             this.wagonBales++;
-            this.wagonBaleScales.push(scale); // Store the bale's exact scale
             return true;
         }
         return false;
