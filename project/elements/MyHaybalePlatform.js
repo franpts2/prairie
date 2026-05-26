@@ -1,5 +1,5 @@
-import { MyUnitCube } from "../shapes/MyUnitCube.js";
 import { CGFappearance } from "../../lib/CGF.js";
+import { TiledCube } from "../utils/TiledCube.js";
 
 export class MyDepositedHaybalesArea {
     constructor(scene) {
@@ -63,9 +63,9 @@ export class MyDepositedHaybalesArea {
                 this.woodAppearance.setTextureWrap('REPEAT', 'REPEAT');
             }
 
-            // Set texture scaling matching physical plank and support dimensions to prevent stretching (matching wagon bed aspect ratio)
-            this.plankCube = new MyUnitCube(this.scene, 0.9, 0.15, 6.0);
-            this.supportCube = new MyUnitCube(this.scene, 5.9, 0.1, 0.25);
+            // Create pre-scaled tiled cubes
+            this.plank = new TiledCube(this.scene, 0.9, 0.15, 6.0);
+            this.support = new TiledCube(this.scene, 5.9, 0.1, 0.25);
         }
 
         if (this.woodAppearance) {
@@ -75,7 +75,6 @@ export class MyDepositedHaybalesArea {
         const totalPlanks = 6;
         const plankWidth = 0.9;
         const plankGap = 0.1;
-        const plankLength = 6.0;
 
         const totalWidth = totalPlanks * plankWidth + (totalPlanks - 1) * plankGap;
         const startX = this.centerX - totalWidth / 2 + plankWidth / 2;
@@ -84,32 +83,18 @@ export class MyDepositedHaybalesArea {
 
         // support beams below the planks
         const supportThickness = 0.1;
-        const supportWidthZ = 0.25;
-        const supportLengthX = totalWidth;
         const offsetZ = 2.2;
 
         const supportZs = [this.centerZ - offsetZ, this.centerZ + offsetZ];
         for (let sz of supportZs) {
             const sy = groundHeight - supportThickness / 2;
-
-            this.scene.pushMatrix();
-            this.scene.translate(this.centerX, sy, sz);
-            this.scene.scale(supportLengthX, supportThickness, supportWidthZ);
-            this.supportCube.display();
-            this.scene.popMatrix();
+            this.support.display(this.centerX, sy, sz);
         }
 
         for (let i = 0; i < totalPlanks; i++) {
             const px = startX + i * (plankWidth + plankGap);
-            const pz = this.centerZ;
-
             const py = groundHeight + this.plankThickness / 2;
-
-            this.scene.pushMatrix();
-            this.scene.translate(px, py, pz);
-            this.scene.scale(plankWidth, this.plankThickness, plankLength);
-            this.plankCube.display();
-            this.scene.popMatrix();
+            this.plank.display(px, py, this.centerZ);
         }
 
         this.scene.setDefaultAppearance();
