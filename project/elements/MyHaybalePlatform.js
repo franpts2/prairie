@@ -47,6 +47,8 @@ export class MyHaybalePlatform {
 
             bale.captured = false; // make it render again in the world
             bale.collider = null;  // remove collider so it can never be collected again
+            bale.onPlatform = true;
+            bale.visibilityProgress = 1.0;
         }
     }
 

@@ -110,6 +110,11 @@ export class BaleManager {
         for (const bale of this.hayBales) {
             if (bale.captured) continue;
 
+            if (bale.onPlatform) {
+                bale.visibilityProgress = 1.0;
+                continue;
+            }
+
             if (bale.visibilityProgress === undefined) {
                 bale.visibilityProgress = 0.0;
             }
