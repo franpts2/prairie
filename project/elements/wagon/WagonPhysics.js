@@ -15,15 +15,15 @@ export class WagonPhysics {
         this.currentlyColliding = new Set();
 
         this.speed = 0;
-        this.maxSpeed = 15;
-        this.acceleration = 6;
-        this.brakeDecel = 12;
+        this.maxSpeed = 10;
+        this.acceleration = 5;
+        this.brakeDecel = 11;
         this.friction = 2;
 
         // steering variables
         this.steerAngle = 0;
         this.maxSteerAngle = 45 * Math.PI / 180; // 45 degrees
-        this.steerSpeed = 1.0;
+        this.steerSpeed = 0.75;
         this.steerReturnSpeed = 2.0;
     }
 
