@@ -18,6 +18,7 @@ export class MyHaybalePlatform {
         this.baseZ = this.centerZ - ((this.rows - 1) * this.spacingZ) / 2; // -91.95
 
         this.plankThickness = 0.15;
+        this.supportThickness = 0.25;
     }
 
     depositBales(capturedBales, startIndex) {
@@ -37,13 +38,13 @@ export class MyHaybalePlatform {
             bale.z = this.baseZ + row * this.spacingZ;
             bale.rotation = Math.PI / 2; // aligned lengthwise
 
-            // Calculate height correction to cancel sloped terrain differences and align hay bales to the flat wooden floor
+            // calculate height correction to cancel sloped terrain differences and align hay bales to the flat wooden floor
             const localHeight = this.scene.ground ? this.scene.ground.getHeight(bale.x, bale.z) : 0;
             bale.y = localHeight + bale.scale * 0.5;
             const heightCorrection = unifiedGroundHeight - localHeight;
 
-            // Shift haybales up by plankThickness, correct for terrain slope, and subtract half-height discrepancy so they sit directly on the wood planks (no space)
-            bale.yOffset = heightCorrection + this.plankThickness - 0.2 * bale.scale + layer * (0.58 * bale.scale);
+            // shift haybales up by supportThickness + plankThickness, correct for terrain slope, and subtract half-height discrepancy so they sit directly on the wood planks
+            bale.yOffset = heightCorrection + this.supportThickness + this.plankThickness - 0.2 * bale.scale + layer * (0.58 * bale.scale);
 
             bale.captured = false; // make it render again in the world
             bale.collider = null;  // remove collider so it can never be collected again
@@ -66,9 +67,8 @@ export class MyHaybalePlatform {
                 this.woodAppearance.setTextureWrap('REPEAT', 'REPEAT');
             }
 
-            // Create pre-scaled tiled cubes
-            this.plank = new TiledCube(this.scene, 0.9, 0.15, 6.0);
-            this.support = new TiledCube(this.scene, 5.9, 0.1, 0.25);
+            this.plank = new TiledCube(this.scene, 0.9, this.plankThickness, 6.0);
+            this.support = new TiledCube(this.scene, 5.9, this.supportThickness, 0.25);
         }
 
         if (this.woodAppearance) {
@@ -85,18 +85,17 @@ export class MyHaybalePlatform {
         const groundHeight = this.scene.ground ? this.scene.ground.getHeight(this.centerX, this.centerZ) : 0;
 
         // support beams below the planks
-        const supportThickness = 0.1;
         const offsetZ = 2.2;
 
         const supportZs = [this.centerZ - offsetZ, this.centerZ + offsetZ];
         for (let sz of supportZs) {
-            const sy = groundHeight - supportThickness / 2;
+            const sy = groundHeight + this.supportThickness / 2;
             this.support.display(this.centerX, sy, sz);
         }
 
         for (let i = 0; i < totalPlanks; i++) {
             const px = startX + i * (plankWidth + plankGap);
-            const py = groundHeight + this.plankThickness / 2;
+            const py = groundHeight + this.supportThickness + this.plankThickness / 2;
             this.plank.display(px, py, this.centerZ);
         }
 
