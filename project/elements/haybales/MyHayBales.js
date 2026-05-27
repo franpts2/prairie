@@ -4,7 +4,7 @@ import { CGFappearance } from "../../../lib/CGF.js";
 export class MyHayBales {
     /**
      * @param {CGFscene} scene 
-     * @param {BaleManager} baleManager - Reference to the decoupled bale logic manager
+     * @param {BaleManager} baleManager
      */
     constructor(scene, baleManager) {
         this.scene = scene;
@@ -28,16 +28,31 @@ export class MyHayBales {
         return appearance;
     }
 
+    update(dt) {
+        if (this.baleManager) {
+            this.baleManager.update(dt);
+        }
+    }
+
+
     display() {
         if (!this.baleManager || !this.baleManager.hayBales) return;
 
         for (const bale of this.baleManager.hayBales) {
             if (bale.captured) continue;
 
+            const progress = bale.visibilityProgress !== undefined ? bale.visibilityProgress : 0.0;
+
+            if (progress <= 0.0) continue; // completely invisible
+
+            // Smoothstep easing for premium dynamic feel
+            const smoothT = progress * progress * (3 - 2 * progress);
+            const currentScale = bale.scale * smoothT;
+
             this.scene.pushMatrix();
             this.scene.translate(bale.x, bale.y + (bale.yOffset || 0), bale.z);
             this.scene.rotate(bale.rotation, 0, 1, 0);
-            this.scene.scale(bale.scale, bale.scale, bale.scale);
+            this.scene.scale(currentScale, currentScale, currentScale);
             this.hayBaleVisual.display();
             this.scene.popMatrix();
         }
