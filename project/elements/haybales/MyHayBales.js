@@ -29,37 +29,8 @@ export class MyHayBales {
     }
 
     update(dt) {
-        if (!this.baleManager || !this.baleManager.hayBales) return;
-
-        const wagon = this.scene.wagon;
-        if (!wagon) return;
-
-        const wagonX = wagon.x;
-        const wagonZ = wagon.z;
-        const VISIBILITY_RANGE = 40.0;
-        const TRANSITION_SPEED = 4.0; // 0.25 seconds to transition fully
-
-        for (const bale of this.baleManager.hayBales) {
-            if (bale.captured) continue;
-
-            if (bale.visibilityProgress === undefined) {
-                bale.visibilityProgress = 0.0;
-            }
-
-            const dx = bale.x - wagonX;
-            const dz = bale.z - wagonZ;
-            const distance = Math.sqrt(dx * dx + dz * dz);
-
-            const isNear = distance <= VISIBILITY_RANGE;
-            const target = isNear ? 1.0 : 0.0;
-
-            if (bale.visibilityProgress !== target) {
-                if (target > bale.visibilityProgress) {
-                    bale.visibilityProgress = Math.min(1.0, bale.visibilityProgress + TRANSITION_SPEED * dt);
-                } else {
-                    bale.visibilityProgress = Math.max(0.0, bale.visibilityProgress - TRANSITION_SPEED * dt);
-                }
-            }
+        if (this.baleManager) {
+            this.baleManager.update(dt);
         }
     }
 
