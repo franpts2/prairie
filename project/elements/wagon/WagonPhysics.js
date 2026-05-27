@@ -72,6 +72,7 @@ export class WagonPhysics {
 
         const newColliding = new Set();
         let collided = false;
+        let appliedKnockback = false;
 
         for (const obstacle of obstacles) {
             const staticCollider = obstacle.collider;
@@ -87,11 +88,23 @@ export class WagonPhysics {
                         this.scene.gameController.applyDamage(damage);
                         console.log(`Wagon hit a ${obstacle.type}! Took ${damage} HP damage. Remaining HP: ${this.scene.gameController.hp.toFixed(1)}`);
                     }
+
+                    if (obstacle.type === 'tree') {
+                        const knockbackSpeed = Math.max(4.0, Math.abs(this.speed) * 0.8);
+                        this.speed = -knockbackSpeed;
+                        appliedKnockback = true;
+                    }
+                } else if (obstacle.type === 'tree' && this.speed > 0) {
+                    // still driving into the tree, keep bouncing back
+                    this.speed = -2.0;
+                    appliedKnockback = true;
                 }
 
-                // Push-out and stop logic only applies to non-rock obstacles (e.g. trees)
+                // push-out and stop logic only applies to trees
                 if (obstacle.type !== 'rock') {
-                    collided = true;
+                    if (obstacle.type !== 'tree') {
+                        collided = true;
+                    }
 
                     // 3D push-out vector
                     const dx = this.x - staticCollider.x;
@@ -125,8 +138,8 @@ export class WagonPhysics {
         // update the set of currently colliding objects for the next frame
         this.currentlyColliding = newColliding;
 
-        if (collided) {
-            // stop the wagon on impact (only for non-rock obstacles)
+        if (collided && !appliedKnockback) {
+            // stop the wagon on impact (only for non-rock obstacles that didn't get knockback)
             this.speed = 0;
         }
     }
@@ -139,16 +152,18 @@ export class WagonPhysics {
     }
 
     brake(dt) {
-        this.speed -= this.brakeDecel * dt;
-        if (this.speed < 0) {
-            this.speed = 0;
+        if (this.speed > 0) {
+            this.speed = Math.max(0, this.speed - this.brakeDecel * dt);
+        } else if (this.speed < 0) {
+            this.speed = Math.min(0, this.speed + this.brakeDecel * dt);
         }
     }
 
     decelerate(dt) {
-        this.speed -= this.friction * dt;
-        if (this.speed < 0) {
-            this.speed = 0;
+        if (this.speed > 0) {
+            this.speed = Math.max(0, this.speed - this.friction * dt);
+        } else if (this.speed < 0) {
+            this.speed = Math.min(0, this.speed + this.friction * dt);
         }
     }
 
