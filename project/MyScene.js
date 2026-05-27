@@ -75,6 +75,7 @@ export class MyScene extends CGFscene {
     if (this.ready) {
       this.checkKeys(dt);
       this.wagon.update(dt);
+      if (this.hayBales) this.hayBales.update(dt);
       if (this.flowers) this.flowers.update(this.time);
       this.gameController.update(dt);
     }
