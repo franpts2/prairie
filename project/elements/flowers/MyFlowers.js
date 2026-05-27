@@ -55,7 +55,7 @@ export class MyFlowers {
             maxGroupSize: 30,
             minX, maxX, minZ, maxZ,
             minGroupDistance: 20,
-            clusterRadius: 30,
+            clusterRadius: { min: 5, max: 80 },
             minItemDistance: 2.0,
         });
 
