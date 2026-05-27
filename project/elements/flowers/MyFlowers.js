@@ -1,5 +1,5 @@
 import { MyFlower } from "./MyFlower.js";
-import * as PlacementUtils from "../utils/PlacementUtils.js";
+import * as PlacementUtils from "../../utils/PlacementUtils.js";
 
 export class MyFlowers {
     constructor(scene, ground) {

@@ -1,4 +1,4 @@
-import { MyHaybalePlatform } from "../elements/MyHaybalePlatform.js";
+import { MyHaybalePlatform } from "../elements/haybales/MyHaybalePlatform.js";
 import { MyHayBale } from "../elements/haybales/MyHayBale.js";
 
 export class GameController {

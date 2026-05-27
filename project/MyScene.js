@@ -11,7 +11,7 @@ import { MyBarn } from "./elements/MyBarn.js";
 import { MyHayBales } from "./elements/haybales/MyHayBales.js";
 import { BaleManager } from "./elements/haybales/MyBaleManager.js";
 import { AssetManager } from "./utils/AssetManager.js";
-import { MyFlowers } from "./elements/MyFlowers.js";
+import { MyFlowers } from "./elements/flowers/MyFlowers.js";
 import { GameController } from "./utils/GameController.js";
 import { MyDeliveryCircle } from "./elements/MyDeliveryCircle.js";
 

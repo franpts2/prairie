@@ -1,5 +1,5 @@
-import { CGFappearance } from "../../lib/CGF.js";
-import { TiledCube } from "../utils/TiledCube.js";
+import { CGFappearance } from "../../../lib/CGF.js";
+import { TiledCube } from "../../utils/TiledCube.js";
 
 export class MyHaybalePlatform {
     constructor(scene) {
