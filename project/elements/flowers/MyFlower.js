@@ -1,6 +1,6 @@
-import { CGFappearance } from "../../lib/CGF.js";
-import { MyCylinder } from "../shapes/MyCylinder.js";
-import { MySphere } from "../shapes/MySphere.js";
+import { CGFappearance } from "../../../lib/CGF.js";
+import { MyCylinder } from "../../shapes/MyCylinder.js";
+import { MySphere } from "../../shapes/MySphere.js";
 
 /**
  * MyFlower

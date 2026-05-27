@@ -78,7 +78,7 @@ export class MyRocks {
 
     initPlacement() {
         const groups = PlacementUtils.generateClusteredPositions({
-            groupCount: 10,
+            groupCount: 20,
             minGroupSize: 1,
             maxGroupSize: 10,
             minX: -120,
@@ -86,7 +86,7 @@ export class MyRocks {
             minZ: -120,
             maxZ: 120,
             minGroupDistance: 50,
-            clusterRadius: 20,
+            clusterRadius: { min: 5, max: 15 },
             minItemDistance: 5,
         });
 
