@@ -10,12 +10,12 @@ export class MyArrow {
         this.cylinder = new MyCylinder(scene, 12, 4, true);
         this.cone = new MyCone(scene, 12, 4);
 
-        // glossy bright red/orange
-        this.appearance = new CGFappearance(this.scene);
-        this.appearance.setAmbient(0.8, 0.15, 0.05, 1.0);
-        this.appearance.setDiffuse(0.95, 0.2, 0.05, 1.0);
-        this.appearance.setSpecular(0.8, 0.8, 0.8, 1.0);
-        this.appearance.setShininess(50.0);
+        // bright cyan
+        this.appearance = new CGFappearance(scene);
+        this.appearance.setAmbient(0.0, 1.0, 1.0, 1.0);
+        this.appearance.setDiffuse(0.0, 1.0, 1.0, 1.0);
+        this.appearance.setSpecular(0.5, 1.0, 1.0, 1.0);
+        this.appearance.setShininess(80.0);
     }
 
     /**
