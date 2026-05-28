@@ -29,8 +29,22 @@ export class WagonPhysics {
 
     update(dt) {
         // move wagon forward along local negative Z axis, rotated by this.angle
-        this.x += -this.speed * Math.sin(this.angle) * dt;
-        this.z += -this.speed * Math.cos(this.angle) * dt;
+        const newX = this.x - this.speed * Math.sin(this.angle) * dt;
+        const newZ = this.z - this.speed * Math.cos(this.angle) * dt;
+
+        const distanceSq = newX * newX + newZ * newZ;
+        const maxRadius = 200;
+        const maxRadiusSq = maxRadius * maxRadius;
+
+        if (distanceSq <= maxRadiusSq) {
+            this.x = newX;
+            this.z = newZ;
+        } else {
+            const distance = Math.sqrt(distanceSq);
+            this.x = (newX / distance) * maxRadius;
+            this.z = (newZ / distance) * maxRadius;
+            this.speed = 0;
+        }
 
         // adjust wagon orientation based on speed and steering angle
         // bicycle model: d(theta)/dt = (speed / L) * Math.sin(steerAngle)

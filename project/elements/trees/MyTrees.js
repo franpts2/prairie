@@ -70,6 +70,8 @@ export class MyTrees {
         for (const candidate of candidates) {
             const x = candidate.x;
             const z = candidate.z;
+            
+            if (x * x + z * z > 200 * 200) continue;
 
             const pathValue = this.getPathValue(x, z);
             if (pathValue > 0.15) continue;

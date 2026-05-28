@@ -95,6 +95,8 @@ export class MyGrass {
     for (const group of deadPatchGroups) {
       const groupSize = (0.7 + Math.random() * 0.4) * 0.75;
       for (const item of group.items) {
+        if (item.x * item.x + item.z * item.z > 200 * 200) continue;
+
         const height = this.getTerrainHeight(item.x, item.z);
         if (height < -0.5) continue;
 
@@ -140,6 +142,8 @@ export class MyGrass {
       for (let z = minZ; z <= maxZ; z += step) {
         const px = x + (Math.random() * 2 - 1) * jitter;
         const pz = z + (Math.random() * 2 - 1) * jitter;
+
+        if (px * px + pz * pz > 200 * 200) continue;
 
         const height = this.getTerrainHeight(px, pz);
         if (height < -0.5) continue;

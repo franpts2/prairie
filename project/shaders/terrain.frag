@@ -16,6 +16,10 @@ uniform bool uLightEnabled;
 uniform vec4 uLightPosition;
 
 void main() {
+  if (distance(vTextureCoord, vec2(0.5, 0.5)) > 0.5) {
+    discard;
+  }
+
   vec3 normal = normalize(vNormal);
   
   vec3 lightDir = normalize(vec3(0.45, 0.89, 0.16));

@@ -92,6 +92,9 @@ export class MyRocks {
 
         const rockCandidates = groups.flatMap((group, groupIndex) =>
             group.items.map((item, itemIndex) => {
+                
+                if (item.x * item.x + item.z * item.z > 200 * 200) return null;
+
                 const seed = groupIndex * 100 + itemIndex;
                 const size = this.getRockSize();
                 const height = this.ground ? this.ground.getHeight(item.x, item.z) : 0;
@@ -106,7 +109,7 @@ export class MyRocks {
                     collider: new CollisionSphere(item.x, rockY, item.z, size * 1.6)
                 };
             })
-        );
+        ).filter(item => item !== null);
 
         this.rockItems = [];
         rockCandidates

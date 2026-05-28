@@ -66,6 +66,8 @@ export class MyFlowers {
                 const x = item.x;
                 const z = item.z;
 
+                if (x * x + z * z > 200 * 200) continue;
+
                 // avoid the path
                 const pathValue = this.getPathValue(x, z);
                 if (pathValue > 0.15) continue;
