@@ -37,14 +37,14 @@ export class MyArrow {
 
         // draw cylinder
         this.scene.pushMatrix();
-        this.scene.scale(0.08, 0.08, 0.5); // length 0.5
+        this.scene.scale(0.16, 0.16, 1.0); // length 0.5
         this.cylinder.display();
         this.scene.popMatrix();
 
         // draw cone
         this.scene.pushMatrix();
-        this.scene.translate(0, 0, 0.5);
-        this.scene.scale(0.24, 0.24, 0.4);
+        this.scene.translate(0, 0, 1.0);
+        this.scene.scale(0.48, 0.48, 0.8);
         this.cone.display();
         this.scene.popMatrix();
 
