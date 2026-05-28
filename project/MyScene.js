@@ -104,6 +104,32 @@ export class MyScene extends CGFscene {
     }
   }
 
+  getColliders() {
+    const colliders = [];
+
+    if (this.rocks && this.rocks.rockItems) {
+      for (const rock of this.rocks.rockItems) {
+        if (rock.collider) {
+          colliders.push({ type: 'rock', item: rock, collider: rock.collider });
+        }
+      }
+    }
+
+    if (this.trees && this.trees.treeItems) {
+      for (const tree of this.trees.treeItems) {
+        if (tree.collider) {
+          colliders.push({ type: 'tree', item: tree, collider: tree.collider });
+        }
+      }
+    }
+
+    if (this.barn && this.barn.collider) {
+      colliders.push({ type: 'barn', item: this.barn, collider: this.barn.collider });
+    }
+
+    return colliders;
+  }
+
   initElements() {
     this.ground = new MyGround(this);
     this.sky = new MySky(this);

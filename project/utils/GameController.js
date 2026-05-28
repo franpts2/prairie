@@ -217,4 +217,20 @@ export class GameController {
         }
         return false;
     }
+
+    /**
+     * Handle gameplay consequences of a wagon collision
+     * @param {string} obstacleType - The type of obstacle collided with
+     */
+    onWagonCollision(obstacleType) {
+        if (obstacleType === 'barn') {
+            console.log("Wagon hit the barn! No damage taken.");
+            return;
+        }
+
+        // generate a random damage number between 5 and 15 for other obstacles
+        const damage = Math.floor(Math.random() * (15 - 5 + 1)) + 5;
+        this.applyDamage(damage);
+        console.log(`Wagon hit a ${obstacleType}! Took ${damage} HP damage. Remaining HP: ${this.hp.toFixed(1)}`);
+    }
 }

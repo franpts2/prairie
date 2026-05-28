@@ -52,104 +52,93 @@ export class WagonPhysics {
     resolveCollisions() {
         if (!this.collider) return;
 
-        const obstacles = [];
-
-        if (this.scene.rocks && this.scene.rocks.rockItems) {
-            for (const rock of this.scene.rocks.rockItems) {
-                if (rock.collider) {
-                    obstacles.push({ type: 'rock', item: rock, collider: rock.collider });
-                }
-            }
-        }
-
-        if (this.scene.trees && this.scene.trees.treeItems) {
-            for (const tree of this.scene.trees.treeItems) {
-                if (tree.collider) {
-                    obstacles.push({ type: 'tree', item: tree, collider: tree.collider });
-                }
-            }
-        }
-
-        if (this.scene.barn && this.scene.barn.collider) {
-            obstacles.push({ type: 'barn', item: this.scene.barn, collider: this.scene.barn.collider });
-        }
-
+        const obstacles = this.scene.getColliders ? this.scene.getColliders() : [];
         const newColliding = new Set();
         let collided = false;
         let appliedKnockback = false;
 
         for (const obstacle of obstacles) {
-            const staticCollider = obstacle.collider;
-            if (this.collider.collidesWith(staticCollider)) {
+            if (this.collider.collidesWith(obstacle.collider)) {
                 // track this active collision
                 newColliding.add(obstacle.item);
 
-                // if this is the FIRST FRAME OF CONTACT (was not colliding in the previous frame)
-                if (!this.currentlyColliding.has(obstacle.item)) {
-                    if (obstacle.type !== 'barn') {
-                        // generate a random damage number between 5 and 15
-                        const damage = Math.floor(Math.random() * (15 - 5 + 1)) + 5;
-                        if (this.scene.gameController) {
-                            this.scene.gameController.applyDamage(damage);
-                            console.log(`Wagon hit a ${obstacle.type}! Took ${damage} HP damage. Remaining HP: ${this.scene.gameController.hp.toFixed(1)}`);
-                        }
-                    } else {
-                        console.log(`Wagon hit a ${obstacle.type}! No damage taken.`);
-                    }
+                const response = this.handleCollisionResponse(obstacle);
+                if (response.appliedKnockback) appliedKnockback = true;
+                if (response.collided) collided = true;
 
-                    if (obstacle.type === 'tree' || obstacle.type === 'barn') {
-                        const knockbackSpeed = Math.max(4.0, Math.abs(this.speed) * 0.8);
-                        this.speed = -knockbackSpeed;
-                        appliedKnockback = true;
-                    }
-                } else if ((obstacle.type === 'tree' || obstacle.type === 'barn') && this.speed > 0) {
-                    // still driving into the tree/barn, keep bouncing back
-                    this.speed = -2.0;
-                    appliedKnockback = true;
-                }
-
-                // push-out and stop logic only applies to trees/barn
+                // push-out logic only applies to non-rock obstacles
                 if (obstacle.type !== 'rock') {
-                    if (obstacle.type !== 'tree' && obstacle.type !== 'barn') {
-                        collided = true;
-                    }
-
-                    // 3D push-out vector
-                    const dx = this.x - staticCollider.x;
-                    const dy = this.y - staticCollider.y;
-                    const dz = this.z - staticCollider.z;
-                    const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-                    const radiusSum = this.collider.radius + staticCollider.radius;
-
-                    if (distance > 0.001) {
-                        const overlap = radiusSum - distance;
-                        // push the wagon out
-                        this.x += (dx / distance) * overlap;
-                        this.z += (dz / distance) * overlap;
-                    } else {
-                        // fallback to avoid division by zero
-                        this.x += this.collider.radius + staticCollider.radius;
-                    }
-
-                    // update height to align with terrain at new position
-                    if (this.scene.ground) {
-                        this.y = this.scene.ground.getHeight(this.x, this.z);
-                    }
-
-                    // update the wagon's collider position
-                    this.collider.setPosition(this.x, this.y, this.z);
+                    this.pushOutFromObstacle(obstacle.collider);
                 }
             }
         }
 
-        // update the set of currently colliding objects for the next frame
         this.currentlyColliding = newColliding;
 
         if (collided && !appliedKnockback) {
-            // stop the wagon on impact (only for non-rock obstacles that didn't get knockback)
             this.speed = 0;
         }
+    }
+
+    handleCollisionResponse(obstacle) {
+        let appliedKnockback = false;
+        let collided = false;
+
+        const isFirstFrame = !this.currentlyColliding.has(obstacle.item);
+
+        if (isFirstFrame) {
+            if (this.scene.gameController && this.scene.gameController.onWagonCollision) {
+                this.scene.gameController.onWagonCollision(obstacle.type);
+            }
+
+            if (obstacle.type === 'tree' || obstacle.type === 'barn') {
+                this.applyKnockback();
+                appliedKnockback = true;
+            }
+        } else if ((obstacle.type === 'tree' || obstacle.type === 'barn') && this.speed > 0) {
+            // still driving into the obstacle, keep bouncing back
+            this.speed = -2.0;
+            appliedKnockback = true;
+        }
+
+        if (obstacle.type !== 'rock' && obstacle.type !== 'tree' && obstacle.type !== 'barn') {
+            collided = true;
+        }
+
+        return { appliedKnockback, collided };
+    }
+
+    applyKnockback() {
+        const knockbackSpeed = Math.max(4.0, Math.abs(this.speed) * 0.8);
+        this.speed = -knockbackSpeed;
+    }
+
+    pushOutFromObstacle(staticCollider) {
+        // 3D push-out vector
+        const dx = this.x - staticCollider.x;
+        const dy = this.y - staticCollider.y;
+        const dz = this.z - staticCollider.z;
+        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+        const radiusSum = this.collider.radius + staticCollider.radius;
+
+        if (distance > 0.001) {
+            const overlap = radiusSum - distance;
+            // push the wagon out
+            this.x += (dx / distance) * overlap;
+            this.z += (dz / distance) * overlap;
+        } else {
+            // fallback to avoid division by zero
+            this.x += this.collider.radius + staticCollider.radius;
+        }
+
+        // update height to align with terrain at new position
+        if (this.scene.ground) {
+            this.y = this.scene.ground.getHeight(this.x, this.z);
+        }
+
+        // update the wagon's collider position
+        this.collider.setPosition(this.x, this.y, this.z);
     }
 
     accelerate(dt) {
