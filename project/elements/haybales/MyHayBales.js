@@ -41,6 +41,9 @@ export class MyHayBales {
     display() {
         if (!this.baleManager || !this.baleManager.hayBales) return;
 
+        // uniform base time for animation
+        const time = this.scene.time || 0.0;
+
         for (const bale of this.baleManager.hayBales) {
             if (bale.captured) continue;
 
@@ -62,7 +65,8 @@ export class MyHayBales {
             // don't render the arrow if the bale is on the platform
             if (!bale.onPlatform) {
                 const phase = bale.x * 0.15 + bale.z * 0.15;
-                this.arrow.display(bale);
+                const bobOffset = Math.sin(time * 4.5 + phase) * 0.15;
+                this.arrow.display(bale, bobOffset);
             }
         }
     }

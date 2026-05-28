@@ -19,11 +19,12 @@ export class MyArrow {
     }
 
     /**
-     * Renders a floating arrow above a target position
+     * Renders a floating, bobbing arrow above a target position
      * @param {Object} target - Object with coordinates x, y, z
+     * @param {number} bobOffset - Vertical animation offset
      */
-    display(target) {
-        const hoverHeight = 4.0;
+    display(target, bobOffset = 0.0) {
+        const hoverHeight = 4.0 + bobOffset;
 
         this.scene.pushMatrix();
         
