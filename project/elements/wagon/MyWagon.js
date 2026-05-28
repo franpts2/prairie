@@ -6,6 +6,7 @@ import { MySeat } from './MySeat.js';
 import { MyCover } from './MyCover.js';
 import { MyCollectedHaybales } from './MyCollectedHaybales.js';
 import { WagonPhysics } from './WagonPhysics.js';
+import { MyCylinder } from '../../shapes/MyCylinder.js';
 
 export class MyWagon extends CGFobject {
     constructor(scene, physics) {
@@ -36,6 +37,8 @@ export class MyWagon extends CGFobject {
         this.seat = new MySeat(scene, 2, this.woodAppearance);
         this.cover = new MyCover(scene, 2.5, this.woodAppearance, this.metalAppearance);
         this.collectedBales = new MyCollectedHaybales(scene);
+        this.wheelRotationAngle = 0;
+        this.pivotPin = new MyCylinder(scene, 12, 1, true);
 
         // Damage & Heal flash feedback states
         this.damageFlashTimer = 0;
@@ -99,6 +102,7 @@ export class MyWagon extends CGFobject {
 
     update(dt) {
         this.physics.update(dt);
+        this.wheelRotationAngle -= (this.speed * dt) / 1.0;
 
         // decrement flash timers
         if (this.damageFlashTimer > 0) {
@@ -170,14 +174,21 @@ export class MyWagon extends CGFobject {
         // --- Back Wheel Set ---
         this.scene.pushMatrix();
         this.scene.translate(0, 1, 2.4);
-        this.wheelSet.display();
+        this.wheelSet.display(this.wheelRotationAngle);
         this.scene.popMatrix();
 
         // --- Front Wheel Set ---
         this.scene.pushMatrix();
         this.scene.translate(0, 1, -2.4);
         this.scene.rotate(this.steerAngle, 0, 1, 0);
-        this.wheelSet.display();
+        this.scene.pushMatrix();
+        this.metalAppearance.apply();
+        this.scene.rotate(Math.PI / 2, 1, 0, 0);
+        this.scene.translate(0, 0, -0.4);
+        this.scene.scale(0.15, 0.15, 0.8);
+        this.pivotPin.display();
+        this.scene.popMatrix();
+        this.wheelSet.display(this.wheelRotationAngle);
         this.scene.popMatrix();
 
         // --- Front Tongue ---
