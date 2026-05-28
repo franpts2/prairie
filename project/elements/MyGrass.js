@@ -84,12 +84,12 @@ export class MyGrass {
 
     const deadPatchGroups = PlacementUtils.generateClusteredPositions({
       groupCount: 70,
-      minGroupSize: 30,
-      maxGroupSize: 80,
+      minGroupSize: 80,
+      maxGroupSize: 200,
       minX, maxX, minZ, maxZ,
       minGroupDistance: 15,
       clusterRadius: { min: 8, max: 22 },
-      minItemDistance: 0.8,
+      minItemDistance: 0.2,
     });
 
     for (const group of deadPatchGroups) {
