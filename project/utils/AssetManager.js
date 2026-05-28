@@ -25,8 +25,8 @@ export class AssetManager {
             rock4: "./textures/rocks/rock4.png",
             wood: "./textures/wood.png",
             leaves: "./textures/leaves.png",
-            barnDoor: "./textures/barndoor.png",
-            barnWindow: "./textures/barnwindow.png",
+            barnDoor: "./textures/barn/barndoor.png",
+            barnWindow: "./textures/barn/barnwindow.png",
             hay: "./textures/hay.png"
         };
     }
