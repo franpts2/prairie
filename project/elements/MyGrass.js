@@ -181,7 +181,11 @@ export class MyGrass {
     this.scene.gl.depthMask(false);
 
     this.scene.setActiveShader(this.grassShader);
-    this.grassShader.setUniformsValues({ uTime: this.scene.time });
+    this.grassShader.setUniformsValues({
+      uTime: this.scene.time,
+      uLightEnabled: this.scene.lights[0].enabled,
+      uLightPosition: this.scene.lights[0].position
+    });
 
     this.liveAppearance.apply();
     for (const mesh of this.liveMeshes) {

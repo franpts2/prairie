@@ -7,6 +7,9 @@ varying vec3 vNormal;
 
 uniform sampler2D uSampler;
 
+uniform bool uLightEnabled;
+uniform vec4 uLightPosition;
+
 void main() {
     vec4 color = texture2D(uSampler, vTextureCoord);
     
@@ -18,9 +21,15 @@ void main() {
     float heightFactor = 1.0 - vTextureCoord.y;
     vec3 darkenedColor = color.rgb * (0.6 + 0.4 * heightFactor);
 
-    // Simple lighting
     vec3 lightDir = normalize(vec3(0.4, 0.8, 0.4));
-    float diffuse = max(dot(vNormal, lightDir), 0.7);
+    float diffuse = max(abs(dot(vNormal, lightDir)), 0.0);
+    float softLight = 0.42; // global ambient base
+
+    if (uLightEnabled) {
+        lightDir = normalize(uLightPosition.xyz);
+        diffuse = max(abs(dot(vNormal, lightDir)), 0.0);
+        softLight = 0.42 + diffuse * 0.58;
+    }
     
-    gl_FragColor = vec4(darkenedColor * diffuse, color.a);
+    gl_FragColor = vec4(darkenedColor * softLight, color.a);
 }
