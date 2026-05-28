@@ -57,7 +57,7 @@ export class MyBarn extends CGFobject {
         this.windowAppearance.setTexture(scene.assetManager.getTexture('barnWindow'));
         this.windowAppearance.setTextureWrap('CLAMP_TO_EDGE', 'CLAMP_TO_EDGE');
 
-        this.collider = new CollisionSphere(this.x, this.y, this.z, 15.0);
+        this.collider = new CollisionSphere(this.x, this.y, this.z, 13.0);
     }
 
     display() {

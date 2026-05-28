@@ -86,11 +86,15 @@ export class WagonPhysics {
 
                 // if this is the FIRST FRAME OF CONTACT (was not colliding in the previous frame)
                 if (!this.currentlyColliding.has(obstacle.item)) {
-                    // generate a random damage number between 5 and 15
-                    const damage = Math.floor(Math.random() * (15 - 5 + 1)) + 5;
-                    if (this.scene.gameController) {
-                        this.scene.gameController.applyDamage(damage);
-                        console.log(`Wagon hit a ${obstacle.type}! Took ${damage} HP damage. Remaining HP: ${this.scene.gameController.hp.toFixed(1)}`);
+                    if (obstacle.type !== 'barn') {
+                        // generate a random damage number between 5 and 15
+                        const damage = Math.floor(Math.random() * (15 - 5 + 1)) + 5;
+                        if (this.scene.gameController) {
+                            this.scene.gameController.applyDamage(damage);
+                            console.log(`Wagon hit a ${obstacle.type}! Took ${damage} HP damage. Remaining HP: ${this.scene.gameController.hp.toFixed(1)}`);
+                        }
+                    } else {
+                        console.log(`Wagon hit a ${obstacle.type}! No damage taken.`);
                     }
 
                     if (obstacle.type === 'tree' || obstacle.type === 'barn') {
