@@ -7,7 +7,7 @@ import { MyRocks } from "./elements/rocks/MyRocks.js";
 import { MyTrees } from "./elements/trees/MyTrees.js";
 import { MyGrass } from "./elements/MyGrass.js";
 import { MyWagon } from "./elements/wagon/MyWagon.js";
-import { MyBarn } from "./elements/MyBarn.js";
+import { MyBarn } from "./elements/barn/MyBarn.js";
 import { MyHayBales } from "./elements/haybales/MyHayBales.js";
 import { BaleManager } from "./elements/haybales/MyBaleManager.js";
 import { AssetManager } from "./utils/AssetManager.js";
@@ -102,6 +102,32 @@ export class MyScene extends CGFscene {
       this.wagon.decelerate(dt);
       this.wagon.steer(0, dt);
     }
+  }
+
+  getColliders() {
+    const colliders = [];
+
+    if (this.rocks && this.rocks.rockItems) {
+      for (const rock of this.rocks.rockItems) {
+        if (rock.collider) {
+          colliders.push({ type: 'rock', item: rock, collider: rock.collider });
+        }
+      }
+    }
+
+    if (this.trees && this.trees.treeItems) {
+      for (const tree of this.trees.treeItems) {
+        if (tree.collider) {
+          colliders.push({ type: 'tree', item: tree, collider: tree.collider });
+        }
+      }
+    }
+
+    if (this.barn && this.barn.collider) {
+      colliders.push({ type: 'barn', item: this.barn, collider: this.barn.collider });
+    }
+
+    return colliders;
   }
 
   initElements() {
