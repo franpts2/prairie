@@ -2,13 +2,19 @@ import { CGFobject, CGFappearance } from '../../lib/CGF.js';
 import { MyUnitCube } from '../shapes/MyUnitCube.js';
 import { MyPrism } from '../shapes/MyPrism.js';
 import { MyPlane } from '../shapes/MyPlane.js';
+import { CollisionSphere } from '../utils/CollisionSphere.js';
 
 export class MyBarn extends CGFobject {
     constructor(scene, x = 20, z = -20) {
         super(scene);
         this.x = x;
         this.z = z;
-        this.y = 0;
+        
+        if (scene.ground) {
+            this.y = scene.ground.getHeight(this.x, this.z);
+        } else {
+            this.y = 0;
+        }
 
         this.width = 10;
         this.height = 8;
@@ -50,11 +56,16 @@ export class MyBarn extends CGFobject {
         this.windowAppearance.setShininess(30.0);
         this.windowAppearance.setTexture(scene.assetManager.getTexture('barnWindow'));
         this.windowAppearance.setTextureWrap('CLAMP_TO_EDGE', 'CLAMP_TO_EDGE');
+
+        this.collider = new CollisionSphere(this.x, this.y, this.z, 15.0);
     }
 
     display() {
         if (this.scene.ground && this.y === 0) {
             this.y = this.scene.ground.getHeight(this.x, this.z);
+            if (this.collider) {
+                this.collider.setPosition(this.x, this.y, this.z);
+            }
         }
 
         const zFightOffset = 0.015;

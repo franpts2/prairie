@@ -70,6 +70,10 @@ export class WagonPhysics {
             }
         }
 
+        if (this.scene.barn && this.scene.barn.collider) {
+            obstacles.push({ type: 'barn', item: this.scene.barn, collider: this.scene.barn.collider });
+        }
+
         const newColliding = new Set();
         let collided = false;
         let appliedKnockback = false;
@@ -89,20 +93,20 @@ export class WagonPhysics {
                         console.log(`Wagon hit a ${obstacle.type}! Took ${damage} HP damage. Remaining HP: ${this.scene.gameController.hp.toFixed(1)}`);
                     }
 
-                    if (obstacle.type === 'tree') {
+                    if (obstacle.type === 'tree' || obstacle.type === 'barn') {
                         const knockbackSpeed = Math.max(4.0, Math.abs(this.speed) * 0.8);
                         this.speed = -knockbackSpeed;
                         appliedKnockback = true;
                     }
-                } else if (obstacle.type === 'tree' && this.speed > 0) {
-                    // still driving into the tree, keep bouncing back
+                } else if ((obstacle.type === 'tree' || obstacle.type === 'barn') && this.speed > 0) {
+                    // still driving into the tree/barn, keep bouncing back
                     this.speed = -2.0;
                     appliedKnockback = true;
                 }
 
-                // push-out and stop logic only applies to trees
+                // push-out and stop logic only applies to trees/barn
                 if (obstacle.type !== 'rock') {
-                    if (obstacle.type !== 'tree') {
+                    if (obstacle.type !== 'tree' && obstacle.type !== 'barn') {
                         collided = true;
                     }
 
