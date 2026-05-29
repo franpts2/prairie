@@ -62,6 +62,9 @@ export class MyWagon extends CGFobject {
     get angle() { return this.physics.angle; }
     set angle(val) { this.physics.angle = val; }
 
+    get pitchAngle() { return this.physics.pitchAngle || 0; }
+    set pitchAngle(val) { this.physics.pitchAngle = val; }
+
     get radius() { return this.physics.radius; }
     set radius(val) { this.physics.radius = val; }
 
@@ -158,6 +161,7 @@ export class MyWagon extends CGFobject {
 
         this.scene.translate(this.x, this.y, this.z);
         this.scene.rotate(this.angle, 0, 1, 0);
+        this.scene.rotate(this.pitchAngle, 1, 0, 0);
 
         // --- Bed ---
         this.scene.pushMatrix();

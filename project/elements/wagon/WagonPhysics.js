@@ -9,6 +9,8 @@ export class WagonPhysics {
         this.y = 0;
         this.z = 0;
         this.angle = 0;
+        this.pitchAngle = 0;
+        this.heightOffset = 0.15;
         this.radius = 5;
 
         this.collider = new CollisionSphere(this.x, this.y, this.z, this.radius);
@@ -53,7 +55,19 @@ export class WagonPhysics {
 
         // align height to terrain
         if (this.scene.ground) {
-            this.y = this.scene.ground.getHeight(this.x, this.z);
+            const frontX = this.x - 2.4 * Math.sin(this.angle);
+            const frontZ = this.z - 2.4 * Math.cos(this.angle);
+            const backX = this.x + 2.4 * Math.sin(this.angle);
+            const backZ = this.z + 2.4 * Math.cos(this.angle);
+
+            const yFront = this.scene.ground.getHeight(frontX, frontZ);
+            const yBack = this.scene.ground.getHeight(backX, backZ);
+
+            this.y = (yFront + yBack) / 2 + this.heightOffset;
+            this.pitchAngle = Math.asin(Math.max(-1.0, Math.min(1.0, (yFront - yBack) / 4.8)));
+        } else {
+            this.y = 0;
+            this.pitchAngle = 0;
         }
 
         if (this.collider) {
@@ -148,7 +162,16 @@ export class WagonPhysics {
 
         // update height to align with terrain at new position
         if (this.scene.ground) {
-            this.y = this.scene.ground.getHeight(this.x, this.z);
+            const frontX = this.x - 2.4 * Math.sin(this.angle);
+            const frontZ = this.z - 2.4 * Math.cos(this.angle);
+            const backX = this.x + 2.4 * Math.sin(this.angle);
+            const backZ = this.z + 2.4 * Math.cos(this.angle);
+
+            const yFront = this.scene.ground.getHeight(frontX, frontZ);
+            const yBack = this.scene.ground.getHeight(backX, backZ);
+
+            this.y = (yFront + yBack) / 2 + this.heightOffset;
+            this.pitchAngle = Math.asin(Math.max(-1.0, Math.min(1.0, (yFront - yBack) / 4.8)));
         }
 
         // update the wagon's collider position
