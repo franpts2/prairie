@@ -1,15 +1,9 @@
 import { CGFobject } from '../../../lib/CGF.js';
 
-export class MyFlowerPetalsMesh extends CGFobject {
-    constructor(scene, params) {
+export class MyFlowersCentersMesh extends CGFobject {
+    constructor(scene, flowerItems) {
         super(scene);
-        this.petalCount = params.petalCount || 12;
-        this.petalWidth = params.petalWidth || 0.25;
-        this.petalLength = params.petalLength || 0.85;
-        this.petalThickness = params.petalThickness || 0.05;
-        this.petalTiltOuter = params.petalTiltOuter || 0.10;
-        this.petalTiltInner = params.petalTiltInner || 0.10;
-        this.centerRadius = params.centerRadius || 0.4;
+        this.flowerItems = flowerItems;
         this.initBuffers();
     }
 
@@ -19,9 +13,9 @@ export class MyFlowerPetalsMesh extends CGFobject {
         this.normals = [];
         this.texCoords = [];
 
-        // base unit sphere coordinates (radius 0.5)
-        const slices = 16;
-        const stacks = 8;
+        // base hemisphere coordinates (slices = 20, stacks = 10, radius = 0.5)
+        const slices = 20;
+        const stacks = 10;
         const radius = 0.5;
 
         const baseVerts = [];
@@ -63,15 +57,26 @@ export class MyFlowerPetalsMesh extends CGFobject {
 
         let vertexOffset = 0;
 
-        const addPetal = (angle, translateX, translateY, translateZ, tilt, scaleX, scaleY, scaleZ) => {
-            const m = mat4.create();
-            mat4.rotateY(m, m, angle);
-            mat4.translate(m, m, vec3.fromValues(translateX, translateY, translateZ));
-            mat4.rotateZ(m, m, tilt - Math.PI / 2);
-            mat4.rotateY(m, m, Math.PI / 2);
-            mat4.scale(m, m, vec3.fromValues(scaleX, scaleY, scaleZ));
+        for (const item of this.flowerItems) {
+            const f = item.flower;
+            const flowerScale = f.flowerScale;
 
-            const normMat = mat4.clone(m);
+            const F = mat4.create();
+            mat4.translate(F, F, vec3.fromValues(item.x, item.y, item.z));
+            mat4.scale(F, F, vec3.fromValues(flowerScale, flowerScale, flowerScale));
+
+            const m = mat4.create();
+            for (let seg = 0; seg < f.numStemSegments; seg++) {
+                mat4.rotateZ(m, m, 0.05);
+                mat4.rotateX(m, m, 0.02);
+                mat4.translate(m, m, vec3.fromValues(0, f.segmentLength, 0));
+            }
+
+            const drawMat = mat4.create();
+            mat4.multiply(drawMat, F, m);
+            mat4.scale(drawMat, drawMat, vec3.fromValues(-f.centerRadius, f.centerHeight, f.centerRadius));
+
+            const normMat = mat4.clone(drawMat);
             normMat[12] = 0;
             normMat[13] = 0;
             normMat[14] = 0;
@@ -79,7 +84,7 @@ export class MyFlowerPetalsMesh extends CGFobject {
             for (let i = 0; i < baseVerts.length; i += 3) {
                 const v = vec3.fromValues(baseVerts[i], baseVerts[i+1], baseVerts[i+2]);
                 const tv = vec3.create();
-                vec3.transformMat4(tv, v, m);
+                vec3.transformMat4(tv, v, drawMat);
                 this.vertices.push(tv[0], tv[1], tv[2]);
 
                 const n = vec3.fromValues(baseNorms[i], baseNorms[i+1], baseNorms[i+2]);
@@ -88,7 +93,8 @@ export class MyFlowerPetalsMesh extends CGFobject {
                 vec3.normalize(tn, tn);
                 this.normals.push(tn[0], tn[1], tn[2]);
 
-                this.texCoords.push(baseTex[(i/3)*2], baseTex[(i/3)*2 + 1]);
+                // sway factor for centers is always 1.0 (fully swaying at the top)
+                this.texCoords.push(1.0, 0.0);
             }
 
             for (let i = 0; i < baseIndices.length; i++) {
@@ -96,30 +102,6 @@ export class MyFlowerPetalsMesh extends CGFobject {
             }
 
             vertexOffset += baseVerts.length / 3;
-        };
-
-        // outer layer of petals
-        const numOuter = Math.max(4, this.petalCount);
-        for (let i = 0; i < numOuter; i++) {
-            const angle = (i * 2 * Math.PI) / numOuter;
-            addPetal(
-                angle,
-                this.centerRadius * 0.45, 0, 0,
-                this.petalTiltOuter,
-                -this.petalWidth, this.petalLength, this.petalThickness
-            );
-        }
-
-        // inner layer of petals
-        const numInner = Math.max(4, Math.floor(this.petalCount * 0.85));
-        for (let i = 0; i < numInner; i++) {
-            const angle = ((i + 0.5) * 2 * Math.PI) / numInner;
-            addPetal(
-                angle,
-                this.centerRadius * 0.35, 0.05, 0,
-                this.petalTiltInner,
-                -this.petalWidth * 0.85, this.petalLength * 0.8, this.petalThickness * 0.85
-            );
         }
 
         this.primitiveType = this.scene.gl.TRIANGLES;
