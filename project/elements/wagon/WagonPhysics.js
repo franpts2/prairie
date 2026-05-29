@@ -15,6 +15,7 @@ export class WagonPhysics {
 
         this.collider = new CollisionSphere(this.x, this.y, this.z, this.radius);
         this.currentlyColliding = new Set();
+        this.wasOutOfBounds = false;
 
         this.speed = 0;
         this.maxSpeed = 10;
@@ -41,11 +42,30 @@ export class WagonPhysics {
         if (distanceSq <= maxRadiusSq) {
             this.x = newX;
             this.z = newZ;
+            this.wasOutOfBounds = false;
         } else {
             const distance = Math.sqrt(distanceSq);
-            this.x = (newX / distance) * maxRadius;
-            this.z = (newZ / distance) * maxRadius;
-            this.speed = 0;
+            this.x = (newX / distance) * (maxRadius - 0.5);
+            this.z = (newZ / distance) * (maxRadius - 0.5);
+
+            if (!this.wasOutOfBounds) {
+                this.wasOutOfBounds = true;
+
+                if (this.scene.gameController && this.scene.gameController.onWagonCollision) {
+                    this.scene.gameController.onWagonCollision('world_limit');
+                }
+
+                const knockbackSpeed = Math.max(4.0, Math.abs(this.speed) * 0.8);
+                if (this.speed > 0) {
+                    this.speed = -knockbackSpeed;
+                } else if (this.speed < 0) {
+                    this.speed = knockbackSpeed;
+                } else {
+                    this.speed = -4.0;
+                }
+            } else {
+                this.speed = this.speed > 0 ? -2.0 : 2.0;
+            }
         }
 
         // adjust wagon orientation based on speed and steering angle
