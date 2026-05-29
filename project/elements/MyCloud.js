@@ -4,7 +4,7 @@ import { MySphere } from "../shapes/MySphere.js";
 export class MyCloud {
   constructor(scene) {
     this.scene = scene;
-    this.sphere = new MySphere(scene, 150, 150);
+    this.sphere = new MySphere(scene, 32, 16);
     this.rotation = 0;
     
     this.appearance = new CGFappearance(scene);
