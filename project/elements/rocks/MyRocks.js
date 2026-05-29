@@ -2,6 +2,7 @@ import { MyRock } from "./MyRock.js";
 import { CGFappearance, CGFtexture } from "../../../lib/CGF.js";
 import * as PlacementUtils from "../../utils/PlacementUtils.js";
 import { CollisionSphere } from "../../utils/CollisionSphere.js";
+import { MyRocksMesh } from "./MyRocksMesh.js";
 
 export class MyRocks {
     constructor(scene, ground) {
@@ -122,17 +123,25 @@ export class MyRocks {
                     this.rockItems.push(candidate);
                 }
             });
+
+        // Build the batched meshes per texture appearance group
+        this.rockMeshes = [];
+        for (let i = 0; i < this.rockAppearances.length; i++) {
+            const groupRocks = this.rockItems.filter(r => (r.rock.seed % this.rockAppearances.length) === i);
+            if (groupRocks.length > 0) {
+                this.rockMeshes[i] = new MyRocksMesh(this.scene, groupRocks, this.ground);
+            } else {
+                this.rockMeshes[i] = null;
+            }
+        }
     }
 
     display() {
-        for (const rock of this.rockItems) {
-            const height = this.ground ? this.ground.getHeight(rock.x, rock.z) : 0;
-            this.scene.pushMatrix();
-            this.scene.translate(rock.x, height + rock.size * 0.2, rock.z);
-            this.scene.rotate(rock.rotation, 0, 1, 0);
-            this.scene.scale(rock.size, rock.size, rock.size);
-            rock.rock.display();
-            this.scene.popMatrix();
+        for (let i = 0; i < this.rockAppearances.length; i++) {
+            if (this.rockMeshes[i]) {
+                this.rockAppearances[i].apply();
+                this.rockMeshes[i].display();
+            }
         }
     }
 }
