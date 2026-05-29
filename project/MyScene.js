@@ -62,6 +62,29 @@ export class MyScene extends CGFscene {
     this.setUpdatePeriod(1000 / 60);
     this.lastTime = 0;
     this.time = 0;
+
+    // Temporary FPS Overlay setup
+    this.fpsDiv = document.createElement("div");
+    this.fpsDiv.style.position = "absolute";
+    this.fpsDiv.style.top = "16px";
+    this.fpsDiv.style.left = "16px";
+    this.fpsDiv.style.color = "#ff3333";
+    this.fpsDiv.style.backgroundColor = "rgba(15, 15, 15, 0.85)";
+    this.fpsDiv.style.padding = "8px 14px";
+    this.fpsDiv.style.fontFamily = "'Courier New', Courier, monospace";
+    this.fpsDiv.style.fontSize = "15px";
+    this.fpsDiv.style.fontWeight = "bold";
+    this.fpsDiv.style.borderRadius = "6px";
+    this.fpsDiv.style.zIndex = "9999";
+    this.fpsDiv.style.border = "1px solid #ff3333";
+    this.fpsDiv.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.5), 0 0 8px rgba(255, 51, 51, 0.2)";
+    this.fpsDiv.style.backdropFilter = "blur(4px)";
+    this.fpsDiv.style.transition = "all 0.3s ease";
+    this.fpsDiv.innerHTML = "FPS: --";
+    document.body.appendChild(this.fpsDiv);
+
+    this.fpsFrames = 0;
+    this.fpsLastCheck = 0;
   }
 
   update(t) {
@@ -71,6 +94,35 @@ export class MyScene extends CGFscene {
     const dt = (t - this.lastTime) / 1000;
     this.lastTime = t;
     this.time += dt;
+
+    // Track FPS
+    this.fpsFrames++;
+    if (this.fpsLastCheck === 0) {
+      this.fpsLastCheck = t;
+    }
+    if (t - this.fpsLastCheck >= 1000) {
+      const fps = Math.round((this.fpsFrames * 1000) / (t - this.fpsLastCheck));
+      if (this.fpsDiv) {
+        this.fpsDiv.innerHTML = `FPS: ${fps}`;
+        
+        // Color transition depending on game performance
+        if (fps >= 45) {
+          this.fpsDiv.style.color = "#2ec4b6"; // Neon Teal
+          this.fpsDiv.style.borderColor = "#2ec4b6";
+          this.fpsDiv.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.5), 0 0 8px rgba(46, 196, 182, 0.2)";
+        } else if (fps >= 25) {
+          this.fpsDiv.style.color = "#ff9f1c"; // Vibrant Orange
+          this.fpsDiv.style.borderColor = "#ff9f1c";
+          this.fpsDiv.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.5), 0 0 8px rgba(255, 159, 28, 0.2)";
+        } else {
+          this.fpsDiv.style.color = "#e63946"; // Vibrant Red
+          this.fpsDiv.style.borderColor = "#e63946";
+          this.fpsDiv.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.5), 0 0 8px rgba(230, 57, 70, 0.2)";
+        }
+      }
+      this.fpsFrames = 0;
+      this.fpsLastCheck = t;
+    }
 
     if (this.ready) {
       this.checkKeys(dt);

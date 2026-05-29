@@ -1,5 +1,9 @@
 import { MyFlower } from "./MyFlower.js";
 import * as PlacementUtils from "../../utils/PlacementUtils.js";
+import { CGFshader } from "../../../lib/CGF.js";
+import { MyFlowersStemsMesh } from "./MyFlowersStemsMesh.js";
+import { MyFlowersCentersMesh } from "./MyFlowersCentersMesh.js";
+import { MyFlowersPetalsMesh } from "./MyFlowersPetalsMesh.js";
 
 export class MyFlowers {
     constructor(scene, ground) {
@@ -7,9 +11,27 @@ export class MyFlowers {
         this.ground = ground;
         this.flowerItems = [];
         this.terrainSize = 400;
+        this.time = 0;
 
         const pathData = scene.assetManager.getPixelData('path');
         this.pathMapImage = pathData;
+
+        this.flowerColors = [
+            [0.87, 0.02, 0.15],  // red
+            [0.82, 0.44, 0.06],  // orange
+            [1, 0.91, 0.36],     // yellow
+            [0.35, 0.51, 0.28],  // green
+            [0.20, 0.35, 0.46],  // blue
+            [0.87, 0.07, 0.33],  // magenta
+            [1, 0.44, 0.55],     // pink
+            [0.46, 0.41, 0.71],  // lilac
+        ];
+
+        this.flowerShader = new CGFshader(scene.gl, "shaders/flower.vert", "shaders/flower.frag");
+        this.flowerShader.setUniformsValues({
+            uWindSpeed: 1.8,
+            uWindStrength: 0.06
+        });
 
         this.initPlacement();
     }
@@ -36,17 +58,6 @@ export class MyFlowers {
         const maxX = halfSize;
         const minZ = -halfSize;
         const maxZ = halfSize;
-
-        const flowerColors = [
-            [0.87, 0.02, 0.15],  // Red
-            [0.82, 0.44, 0.06],  // Orange
-            [1, 0.91, 0.36],     // Yellow
-            [0.35, 0.51, 0.28],  // Green
-            [0.20, 0.35, 0.46],  // Blue
-            [0.87, 0.07, 0.33],  // Magenta
-            [1, 0.44, 0.55],     // Pink
-            [0.46, 0.41, 0.71],  // Lilac
-        ];
 
         // generate clusters of flowers
         const groups = PlacementUtils.generateClusteredPositions({
@@ -111,7 +122,7 @@ export class MyFlowers {
                 // randomize flower properties
                 const scale = 0.45 + Math.random() * 0.4;
                 const petalCount = 8 + Math.floor(Math.random() * 8);
-                const color = flowerColors[Math.floor(Math.random() * flowerColors.length)];
+                const color = this.flowerColors[Math.floor(Math.random() * this.flowerColors.length)];
                 const timeOffset = Math.random() * 100.0;
 
                 const flowerInstance = new MyFlower(
@@ -131,20 +142,74 @@ export class MyFlowers {
                 });
             }
         }
+
+        // batched meshes in chunks to stay under the 16-bit index limit
+        this.stemsMeshes = [];
+        const STEMS_CHUNK = 200;
+        for (let i = 0; i < this.flowerItems.length; i += STEMS_CHUNK) {
+            const chunk = this.flowerItems.slice(i, i + STEMS_CHUNK);
+            this.stemsMeshes.push(new MyFlowersStemsMesh(this.scene, chunk));
+        }
+
+        this.centersMeshes = [];
+        const CENTERS_CHUNK = 250;
+        for (let i = 0; i < this.flowerItems.length; i += CENTERS_CHUNK) {
+            const chunk = this.flowerItems.slice(i, i + CENTERS_CHUNK);
+            this.centersMeshes.push(new MyFlowersCentersMesh(this.scene, chunk));
+        }
+
+        this.petalsMeshes = []; // 2D array: [colorIndex][chunkIndex]
+        const PETALS_CHUNK = 18;
+        for (let i = 0; i < this.flowerColors.length; i++) {
+            const groupFlowers = this.flowerItems.filter(item => {
+                const fCol = item.flower.petalColor;
+                const col = this.flowerColors[i];
+                return Math.abs(fCol[0] - col[0]) < 0.01 && 
+                       Math.abs(fCol[1] - col[1]) < 0.01 && 
+                       Math.abs(fCol[2] - col[2]) < 0.01;
+            });
+
+            this.petalsMeshes[i] = [];
+            for (let j = 0; j < groupFlowers.length; j += PETALS_CHUNK) {
+                const chunk = groupFlowers.slice(j, j + PETALS_CHUNK);
+                this.petalsMeshes[i].push(new MyFlowersPetalsMesh(this.scene, chunk));
+            }
+        }
     }
 
     update(time) {
-        for (const item of this.flowerItems) {
-            item.flower.update(time + item.timeOffset);
-        }
+        this.time = time;
     }
 
     display() {
-        for (const item of this.flowerItems) {
-            this.scene.pushMatrix();
-            this.scene.translate(item.x, item.y, item.z);
-            item.flower.display();
-            this.scene.popMatrix();
+        this.scene.setActiveShader(this.flowerShader);
+        this.flowerShader.setUniformsValues({
+            uTime: this.time,
+            uLightEnabled: this.scene.lights[0].enabled,
+            uLightPosition: this.scene.lights[0].position
+        });
+
+        // all stems (green)
+        this.flowerShader.setUniformsValues({ uColor: [0.12, 0.55, 0.12, 1.0] });
+        for (const mesh of this.stemsMeshes) {
+            mesh.display();
         }
+
+        // all centers (yellow)
+        this.flowerShader.setUniformsValues({ uColor: [0.85, 0.65, 0.08, 1.0] });
+        for (const mesh of this.centersMeshes) {
+            mesh.display();
+        }
+
+        // all petals by color group
+        for (let i = 0; i < this.flowerColors.length; i++) {
+            const col = this.flowerColors[i];
+            this.flowerShader.setUniformsValues({ uColor: [col[0], col[1], col[2], 1.0] });
+            for (const mesh of this.petalsMeshes[i]) {
+                mesh.display();
+            }
+        }
+
+        this.scene.setActiveShader(this.scene.defaultShader);
     }
 }

@@ -4,7 +4,7 @@ import { MySphere } from "../shapes/MySphere.js";
 export class MySky {
   constructor(scene) {
     this.scene = scene;
-    this.sphere = new MySphere(scene, 150, 150, 200);
+    this.sphere = new MySphere(scene, 32, 16, 200);
     
     this.appearance = new CGFappearance(scene);
     this.appearance.setAmbient(1.0, 1.0, 1.0, 1.0);
