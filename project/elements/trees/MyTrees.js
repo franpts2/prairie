@@ -2,6 +2,8 @@ import { MyTree } from "./MyTree.js";
 import { CGFappearance } from "../../../lib/CGF.js";
 import * as PlacementUtils from "../../utils/PlacementUtils.js";
 import { CollisionSphere } from "../../utils/CollisionSphere.js";
+import { MyTreesTrunksMesh } from "./MyTreesTrunksMesh.js";
+import { MyTreesCanopiesMesh } from "./MyTreesCanopiesMesh.js";
 
 export class MyTrees {
     constructor(scene, ground) {
@@ -116,23 +118,32 @@ export class MyTrees {
                 y: height,
                 z,
                 rotation: rotationAngle,
+                trunkHeight,
                 trunkRadius,
+                canopyHeight,
                 canopyRadius,
                 tree: treeInstance,
                 collider: new CollisionSphere(x, treeY, z, treeColliderRadius)
             });
         }
+
+        this.trunkMesh = new MyTreesTrunksMesh(this.scene, this.treeItems);
+        this.canopyMesh = new MyTreesCanopiesMesh(this.scene, this.treeItems);
     }
 
     display() {
-        for (const item of this.treeItems) {
-            this.scene.pushMatrix();
-            this.scene.translate(item.x, item.y, item.z);
-            this.scene.rotate(item.rotation, 0, 1, 0);
-            
-            item.tree.display(this.trunkAppearance, this.canopyAppearance);
-            
-            this.scene.popMatrix();
+        // all tree trunks
+        if (this.trunkMesh) {
+            this.trunkAppearance.apply();
+            this.trunkMesh.display();
+        }
+
+        // all tree canopies
+        if (this.canopyMesh) {
+            this.scene.gl.disable(this.scene.gl.CULL_FACE);
+            this.canopyAppearance.apply();
+            this.canopyMesh.display();
+            this.scene.gl.enable(this.scene.gl.CULL_FACE);
         }
     }
 }
