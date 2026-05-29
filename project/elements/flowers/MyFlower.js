@@ -1,6 +1,7 @@
 import { CGFappearance } from "../../../lib/CGF.js";
-import { MyCylinder } from "../../shapes/MyCylinder.js";
 import { MySphere } from "../../shapes/MySphere.js";
+import { MyFlowerStemMesh } from "./MyFlowerStemMesh.js";
+import { MyFlowerPetalsMesh } from "./MyFlowerPetalsMesh.js";
 
 /**
  * MyFlower
@@ -19,10 +20,6 @@ export class MyFlower {
         this.flowerScale = flowerScale;
         this.windStrength = windStrength;
 
-        // geometry primitives
-        this.cylinder = new MyCylinder(scene, 12, 4, true);
-        this.sphere = new MySphere(scene, 20, 10, 0.50);
-
         // stem parameters
         this.numStemSegments = 3;
         this.segmentLength = 0.5;
@@ -31,13 +28,28 @@ export class MyFlower {
         // center parameters
         this.centerRadius = 0.4;
         this.centerHeight = 0.3;
-        
+
         // petal parameters
         this.petalWidth = 0.25;
         this.petalLength = 0.85;
         this.petalThickness = 0.05;
         this.petalTiltOuter = 0.10;
         this.petalTiltInner = 0.10;
+
+        // geometry primitives (pre-compiled VBOs)
+        this.stemMesh = new MyFlowerStemMesh(scene, this.stemRadius, this.segmentLength, this.numStemSegments);
+        this.petalsMesh = new MyFlowerPetalsMesh(scene, {
+            petalCount: this.petalCount,
+            petalWidth: this.petalWidth,
+            petalLength: this.petalLength,
+            petalThickness: this.petalThickness,
+            petalTiltOuter: this.petalTiltOuter,
+            petalTiltInner: this.petalTiltInner,
+            centerRadius: this.centerRadius
+        });
+
+        // center sphere (same size as original, radius 0.5, scaled in display)
+        this.centerSphere = new MySphere(scene, 20, 10, 0.50);
 
         this.time = 0;
 
@@ -59,7 +71,6 @@ export class MyFlower {
         this.centerMaterial.setSpecular(0.15, 0.15, 0.1, 1.0);
         this.centerMaterial.setShininess(8.0);
 
-        // petal material - dynamically updated with this.petalColor
         this.petalMaterial = new CGFappearance(this.scene);
         this.updatePetalMaterial();
     }
@@ -93,80 +104,31 @@ export class MyFlower {
         const windAngleX = baseSway * 0.035 * this.windStrength;
         const windAngleZ = Math.cos(this.time * swayFreq * 0.7) * 0.02 * this.windStrength;
 
-        // render the stem segments hierarchically
+        // wind sway rotation at the root of the flower
+        this.scene.rotate(windAngleX * 1.5, 1, 0, 0);
+        this.scene.rotate(windAngleZ * 1.5, 0, 0, 1);
+
+        // consolidated stem segments
+        this.stemMaterial.apply();
+        this.stemMesh.display();
+
+        // replicate pos at the top of the bent stem
         for (let i = 0; i < this.numStemSegments; i++) {
-            // apply sway rotation
-            this.scene.rotate(windAngleX, 1, 0, 0);
-            this.scene.rotate(windAngleZ, 0, 0, 1);
-            
-            // constant slight bend
             this.scene.rotate(0.05, 0, 0, 1);
             this.scene.rotate(0.02, 1, 0, 0);
-
-            // draw stem cylinder
-            this.scene.pushMatrix();
-            this.scene.rotate(-Math.PI / 2, 1, 0, 0);
-            this.scene.scale(this.stemRadius, this.stemRadius, this.segmentLength);
-            this.stemMaterial.apply();
-            this.cylinder.display();
-            this.scene.popMatrix();
-
-            // move origin to the top of the current stem segment
             this.scene.translate(0, this.segmentLength, 0);
         }
 
-        // draw the flower center
+        // flower center
         this.scene.pushMatrix();
         this.scene.scale(-this.centerRadius, this.centerHeight, this.centerRadius);
         this.centerMaterial.apply();
-        this.sphere.display();
+        this.centerSphere.display();
         this.scene.popMatrix();
 
-        // draw petals
-        // outer layer of petals
-        const numOuter = Math.max(4, this.petalCount);
-        for (let i = 0; i < numOuter; i++) {
-            this.scene.pushMatrix();
-
-            const angle = (i * 2 * Math.PI) / numOuter;
-            this.scene.rotate(angle, 0, 1, 0);
-
-            this.scene.translate(this.centerRadius * 0.45, 0, 0);
-
-            // rotate around Z to align length with radial axis and tilt upward
-            this.scene.rotate(this.petalTiltOuter - Math.PI / 2, 0, 0, 1);
-            // rotate around Y to lay the flat face of the petal parallel to XOZ plane
-            this.scene.rotate(Math.PI / 2, 0, 1, 0);
-
-            this.scene.scale(-this.petalWidth, this.petalLength, this.petalThickness);
-            
-            this.petalMaterial.apply();
-            this.sphere.display();
-
-            this.scene.popMatrix();
-        }
-
-        // inner layer of petals
-        const numInner = Math.max(4, Math.floor(this.petalCount * 0.85));
-        for (let i = 0; i < numInner; i++) {
-            this.scene.pushMatrix();
-
-            // offset the angle by half a step to fill the gaps between outer petals
-            const angle = ((i + 0.5) * 2 * Math.PI) / numInner;
-            this.scene.rotate(angle, 0, 1, 0);
-
-            this.scene.translate(this.centerRadius * 0.35, 0.05, 0);
-
-            this.scene.rotate(this.petalTiltInner - Math.PI / 2, 0, 0, 1);
-            this.scene.rotate(Math.PI / 2, 0, 1, 0);
-
-            this.scene.scale(-this.petalWidth * 0.85, this.petalLength * 0.8, this.petalThickness * 0.85);
-
-            this.petalMaterial.apply();
-            this.sphere.display();
-
-            this.scene.popMatrix();
-        }
+        // flower petals
+        this.petalMaterial.apply();
+        this.petalsMesh.display();
 
         this.scene.popMatrix();
     }
