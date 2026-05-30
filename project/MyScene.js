@@ -6,14 +6,14 @@ import { MyGround } from "./elements/MyGround.js";
 import { MyRocks } from "./elements/rocks/MyRocks.js";
 import { MyTrees } from "./elements/trees/MyTrees.js";
 import { MyGrass } from "./elements/MyGrass.js";
-import { MyWagon } from "./elements/wagon/MyWagon.js";
-import { MyBarn } from "./elements/barn/MyBarn.js";
-import { MyHayBales } from "./elements/haybales/MyHayBales.js";
-import { BaleManager } from "./elements/haybales/MyBaleManager.js";
+//import { MyWagon } from "./elements/wagon/MyWagon.js";
+//import { MyBarn } from "./elements/barn/MyBarn.js";
+//import { MyHayBales } from "./elements/haybales/MyHayBales.js";
+//import { BaleManager } from "./elements/haybales/MyBaleManager.js";
 import { AssetManager } from "./utils/AssetManager.js";
 import { MyFlowers } from "./elements/flowers/MyFlowers.js";
-import { GameController } from "./utils/GameController.js";
-import { MyDeliveryCircle } from "./elements/MyDeliveryCircle.js";
+//import { GameController } from "./utils/GameController.js";
+//import { MyDeliveryCircle } from "./elements/MyDeliveryCircle.js";
 
 /**
  * MyScene
@@ -52,7 +52,7 @@ export class MyScene extends CGFscene {
     });
 
     // Game Logic
-    this.gameController = new GameController(this);
+    //this.gameController = new GameController(this);
 
     //Objects connected to MyInterface
     this.displayAxis = true;
@@ -63,6 +63,7 @@ export class MyScene extends CGFscene {
     this.lastTime = 0;
     this.time = 0;
 
+    /*
     // Temporary FPS Overlay setup
     this.fpsDiv = document.createElement("div");
     this.fpsDiv.style.position = "absolute";
@@ -85,6 +86,7 @@ export class MyScene extends CGFscene {
 
     this.fpsFrames = 0;
     this.fpsLastCheck = 0;
+    */
   }
 
   update(t) {
@@ -95,6 +97,7 @@ export class MyScene extends CGFscene {
     this.lastTime = t;
     this.time += dt;
 
+    /*
     // Track FPS
     this.fpsFrames++;
     if (this.fpsLastCheck === 0) {
@@ -122,17 +125,20 @@ export class MyScene extends CGFscene {
       }
       this.fpsFrames = 0;
       this.fpsLastCheck = t;
+      
     }
+    */
 
     if (this.ready) {
-      this.checkKeys(dt);
-      this.wagon.update(dt);
-      if (this.hayBales) this.hayBales.update(dt);
+      //this.checkKeys(dt);
+      //this.wagon.update(dt);
+      //if (this.hayBales) this.hayBales.update(dt);
       if (this.flowers) this.flowers.update(this.time);
-      this.gameController.update(dt);
+      //this.gameController.update(dt);
     }
   }
 
+  /*
   checkKeys(dt) {
     if (this.gui && typeof this.gui.isKeyPressed === 'function') {
       if (this.gui.isKeyPressed("KeyW")) {
@@ -155,7 +161,9 @@ export class MyScene extends CGFscene {
       this.wagon.steer(0, dt);
     }
   }
+  */
 
+  /*
   getColliders() {
     const colliders = [];
 
@@ -181,6 +189,7 @@ export class MyScene extends CGFscene {
 
     return colliders;
   }
+  */
 
   initElements() {
     this.ground = new MyGround(this);
@@ -193,17 +202,17 @@ export class MyScene extends CGFscene {
     this.trees = new MyTrees(this, this.ground);
     this.grass = new MyGrass(this);
 
-    this.baleManager = new BaleManager(this);
-    this.hayBales = new MyHayBales(this, this.baleManager);
+    //this.baleManager = new BaleManager(this);
+    //this.hayBales = new MyHayBales(this, this.baleManager);
 
-    this.wagon = new MyWagon(this);
+    //this.wagon = new MyWagon(this);
 
     this.flowers = new MyFlowers(this, this.ground);
     
-    this.barn = new MyBarn(this, -20, -100);
+    //this.barn = new MyBarn(this, -20, -100);
 
 
-    this.deliveryCircle = new MyDeliveryCircle(this);
+    //this.deliveryCircle = new MyDeliveryCircle(this);
 
     this.ready = true;
   }
@@ -279,27 +288,29 @@ export class MyScene extends CGFscene {
 
     this.grass.display();
 
+    /*
     if (this.gameController && this.gameController.haybaleplatform) {
       this.gameController.haybaleplatform.display();
     }
 
     this.hayBales.display();
+    */
 
     this.sky.display();
 
     this.cloud.update();
     this.cloud.display();
 
-    this.deliveryCircle.display(this.wagon);
+    //this.deliveryCircle.display(this.wagon);
 
-    this.pushMatrix();
-    this.wagon.display();
-    this.popMatrix();
+    //this.pushMatrix();
+    //this.wagon.display();
+    //this.popMatrix();
 
     if (this.flowers) this.flowers.display();
 
-    this.pushMatrix();
-    this.barn.display();
-    this.popMatrix();
+    //this.pushMatrix();
+    //this.barn.display();
+    //this.popMatrix();
   }
 }
