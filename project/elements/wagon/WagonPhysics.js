@@ -19,14 +19,14 @@ export class WagonPhysics {
 
         this.speed = 0;
         this.maxSpeed = 10;
-        this.acceleration = 5;
+        this.acceleration = 4;
         this.brakeDecel = 11;
         this.friction = 2;
 
         // steering variables
         this.steerAngle = 0;
         this.maxSteerAngle = 45 * Math.PI / 180; // 45 degrees
-        this.steerSpeed = 0.75;
+        this.steerSpeed = 0.45;
         this.steerReturnSpeed = 2.0;
     }
 
