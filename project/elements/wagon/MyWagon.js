@@ -7,6 +7,7 @@ import { MyCover } from './MyCover.js';
 import { MyCollectedHaybales } from './MyCollectedHaybales.js';
 import { WagonPhysics } from './WagonPhysics.js';
 import { MyCylinder } from '../../shapes/MyCylinder.js';
+import { MyHorse } from './MyHorse.js';
 
 export class MyWagon extends CGFobject {
     constructor(scene, physics) {
@@ -39,6 +40,10 @@ export class MyWagon extends CGFobject {
         this.collectedBales = new MyCollectedHaybales(scene);
         this.wheelRotationAngle = 0;
         this.pivotPin = new MyCylinder(scene, 12, 1, true);
+
+        // horses attached to the tongue
+        this.horseLeft = new MyHorse(scene);
+        this.horseRight = new MyHorse(scene);
 
         // Damage & Heal flash feedback states
         this.damageFlashTimer = 0;
@@ -200,6 +205,21 @@ export class MyWagon extends CGFobject {
         this.scene.translate(0, 1, -2.4);
         this.scene.rotate(this.steerAngle, 0, 1, 0);
         this.tongue.display();
+
+        // left horse
+        this.scene.pushMatrix();
+        this.scene.translate(-1.5, 1.8, -5.0); // distance to each other, height of the ground, forward from the tongue
+        this.scene.scale(3.0, 3.0, 3.0);
+        this.horseLeft.display();
+        this.scene.popMatrix();
+
+        // right horse
+        this.scene.pushMatrix();
+        this.scene.translate(1.5, 1.8, -5.0);
+        this.scene.scale(3.0, 3.0, 3.0);
+        this.horseRight.display();
+        this.scene.popMatrix();
+
         this.scene.popMatrix();
 
         // --- Cover ---
