@@ -27,7 +27,8 @@ export class AssetManager {
             leaves: "./textures/leaves.png",
             barnDoor: "./textures/barn/barndoor.png",
             barnWindow: "./textures/barn/barnwindow.png",
-            hay: "./textures/hay.png"
+            hay: "./textures/hay.png",
+            horse: "./obj/ImageToStl.com_horse/Baked_BaseColor.png"
         };
     }
 
