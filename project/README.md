@@ -51,7 +51,7 @@ Since WebCGF loads shaders, textures, and 3D models via asynchronous HTTP reques
 |  Key  | Action             | Details                                                                |
 | :---: | :----------------- | :--------------------------------------------------------------------- |
 | **W** | Accelerate Forward | Drives the wagon forward up to the horse walk speed.                   |
-| **S** | Brake / Reverse    | Decelerates the wagon or slows it down when moving.                    |
+| **S** | Brake              | Decelerates the wagon or slows it down when moving.                    |
 | **A** | Steer Left         | Rotates the front wheels and wagon tongue left.                        |
 | **D** | Steer Right        | Rotates the front wheels and wagon tongue right.                       |
 | **P** | Pick Up Hay Bale   | Captures a nearby hay bale if within range and cargo is < 2.           |
@@ -73,11 +73,13 @@ Our implementation addresses all basic requirements and introduces several highl
 ### 3. Ground surface
 *   **Soil Texture:** Textured using an high-quality grass-soil texture with scattered dirt patches.
 *   **Pathway:** A winding wagon road is integrated into the terrain by using a multi-texture blending shader masked via a pathway texture map (`pathMap`).
+*   **[Bonus] Water:** Implemented a flowing water body (`MyWater.js`) aligned with the terrain mesh. The water flow is animated dynamically using dual-distortion normal map offsets and vertex wave displacements.
 
 ### 4. Scatter Elements
 *   **Perturbed Rocks:** Modeled organic rocks using a sphere primitive deformed by CPU-based Perlin and Fractal Noise algorithms to achieve craggy, low-poly geometries (`MyPerturbedSphere.js`).
 *   **Multiple Textures:** Diversified the rocks by applying four distinct stone textures (`rock1` through `rock4`).
-*   **[Advanced] Procedural Generation:** Rocks are procedurally distributed into random cluster coordinates across the terrain, avoiding paths, riverbeds, and structural meshes.
+*   **Procedural Forest / Trees:** Modeled low-poly trees utilizing trunk cylinders (`MyCylinder.js`) and layered cone canopies (`MyCone.js`). The trees (`MyTrees.js`) are procedurally distributed across the terrain while checking height levels and avoiding road paths, riverbeds, rocks, and structures.
+*   **[Advanced] Procedural Generation:** Both rocks and trees are procedurally distributed into random coordinates across the terrain, avoiding paths, riverbeds, and existing structural meshes.
 
 ### 5. Flora
 *   **Parameter-Based Flowers:** Individual flowers (`MyFlower.js`) feature parameterized stem heights, petal counts, scales, rotation, and color variants to foster natural randomness.
@@ -88,6 +90,7 @@ Our implementation addresses all basic requirements and introduces several highl
 *   **Dense Grass Patches:** Scattered dense patches of low-poly grass blades across green fields.
 *   **Dead Grass Patches:** Grouped dry, yellowed grass patches placed dynamically on the land.
 *   **[Advanced] Wind-Reactive Shader:** An optimized custom grass vertex shader simulates natural wind swaying over grass blade instances based on sinusoidal time-dependent functions.
+*   **[Bonus] Spatial Grid Optimization:** Incorporates a 2D spatial partitioning grid (`SpatialGrid.js`) to perform ultra-fast overlap checks during grass spawning, ensuring uniform distribution without overlapping other obstacles.
 
 ### 7. Covered light wagon/prairie schooner
 *   **Hierarchical Model:** Created a geometrically detailed wagon model featuring a cloth cover occupying half the bed length (leaving the bed open to display hay bales), a detailed wooden wagon bed, a front tongue for horse attachment, and 4 rotating wheels.
@@ -127,6 +130,7 @@ Our implementation addresses all basic requirements and introduces several highl
 *   **Vertical Arrow Shading:** An arrow shader that animates a sharp, moving glowing stripe along the height of the arrow, combined with a height-based color gradient.
 *   **[Advanced] Visually convincing shaders**: All shaders are visually convincing.
 *   **[Bonus] Extra Shaders:** Multi-texture blending shaders for the terrain road path, and emissive color flash shaders (red on damage, green on healing) applied directly to the wagon materials.
+*   **[Bonus] Dynamic Water Shading:** A custom GLSL shader (`water.vert` / `water.frag`) animating a flowing river body. It uses wave height vertex displacements over time, dual normal-map scrolling distortion coordinates to create ripple textures, and path map color threshold discards to constrain water within the riverbanks.
 
 ## Known Issues & Limitations
 
@@ -138,11 +142,11 @@ Our implementation addresses all basic requirements and introduces several highl
 
 | Screenshot / Demonstration | Description |
 | :---: | :--- |
-| ![Overview](docs/screenshots/project-t10-g06-1.png) | Overview of the scene. |
-| ![Flower, rocks and floor detail](docs/screenshots/project-t10-g06-2.png) | Flowers, rocks and floor details. |
-| ![Wagon close-up](docs/screenshots/project-t10-g06-3.png) | Wagon close-up |
-| ![Grass and Flowers Shaders](docs/screenshots/project-t10-g06-4.gif) | Grass and Flowers shaders. |
-| ![Delivery and Barn Area](docs/screenshots/project-t10-g06-5.png) | Delivery and Barn Area. |
+| ![Overview](docs/screenshots/project-t10g06-1.png) | Overview of the scene. |
+| ![Flower, rocks and floor detail](docs/screenshots/project-t10g06-2.png) | Flowers, rocks and floor details. |
+| ![Wagon close-up](docs/screenshots/project-t10g06-3.png) | Wagon close-up |
+| ![Grass and Flowers Shaders](docs/screenshots/project-t10g06-4.gif) | Grass and Flowers shaders. |
+| ![Delivery and Barn Area](docs/screenshots/project-t10g06-5.png) | Delivery and Barn Area. |
 
 ## Live URL
 
