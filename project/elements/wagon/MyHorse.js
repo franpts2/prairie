@@ -6,7 +6,7 @@ export class MyHorse extends CGFobject {
         super(scene);
 
         // load the OBJ mesh (reusing the shared model if provided to save VBO memory)
-        this.model = model || new CGFobjModel(scene, "obj/ImageToStl.com_horse/horse.obj");
+        this.model = model || new CGFobjModel(scene, "assets/models/horse/horse.obj");
 
         // horse appearance using the registered texture
         this.appearance = new CGFappearance(scene);
