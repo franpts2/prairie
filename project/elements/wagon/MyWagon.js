@@ -43,7 +43,7 @@ export class MyWagon extends CGFobject {
         this.pivotPin = new MyCylinder(scene, 12, 1, true);
 
         // horses attached to the tongue
-        const horseModel = new CGFobjModel(scene, "obj/ImageToStl.com_horse/horse.obj");
+        const horseModel = new CGFobjModel(scene, "assets/models/horse/horse.obj");
         this.horseLeft = new MyHorse(scene, horseModel);
         this.horseRight = new MyHorse(scene, horseModel);
 
