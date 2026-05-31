@@ -287,7 +287,7 @@ export class MyWagon extends CGFobject {
             this.scene.rotate(this.theta, 0, 1, 0);
             this.scene.rotate(this.pitchLeft, 1, 0, 0);
             this.scene.scale(3.0, 3.0, 3.0);
-            this.horseLeft.display();
+            this.horseLeft.display(this.speed);
             this.scene.popMatrix();
 
             this.scene.pushMatrix();
@@ -295,7 +295,7 @@ export class MyWagon extends CGFobject {
             this.scene.rotate(this.theta, 0, 1, 0);
             this.scene.rotate(this.pitchRight, 1, 0, 0);
             this.scene.scale(3.0, 3.0, 3.0);
-            this.horseRight.display();
+            this.horseRight.display(this.speed);
             this.scene.popMatrix();
         }
     }
