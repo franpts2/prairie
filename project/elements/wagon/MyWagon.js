@@ -51,6 +51,18 @@ export class MyWagon extends CGFobject {
 
         this.healFlashTimer = 0;
         this.healFlashDuration = 0.5;   // Fades out over 0.5 seconds
+
+        // pre-calculated horse rendering properties
+        this.theta = 0;
+        this.horseLeftX = 0;
+        this.horseLeftZ = 0;
+        this.horseRightX = 0;
+        this.horseRightZ = 0;
+        this.horseYOffset = 0;
+        this.yLeft = 0;
+        this.pitchLeft = 0;
+        this.yRight = 0;
+        this.pitchRight = 0;
     }
 
     // --- Getters & Setters ---
@@ -128,6 +140,55 @@ export class MyWagon extends CGFobject {
         if (this.metalAppearance) this.metalAppearance.setEmission(intensityRed, intensityGreen, 0.0, 1.0);
         if (this.cover && this.cover.clothAppearance) {
             this.cover.clothAppearance.setEmission(intensityRed, intensityGreen, 0.0, 1.0);
+        }
+
+        // --- Horses Position & Pitch ---
+        const pivotX = this.x - 2.4 * Math.sin(this.angle);
+        const pivotZ = this.z - 2.4 * Math.cos(this.angle);
+        this.theta = this.angle + this.steerAngle;
+
+        const xL_local = -1.5;
+        const zL_local = -5.0;
+        this.horseLeftX = pivotX + xL_local * Math.cos(this.theta) + zL_local * Math.sin(this.theta);
+        this.horseLeftZ = pivotZ - xL_local * Math.sin(this.theta) + zL_local * Math.cos(this.theta);
+
+        const xR_local = 1.5;
+        const zR_local = -5.0;
+        this.horseRightX = pivotX + xR_local * Math.cos(this.theta) + zR_local * Math.sin(this.theta);
+        this.horseRightZ = pivotZ - xR_local * Math.sin(this.theta) + zR_local * Math.cos(this.theta);
+
+        this.horseYOffset = (this.physics.heightOffset || 0.15) + 1.0 + 1.8;
+
+        this.yLeft = 0;
+        this.pitchLeft = 0;
+        this.yRight = 0;
+        this.pitchRight = 0;
+
+        if (this.scene.ground) {
+            const dirX = -Math.sin(this.theta);
+            const dirZ = -Math.cos(this.theta);
+
+            const frontXL = this.horseLeftX + 1.0 * dirX;
+            const frontZL = this.horseLeftZ + 1.0 * dirZ;
+            const backXL = this.horseLeftX - 1.0 * dirX;
+            const backZL = this.horseLeftZ - 1.0 * dirZ;
+
+            const yFL = this.scene.ground.getHeight(frontXL, frontZL);
+            const yBL = this.scene.ground.getHeight(backXL, backZL);
+
+            this.yLeft = (yFL + yBL) / 2;
+            this.pitchLeft = Math.asin(Math.max(-1.0, Math.min(1.0, (yFL - yBL) / 2.0)));
+
+            const frontXR = this.horseRightX + 1.0 * dirX;
+            const frontZR = this.horseRightZ + 1.0 * dirZ;
+            const backXR = this.horseRightX - 1.0 * dirX;
+            const backZR = this.horseRightZ - 1.0 * dirZ;
+
+            const yFR = this.scene.ground.getHeight(frontXR, frontZR);
+            const yBR = this.scene.ground.getHeight(backXR, backZR);
+
+            this.yRight = (yFR + yBR) / 2;
+            this.pitchRight = Math.asin(Math.max(-1.0, Math.min(1.0, (yFR - yBR) / 2.0)));
         }
     }
 
@@ -218,66 +279,18 @@ export class MyWagon extends CGFobject {
 
         this.scene.popMatrix();
 
-        const pivotX = this.x - 2.4 * Math.sin(this.angle);
-        const pivotZ = this.z - 2.4 * Math.cos(this.angle);
-        const theta = this.angle + this.steerAngle;
-
-        const xL_local = -1.5;
-        const zL_local = -5.0;
-        const horseLeftX = pivotX + xL_local * Math.cos(theta) + zL_local * Math.sin(theta);
-        const horseLeftZ = pivotZ - xL_local * Math.sin(theta) + zL_local * Math.cos(theta);
-
-        const xR_local = 1.5;
-        const zR_local = -5.0;
-        const horseRightX = pivotX + xR_local * Math.cos(theta) + zR_local * Math.sin(theta);
-        const horseRightZ = pivotZ - xR_local * Math.sin(theta) + zR_local * Math.cos(theta);
-
-        const horseYOffset = (this.physics.heightOffset || 0.15) + 1.0 + 1.8;
-
-        let yLeft = 0;
-        let pitchLeft = 0;
-        let yRight = 0;
-        let pitchRight = 0;
-
-        if (this.scene.ground) {
-            const dirX = -Math.sin(theta);
-            const dirZ = -Math.cos(theta);
-
-            const frontXL = horseLeftX + 1.0 * dirX;
-            const frontZL = horseLeftZ + 1.0 * dirZ;
-            const backXL = horseLeftX - 1.0 * dirX;
-            const backZL = horseLeftZ - 1.0 * dirZ;
-
-            const yFL = this.scene.ground.getHeight(frontXL, frontZL);
-            const yBL = this.scene.ground.getHeight(backXL, backZL);
-
-            yLeft = (yFL + yBL) / 2;
-            pitchLeft = Math.asin(Math.max(-1.0, Math.min(1.0, (yFL - yBL) / 2.0)));
-
-            const frontXR = horseRightX + 1.0 * dirX;
-            const frontZR = horseRightZ + 1.0 * dirZ;
-            const backXR = horseRightX - 1.0 * dirX;
-            const backZR = horseRightZ - 1.0 * dirZ;
-
-            const yFR = this.scene.ground.getHeight(frontXR, frontZR);
-            const yBR = this.scene.ground.getHeight(backXR, backZR);
-
-            yRight = (yFR + yBR) / 2;
-            pitchRight = Math.asin(Math.max(-1.0, Math.min(1.0, (yFR - yBR) / 2.0)));
-        }
-
         this.scene.pushMatrix();
-        this.scene.translate(horseLeftX, yLeft + horseYOffset, horseLeftZ);
-        this.scene.rotate(theta, 0, 1, 0);
-        this.scene.rotate(pitchLeft, 1, 0, 0);
+        this.scene.translate(this.horseLeftX, this.yLeft + this.horseYOffset, this.horseLeftZ);
+        this.scene.rotate(this.theta, 0, 1, 0);
+        this.scene.rotate(this.pitchLeft, 1, 0, 0);
         this.scene.scale(3.0, 3.0, 3.0);
         this.horseLeft.display();
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
-        this.scene.translate(horseRightX, yRight + horseYOffset, horseRightZ);
-        this.scene.rotate(theta, 0, 1, 0);
-        this.scene.rotate(pitchRight, 1, 0, 0);
+        this.scene.translate(this.horseRightX, this.yRight + this.horseYOffset, this.horseRightZ);
+        this.scene.rotate(this.theta, 0, 1, 0);
+        this.scene.rotate(this.pitchRight, 1, 0, 0);
         this.scene.scale(3.0, 3.0, 3.0);
         this.horseRight.display();
         this.scene.popMatrix();
