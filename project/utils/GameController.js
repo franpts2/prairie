@@ -179,6 +179,10 @@ export class GameController {
             if (this.scene.baleManager && this.scene.baleManager.hayBales) {
                 const capturedBales = this.scene.baleManager.hayBales.filter(b => b.captured);
                 this.haybaleplatform.depositBales(capturedBales, this.balesDelivered);
+                
+                if (typeof this.scene.baleManager.respawnBales === 'function') {
+                    this.scene.baleManager.respawnBales(capturedBales.length);
+                }
             }
 
             // trigger green healing flash feedback on the wagon
