@@ -122,6 +122,24 @@ export class MyFlowers {
                 }
                 if (overlapsTree) continue;
 
+                // avoid dead grass patches
+                let overlapsDeadGrass = false;
+                if (this.scene.grass && this.scene.grass.deadPatchGroups) {
+                    for (const group of this.scene.grass.deadPatchGroups) {
+                        const dx = x - group.center.x;
+                        const dz = z - group.center.z;
+                        const distSq = dx * dx + dz * dz;
+                        // the max distance of dead grass in this group is Math.sqrt(group.radius)
+                        // add buffer of 2.0 units to clear the patch boundary
+                        const maxDist = Math.sqrt(group.radius) + 2.0;
+                        if (distSq < maxDist * maxDist) {
+                            overlapsDeadGrass = true;
+                            break;
+                        }
+                    }
+                }
+                if (overlapsDeadGrass) continue;
+
                 // randomize flower properties
                 const scale = 0.45 + Math.random() * 0.4;
                 const petalCount = 8 + Math.floor(Math.random() * 8);
