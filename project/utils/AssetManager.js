@@ -11,26 +11,26 @@ export class AssetManager {
         this.isReady = false;
 
         this.texturePaths = {
-            sky: "./textures/sky.jpeg",
-            cloud: "./textures/clouds.png",
-            soil: "./textures/soil.jpg",
-            pathSoil: "./textures/pathsoil.png",
-            terrainMap: "./textures/terrainmap.png",
-            pathMap: "./textures/pathmap.png",
-            grass: "./textures/grass/grass.png",
-            deadGrass: "./textures/grass/deadgrass.png",
-            rock1: "./textures/rocks/rock1.png",
-            rock2: "./textures/rocks/rock2.png",
-            rock3: "./textures/rocks/rock3.png",
-            rock4: "./textures/rocks/rock4.png",
-            wood: "./textures/wood.png",
-            leaves: "./textures/leaves.png",
-            barnDoor: "./textures/barn/barndoor.png",
-            barnWindow: "./textures/barn/barnwindow.png",
-            hay: "./textures/hay.png",
-            horse: "./obj/ImageToStl.com_horse/Baked_BaseColor.png",
-            waterTex: "./textures/waterTex.jpg",
-            waterMap: "./textures/waterMap.jpg"
+            sky: "./assets/textures/sky.jpeg",
+            cloud: "./assets/textures/clouds.png",
+            soil: "./assets/textures/soil.jpg",
+            pathSoil: "./assets/textures/pathsoil.png",
+            terrainMap: "./assets/textures/terrainmap.png",
+            pathMap: "./assets/textures/pathmap.png",
+            grass: "./assets/textures/grass/grass.png",
+            deadGrass: "./assets/textures/grass/deadgrass.png",
+            rock1: "./assets/textures/rocks/rock1.png",
+            rock2: "./assets/textures/rocks/rock2.png",
+            rock3: "./assets/textures/rocks/rock3.png",
+            rock4: "./assets/textures/rocks/rock4.png",
+            wood: "./assets/textures/wood.png",
+            leaves: "./assets/textures/leaves.png",
+            barnDoor: "./assets/textures/barn/barndoor.png",
+            barnWindow: "./assets/textures/barn/barnwindow.png",
+            hay: "./assets/textures/hay.png",
+            horse: "./assets/models/horse/Baked_BaseColor.png",
+            waterTex: "./assets/textures/waterTex.jpg",
+            waterMap: "./assets/textures/waterMap.jpg"
         };
     }
 
