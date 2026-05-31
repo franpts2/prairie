@@ -31,7 +31,7 @@ export class MyGrass {
     this.deadAppearance.setAmbient(0.4, 0.4, 0.4, 1);
     this.deadAppearance.setDiffuse(0.8, 0.8, 0.8, 1);
 
-    this.grassShader = new CGFshader(scene.gl, "shaders/grass.vert", "shaders/grass.frag");
+    this.grassShader = new CGFshader(scene.gl, "shaders/grass/grass.vert", "shaders/grass/grass.frag");
     
     this.scene.setActiveShader(this.grassShader);
     this.grassShader.setUniformsValues({

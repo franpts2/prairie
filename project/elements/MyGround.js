@@ -26,8 +26,8 @@ export class MyGround {
     
     this.shader = new CGFshader(
       scene.gl,
-      "./shaders/terrain.vert",
-      "./shaders/terrain.frag"
+      "./shaders/terrain/terrain.vert",
+      "./shaders/terrain/terrain.frag"
     );
     
     this.scene.setActiveShader(this.shader);
