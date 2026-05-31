@@ -233,6 +233,11 @@ export class GameController {
             return;
         }
 
+        if (obstacleType === 'water') {
+            console.log("Wagon hit water! Stay on land.");
+            return;
+        }
+
         // generate a random damage number between 5 and 15 for other obstacles
         const damage = Math.floor(Math.random() * (15 - 5 + 1)) + 5;
         this.applyDamage(damage);
