@@ -31,9 +31,15 @@ void main() {
         float transitionEnd = -0.08;
         float legWeight = 1.0 - smoothstep(transitionStart, transitionEnd, aVertexPosition.y);
         
-        // Isolate legs longitudinally (front and back leg regions only, excluding middle belly)
-        float zWeight = (aVertexPosition.z > -0.15 || aVertexPosition.z < -0.55) ? 1.0 : 0.0;
-        float finalLegWeight = legWeight * zWeight;
+        // Smoothly blend the leg influence longitudinally (front and back leg transitions)
+        float frontWeight = smoothstep(-0.10, 0.00, aVertexPosition.z);
+        float backWeight = 1.0 - smoothstep(-0.75, -0.65, aVertexPosition.z);
+        float zWeight = clamp(frontWeight + backWeight, 0.0, 1.0);
+        
+        // Smoothly blend the leg influence horizontally in X (exclude the center belly)
+        float xWeight = smoothstep(0.02, 0.06, abs(aVertexPosition.x));
+        
+        float finalLegWeight = legWeight * zWeight * xWeight;
         
         // 1. Calculate Leg Swung Position (rotation around joint pivot)
         vec3 legPos = aVertexPosition;
