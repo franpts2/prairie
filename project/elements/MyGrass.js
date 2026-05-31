@@ -32,10 +32,13 @@ export class MyGrass {
     this.deadAppearance.setDiffuse(0.8, 0.8, 0.8, 1);
 
     this.grassShader = new CGFshader(scene.gl, "shaders/grass.vert", "shaders/grass.frag");
+    
+    this.scene.setActiveShader(this.grassShader);
     this.grassShader.setUniformsValues({
       uWindSpeed: 1.0,
       uWindStrength: 0.3
     });
+    this.scene.setActiveShader(this.scene.defaultShader);
 
     this.initGrass();
   }
