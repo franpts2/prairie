@@ -41,9 +41,7 @@ export class MyHayBales {
     display() {
         if (!this.baleManager || !this.baleManager.hayBales) return;
 
-        // uniform base time for animation
-        const time = this.scene.time || 0.0;
-
+        // render all hay bales (using the default shader)
         for (const bale of this.baleManager.hayBales) {
             if (bale.captured) continue;
 
@@ -61,13 +59,24 @@ export class MyHayBales {
                 this.hayBaleVisual.display();
                 this.scene.popMatrix();
             }
+        }
+
+        // render all pinpointing arrows (using the custom arrow shader)
+        let shaderStarted = false;
+        for (const bale of this.baleManager.hayBales) {
+            if (bale.captured) continue;
 
             // don't render the arrow if the bale is on the platform
             if (!bale.onPlatform) {
-                const phase = bale.x * 0.15 + bale.z * 0.15;
-                const bobOffset = Math.sin(time * 4.5 + phase) * 0.15;
-                this.arrow.display(bale, bobOffset);
+                if (!shaderStarted) {
+                    this.arrow.startShader();
+                    shaderStarted = true;
+                }
+                this.arrow.display(bale);
             }
+        }
+        if (shaderStarted) {
+            this.arrow.stopShader();
         }
     }
 }
