@@ -28,10 +28,13 @@ export class MyFlowers {
         ];
 
         this.flowerShader = new CGFshader(scene.gl, "shaders/flower.vert", "shaders/flower.frag");
+        
+        this.scene.setActiveShader(this.flowerShader);
         this.flowerShader.setUniformsValues({
             uWindSpeed: 1.8,
             uWindStrength: 0.06
         });
+        this.scene.setActiveShader(this.scene.defaultShader);
 
         this.initPlacement();
     }

@@ -29,6 +29,8 @@ export class MyGround {
       "./shaders/terrain.vert",
       "./shaders/terrain.frag"
     );
+    
+    this.scene.setActiveShader(this.shader);
     this.shader.setUniformsValues({
       uSampler2: 1,
       uSampler3: 3,
@@ -39,6 +41,7 @@ export class MyGround {
       grassRepeat: this.grassRepeat,
       pathRepeat: this.pathRepeat,
     });
+    this.scene.setActiveShader(this.scene.defaultShader);
 
     const terrainData = scene.assetManager.getPixelData('terrain');
     this.heightData = terrainData.data;
