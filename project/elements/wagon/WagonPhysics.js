@@ -5,10 +5,10 @@ export class WagonPhysics {
         this.scene = scene;
 
         // position and motion variables
-        this.x = 0;
+        this.x = -40;
         this.y = 0;
-        this.z = 0;
-        this.angle = 0;
+        this.z = -65;
+        this.angle = Math.PI;
         this.pitchAngle = 0;
         this.heightOffset = 0.15;
         this.radius = 5;

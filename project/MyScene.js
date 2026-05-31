@@ -200,7 +200,7 @@ export class MyScene extends CGFscene {
 
     this.flowers = new MyFlowers(this, this.ground);
     
-    this.barn = new MyBarn(this, -20, -100);
+    this.barn = new MyBarn(this, -12, -90);
 
 
     this.deliveryCircle = new MyDeliveryCircle(this);
