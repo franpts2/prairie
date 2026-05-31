@@ -43,7 +43,8 @@ export class MyWagon extends CGFobject {
         this.pivotPin = new MyCylinder(scene, 12, 1, true);
 
         // horses attached to the tongue
-        const horseModel = new CGFobjModel(scene, "assets/models/horse/horse.obj");
+        const horsePath = scene.assetManager.getModelPath('horse') || "assets/models/horse/horse.obj";
+        const horseModel = new CGFobjModel(scene, horsePath);
         this.horseLeft = new MyHorse(scene, horseModel);
         this.horseRight = new MyHorse(scene, horseModel);
 
@@ -53,18 +54,6 @@ export class MyWagon extends CGFobject {
 
         this.healFlashTimer = 0;
         this.healFlashDuration = 0.5;   // Fades out over 0.5 seconds
-
-        // pre-calculated horse rendering properties
-        this.theta = 0;
-        this.horseLeftX = 0;
-        this.horseLeftZ = 0;
-        this.horseRightX = 0;
-        this.horseRightZ = 0;
-        this.horseYOffset = 0;
-        this.yLeft = 0;
-        this.pitchLeft = 0;
-        this.yRight = 0;
-        this.pitchRight = 0;
     }
 
     // --- Getters & Setters ---
@@ -120,6 +109,17 @@ export class MyWagon extends CGFobject {
     get steerReturnSpeed() { return this.physics.steerReturnSpeed; }
     set steerReturnSpeed(val) { this.physics.steerReturnSpeed = val; }
 
+    get theta() { return this.physics.theta; }
+    get horseLeftX() { return this.physics.horseLeftX; }
+    get horseLeftZ() { return this.physics.horseLeftZ; }
+    get horseRightX() { return this.physics.horseRightX; }
+    get horseRightZ() { return this.physics.horseRightZ; }
+    get horseYOffset() { return this.physics.horseYOffset; }
+    get yLeft() { return this.physics.yLeft; }
+    get pitchLeft() { return this.physics.pitchLeft; }
+    get yRight() { return this.physics.yRight; }
+    get pitchRight() { return this.physics.pitchRight; }
+
     // --- Delegate Methods ---
 
     update(dt) {
@@ -142,55 +142,6 @@ export class MyWagon extends CGFobject {
         if (this.metalAppearance) this.metalAppearance.setEmission(intensityRed, intensityGreen, 0.0, 1.0);
         if (this.cover && this.cover.clothAppearance) {
             this.cover.clothAppearance.setEmission(intensityRed, intensityGreen, 0.0, 1.0);
-        }
-
-        // --- Horses Position & Pitch ---
-        const pivotX = this.x - 2.4 * Math.sin(this.angle);
-        const pivotZ = this.z - 2.4 * Math.cos(this.angle);
-        this.theta = this.angle + this.steerAngle;
-
-        const xL_local = -1.5;
-        const zL_local = -5.0;
-        this.horseLeftX = pivotX + xL_local * Math.cos(this.theta) + zL_local * Math.sin(this.theta);
-        this.horseLeftZ = pivotZ - xL_local * Math.sin(this.theta) + zL_local * Math.cos(this.theta);
-
-        const xR_local = 1.5;
-        const zR_local = -5.0;
-        this.horseRightX = pivotX + xR_local * Math.cos(this.theta) + zR_local * Math.sin(this.theta);
-        this.horseRightZ = pivotZ - xR_local * Math.sin(this.theta) + zR_local * Math.cos(this.theta);
-
-        this.horseYOffset = (this.physics.heightOffset || 0.15) + 1.0 + 1.8;
-
-        this.yLeft = 0;
-        this.pitchLeft = 0;
-        this.yRight = 0;
-        this.pitchRight = 0;
-
-        if (this.scene.ground) {
-            const dirX = -Math.sin(this.theta);
-            const dirZ = -Math.cos(this.theta);
-
-            const frontXL = this.horseLeftX + 1.0 * dirX;
-            const frontZL = this.horseLeftZ + 1.0 * dirZ;
-            const backXL = this.horseLeftX - 1.0 * dirX;
-            const backZL = this.horseLeftZ - 1.0 * dirZ;
-
-            const yFL = this.scene.ground.getHeight(frontXL, frontZL);
-            const yBL = this.scene.ground.getHeight(backXL, backZL);
-
-            this.yLeft = (yFL + yBL) / 2;
-            this.pitchLeft = Math.asin(Math.max(-1.0, Math.min(1.0, (yFL - yBL) / 2.0)));
-
-            const frontXR = this.horseRightX + 1.0 * dirX;
-            const frontZR = this.horseRightZ + 1.0 * dirZ;
-            const backXR = this.horseRightX - 1.0 * dirX;
-            const backZR = this.horseRightZ - 1.0 * dirZ;
-
-            const yFR = this.scene.ground.getHeight(frontXR, frontZR);
-            const yBR = this.scene.ground.getHeight(backXR, backZR);
-
-            this.yRight = (yFR + yBR) / 2;
-            this.pitchRight = Math.asin(Math.max(-1.0, Math.min(1.0, (yFR - yBR) / 2.0)));
         }
     }
 
