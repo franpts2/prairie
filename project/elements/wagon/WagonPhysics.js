@@ -5,10 +5,10 @@ export class WagonPhysics {
         this.scene = scene;
 
         // position and motion variables
-        this.x = 0;
+        this.x = -40;
         this.y = 0;
-        this.z = 0;
-        this.angle = 0;
+        this.z = -65;
+        this.angle = Math.PI;
         this.pitchAngle = 0;
         this.heightOffset = 0.15;
         this.radius = 5;
@@ -139,17 +139,17 @@ export class WagonPhysics {
                 this.scene.gameController.onWagonCollision(obstacle.type);
             }
 
-            if (obstacle.type === 'tree' || obstacle.type === 'barn') {
+            if (obstacle.type === 'tree' || obstacle.type === 'barn' || obstacle.type === 'haybaleplatform') {
                 this.applyKnockback();
                 appliedKnockback = true;
             }
-        } else if ((obstacle.type === 'tree' || obstacle.type === 'barn') && this.speed > 0) {
+        } else if ((obstacle.type === 'tree' || obstacle.type === 'barn' || obstacle.type === 'haybaleplatform') && this.speed > 0) {
             // still driving into the obstacle, keep bouncing back
             this.speed = -2.0;
             appliedKnockback = true;
         }
 
-        if (obstacle.type !== 'rock' && obstacle.type !== 'tree' && obstacle.type !== 'barn') {
+        if (obstacle.type !== 'rock' && obstacle.type !== 'tree' && obstacle.type !== 'barn' && obstacle.type !== 'haybaleplatform') {
             collided = true;
         }
 
