@@ -13,6 +13,9 @@ export class WagonPhysics {
         this.heightOffset = 0.15;
         this.radius = 5;
 
+        this.worldLimitRadius = 200;
+        this.worldLimitMargin = 10;
+
         this.collider = new CollisionSphere(this.x, this.y, this.z, this.radius);
         this.currentlyColliding = new Set();
         this.wasOutOfBounds = false;
@@ -36,7 +39,7 @@ export class WagonPhysics {
         const newZ = this.z - this.speed * Math.cos(this.angle) * dt;
 
         const distanceSq = newX * newX + newZ * newZ;
-        const maxRadius = 200;
+        const maxRadius = this.worldLimitRadius - this.worldLimitMargin;
         const maxRadiusSq = maxRadius * maxRadius;
 
         if (distanceSq <= maxRadiusSq) {
