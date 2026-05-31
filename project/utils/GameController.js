@@ -227,10 +227,6 @@ export class GameController {
      * @param {string} obstacleType - The type of obstacle collided with
      */
     onWagonCollision(obstacleType) {
-        if (obstacleType === 'barn' || obstacleType === 'haybaleplatform') {
-            return;
-        }
-
         if (obstacleType === 'world_limit') {
             const damage = Math.floor(Math.random() * (15 - 5 + 1)) + 5;
             this.applyDamage(damage);
