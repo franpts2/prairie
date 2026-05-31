@@ -30,8 +30,8 @@ export class MyWater {
 
     this.shader = new CGFshader(
       scene.gl,
-      "./shaders/water.vert",
-      "./shaders/water.frag"
+      "./shaders/water/water.vert",
+      "./shaders/water/water.frag"
     );
 
     // set uniform mappings

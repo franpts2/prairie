@@ -49,9 +49,9 @@ void main() {
 
 	vec4 baseColor = texture2D(uSampler, finalUv);
 
-	vec3 waterTint = vec3(0.0, 0.25, 0.45);
-	vec3 tinted = mix(baseColor.rgb, waterTint, 0.18);
-	float highlight = 0.06 * (vWave * 0.5 + 0.5);
+	vec3 waterTint = vec3(0.01, 0.16, 0.10);
+	vec3 tinted = mix(baseColor.rgb, waterTint, 0.55);
+	float highlight = 0.04 * (vWave * 0.5 + 0.5);
 
 	gl_FragColor = vec4(tinted + highlight, baseColor.a);
 }

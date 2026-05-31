@@ -18,7 +18,7 @@ export class MyArrow {
         this.appearance.setShininess(80.0);
 
         // instantiate custom arrow shader
-        this.shader = new CGFshader(scene.gl, "shaders/arrow.vert", "shaders/arrow.frag");
+        this.shader = new CGFshader(scene.gl, "shaders/arrow/arrow.vert", "shaders/arrow/arrow.frag");
     }
 
     /**

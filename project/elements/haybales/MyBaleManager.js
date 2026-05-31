@@ -118,9 +118,67 @@ export class BaleManager {
         console.log(`Respawned ${newBales.length} new hay bales on the terrain!`);
     }
 
+    isPointInWater(x, z) {
+        if (!this.pathMapImage) {
+            this.pathMapImage = this.scene.assetManager.getPixelData('path');
+        }
+        const img = this.pathMapImage;
+        if (!img) return false;
+
+        const terrainSize = this.scene.ground ? this.scene.ground.terrain.size : 400;
+        const halfSize = terrainSize / 2;
+        const u = (x + halfSize) / terrainSize;
+        const v = (z + halfSize) / terrainSize;
+
+        if (u < 0 || u > 1 || v < 0 || v > 1) return false;
+
+        const du = u - 0.5;
+        const dv = v - 0.5;
+        if (du * du + dv * dv > 0.25) return false;
+
+        const getPixelVal = (uu, vv) => {
+            const px = Math.floor(Math.max(0, Math.min(1, uu)) * (img.width - 1));
+            const py = Math.floor(Math.max(0, Math.min(1, vv)) * (img.height - 1));
+            const idx = (py * img.width + px) * 4;
+            return img.data[idx] / 255.0;
+        };
+
+        const pathValue = getPixelVal(u, v);
+        if (pathValue < 0.40 || pathValue > 0.60) return false;
+
+        const stepSize = 0.012;
+        const p1 = getPixelVal(u + stepSize, v);
+        const p2 = getPixelVal(u - stepSize, v);
+        const p3 = getPixelVal(u, v + stepSize);
+        const p4 = getPixelVal(u, v - stepSize);
+
+        const maxNeighbor = Math.max(p1, p2, p3, p4);
+        if (maxNeighbor > 0.70) return false;
+
+        return true;
+    }
+
     isValidPlacement(pos) {
         const baleRadius = MyHayBale.SCALE;
 
+        // WATER CHECK
+        if (this.isPointInWater(pos.x, pos.z)) {
+            return false;
+        }
+        // also check if any point near the bale is in water to prevent spawning too close to the riverbed
+        const checkOffsets = [
+            { x: baleRadius * 1.5, z: 0 },
+            { x: -baleRadius * 1.5, z: 0 },
+            { x: 0, z: baleRadius * 1.5 },
+            { x: 0, z: -baleRadius * 1.5 }
+        ];
+        for (const offset of checkOffsets) {
+            if (this.isPointInWater(pos.x + offset.x, pos.z + offset.z)) {
+                return false;
+            }
+        }
+
+        // BARN CHECK
         const barn = this.scene.barn;
         const barnX = barn ? barn.x : -12;
         const barnZ = barn ? barn.z : -90;
@@ -132,6 +190,7 @@ export class BaleManager {
             return false;
         }
 
+        // PLATFORM CHECK
         const platform = this.scene.gameController ? this.scene.gameController.haybaleplatform : null;
         const platformX = platform ? platform.centerX : -55;
         const platformZ = platform ? platform.centerZ : -90;
@@ -143,6 +202,7 @@ export class BaleManager {
             return false;
         }
 
+        //  ROCKS CHECK
         if (this.scene.rocks && this.scene.rocks.rockItems) {
             for (const rock of this.scene.rocks.rockItems) {
                 const rockRadius = rock.collider ? rock.collider.radius : (rock.size * 1.6);
@@ -155,6 +215,7 @@ export class BaleManager {
             }
         }
 
+        // TREES CHECK
         if (this.scene.trees && this.scene.trees.treeItems) {
             for (const tree of this.scene.trees.treeItems) {
                 const treeRadius = tree.canopyRadius || 3.0;
