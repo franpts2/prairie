@@ -2,11 +2,11 @@ import { CGFobject, CGFappearance } from '../../../lib/CGF.js';
 import { CGFobjModel } from '../../../lib/extra/CGFobjModel.js';
 
 export class MyHorse extends CGFobject {
-    constructor(scene) {
+    constructor(scene, model = null) {
         super(scene);
 
-        // load the OBJ mesh
-        this.model = new CGFobjModel(scene, "obj/ImageToStl.com_horse/horse.obj");
+        // load the OBJ mesh (reusing the shared model if provided to save VBO memory)
+        this.model = model || new CGFobjModel(scene, "obj/ImageToStl.com_horse/horse.obj");
 
         // horse appearance using the registered texture
         this.appearance = new CGFappearance(scene);

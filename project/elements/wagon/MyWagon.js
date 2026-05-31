@@ -8,6 +8,7 @@ import { MyCollectedHaybales } from './MyCollectedHaybales.js';
 import { WagonPhysics } from './WagonPhysics.js';
 import { MyCylinder } from '../../shapes/MyCylinder.js';
 import { MyHorse } from './MyHorse.js';
+import { CGFobjModel } from '../../../lib/extra/CGFobjModel.js';
 
 export class MyWagon extends CGFobject {
     constructor(scene, physics) {
@@ -42,8 +43,9 @@ export class MyWagon extends CGFobject {
         this.pivotPin = new MyCylinder(scene, 12, 1, true);
 
         // horses attached to the tongue
-        this.horseLeft = new MyHorse(scene);
-        this.horseRight = new MyHorse(scene);
+        const horseModel = new CGFobjModel(scene, "obj/ImageToStl.com_horse/horse.obj");
+        this.horseLeft = new MyHorse(scene, horseModel);
+        this.horseRight = new MyHorse(scene, horseModel);
 
         // Damage & Heal flash feedback states
         this.damageFlashTimer = 0;
@@ -279,20 +281,22 @@ export class MyWagon extends CGFobject {
 
         this.scene.popMatrix();
 
-        this.scene.pushMatrix();
-        this.scene.translate(this.horseLeftX, this.yLeft + this.horseYOffset, this.horseLeftZ);
-        this.scene.rotate(this.theta, 0, 1, 0);
-        this.scene.rotate(this.pitchLeft, 1, 0, 0);
-        this.scene.scale(3.0, 3.0, 3.0);
-        this.horseLeft.display();
-        this.scene.popMatrix();
+        if (this.scene.renderHorses !== false) {
+            this.scene.pushMatrix();
+            this.scene.translate(this.horseLeftX, this.yLeft + this.horseYOffset, this.horseLeftZ);
+            this.scene.rotate(this.theta, 0, 1, 0);
+            this.scene.rotate(this.pitchLeft, 1, 0, 0);
+            this.scene.scale(3.0, 3.0, 3.0);
+            this.horseLeft.display();
+            this.scene.popMatrix();
 
-        this.scene.pushMatrix();
-        this.scene.translate(this.horseRightX, this.yRight + this.horseYOffset, this.horseRightZ);
-        this.scene.rotate(this.theta, 0, 1, 0);
-        this.scene.rotate(this.pitchRight, 1, 0, 0);
-        this.scene.scale(3.0, 3.0, 3.0);
-        this.horseRight.display();
-        this.scene.popMatrix();
+            this.scene.pushMatrix();
+            this.scene.translate(this.horseRightX, this.yRight + this.horseYOffset, this.horseRightZ);
+            this.scene.rotate(this.theta, 0, 1, 0);
+            this.scene.rotate(this.pitchRight, 1, 0, 0);
+            this.scene.scale(3.0, 3.0, 3.0);
+            this.horseRight.display();
+            this.scene.popMatrix();
+        }
     }
 }

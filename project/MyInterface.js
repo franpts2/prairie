@@ -39,6 +39,13 @@ export class MyInterface extends CGFinterface {
 
         gameFolder.open();
 
+        // Performance Toggles Folder
+        const perfFolder = this.gui.addFolder("Performance Toggles");
+        perfFolder.add(this.scene, 'renderGrass').name('Render Grass');
+        perfFolder.add(this.scene, 'renderFlowers').name('Render Flowers');
+        perfFolder.add(this.scene, 'renderHorses').name('Render Horses');
+        perfFolder.open();
+
         // init keyboard keys
         this.initKeys();
 
