@@ -156,7 +156,7 @@ export class WagonPhysics {
         this.horseRightX = pivotX + xR_local * Math.cos(this.theta) + zR_local * Math.sin(this.theta);
         this.horseRightZ = pivotZ - xR_local * Math.sin(this.theta) + zR_local * Math.cos(this.theta);
 
-        this.horseYOffset = (this.heightOffset || 0.15) + 1.0 + 1.8;
+        this.horseYOffset = 2.17;
 
         this.yLeft = 0;
         this.pitchLeft = 0;

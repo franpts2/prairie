@@ -26,57 +26,66 @@ void main() {
         float walkSpeed = 7.0;
         float walkTime = uTime * walkSpeed * clamp(speedFactor, 0.5, 1.5);
         
-        // define joint height boundary
-        float jointY = -0.10;
+        // Define smooth skinning transition zone for leg joint attachment
+        float transitionStart = -0.18;
+        float transitionEnd = -0.08;
+        float legWeight = 1.0 - smoothstep(transitionStart, transitionEnd, aVertexPosition.y);
         
-        // check if vertex belongs to the legs (Y < jointY)
-        if (aVertexPosition.y < jointY) {
-            float isLeft = aVertexPosition.x < 0.0 ? 1.0 : 0.0;
-            float isFront = aVertexPosition.z > 0.0 ? 1.0 : 0.0;
-            
-            // choose hinge pivot (joint) X and Z
-            float jointX = isLeft > 0.5 ? -0.11 : 0.09;
-            float jointZ = isFront > 0.5 ? 0.11 : -0.78;
-            
-            // trot gait: diagonal pairs FrontLeft+BackRight (phase 0) vs FR+BL (phase PI)
-            float phase = 0.0;
-            if ((isFront > 0.5 && isLeft < 0.5) || (isFront < 0.5 && isLeft > 0.5)) {
-                phase = 3.14159;
-            }
-            
-            // determine swing angle (limit to max 0.35 rads)
-            float swingRange = 0.35 * clamp(speedFactor, 0.3, 1.0);
-            float angle = sin(walkTime + phase) * swingRange;
-            
-            // translate vertex to joint space
-            vec3 localPos = aVertexPosition - vec3(jointX, jointY, jointZ);
-            
-            // rotate around local X axis
-            float cosA = cos(angle);
-            float sinA = sin(angle);
-            vec3 rotatedPos = vec3(
-                localPos.x,
-                localPos.y * cosA - localPos.z * sinA,
-                localPos.y * sinA + localPos.z * cosA
-            );
-            
-            // translate back
-            displacedPosition = rotatedPos + vec3(jointX, jointY, jointZ);
-        } else {
-            // body bobbing and neck/head pitching
-            // body/head bobs twice as fast as the leg swing
-            float bobRange = 0.03 * clamp(speedFactor, 0.3, 1.0);
-            float bob = sin(walkTime * 2.0) * bobRange;
-            displacedPosition.y += bob;
-            
-            // head/neck sway (Z > 0.3, Y > 0.1)
-            if (aVertexPosition.z > 0.3 && aVertexPosition.y > 0.1) {
-                float headSwayRange = 0.04 * clamp(speedFactor, 0.3, 1.0);
-                float sway = cos(walkTime * 2.0) * headSwayRange;
-                displacedPosition.y += sway;
-                displacedPosition.z += sway * 0.5;
-            }
+        // Smoothly blend the leg influence longitudinally (front and back leg transitions)
+        float frontWeight = smoothstep(-0.10, 0.00, aVertexPosition.z);
+        float backWeight = 1.0 - smoothstep(-0.75, -0.65, aVertexPosition.z);
+        float zWeight = clamp(frontWeight + backWeight, 0.0, 1.0);
+        
+        // Smoothly blend the leg influence horizontally in X (exclude the center belly)
+        float xWeight = smoothstep(0.02, 0.06, abs(aVertexPosition.x));
+        
+        float finalLegWeight = legWeight * zWeight * xWeight;
+        
+        // 1. Calculate Leg Swung Position (rotation around joint pivot)
+        vec3 legPos = aVertexPosition;
+        float jointY = -0.10;
+        float isLeft = aVertexPosition.x < 0.0 ? 1.0 : 0.0;
+        float isFront = aVertexPosition.z > 0.0 ? 1.0 : 0.0;
+        
+        float jointX = isLeft > 0.5 ? -0.11 : 0.09;
+        float jointZ = isFront > 0.5 ? 0.11 : -0.78;
+        
+        float phase = 0.0;
+        if ((isFront > 0.5 && isLeft < 0.5) || (isFront < 0.5 && isLeft > 0.5)) {
+            phase = 3.14159;
         }
+        
+        float swingRange = 0.35 * clamp(speedFactor, 0.3, 1.0);
+        float angle = sin(walkTime + phase) * swingRange;
+        
+        vec3 localPos = aVertexPosition - vec3(jointX, jointY, jointZ);
+        
+        float cosA = cos(angle);
+        float sinA = sin(angle);
+        vec3 rotatedPos = vec3(
+            localPos.x,
+            localPos.y * cosA - localPos.z * sinA,
+            localPos.y * sinA + localPos.z * cosA
+        );
+        
+        legPos = rotatedPos + vec3(jointX, jointY, jointZ);
+        
+        // 2. Calculate Body Position (with head/neck sway sway)
+        vec3 bodyPos = aVertexPosition;
+        if (aVertexPosition.z > 0.3 && aVertexPosition.y > 0.1) {
+            float headSwayRange = 0.04 * clamp(speedFactor, 0.3, 1.0);
+            float sway = cos(walkTime * 2.0) * headSwayRange;
+            bodyPos.y += sway;
+            bodyPos.z += sway * 0.5;
+        }
+        
+        // 3. Smoothly blend leg and body position to prevent joint stretching/bulges
+        displacedPosition = mix(bodyPos, legPos, finalLegWeight);
+        
+        // 4. Apply uniform body bobbing to all vertices (legs and body move together)
+        float bobRange = 0.03 * clamp(speedFactor, 0.3, 1.0);
+        float bob = sin(walkTime * 2.0) * bobRange;
+        displacedPosition.y += bob;
     }
 
     gl_Position = uPMatrix * uMVMatrix * vec4(displacedPosition, 1.0);
