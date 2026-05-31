@@ -6,14 +6,12 @@ import { SpatialGrid } from "../utils/SpatialGrid.js";
 export class MyGrass {
   constructor(scene) {
     this.scene = scene;
+    this.ground = scene.ground;
     this.liveMeshes = [];
     this.deadMeshes = [];
     this.terrainSize = 400;
     this.baseHeight = 0;
     this.heightScale = 10;
-    
-    this.heightMapImage = scene.assetManager.getPixelData('terrain');
-    this.pathMapImage = scene.assetManager.getPixelData('path');
 
     this.liveAppearance = new CGFappearance(scene);
     this.liveTexture = scene.assetManager.getTexture('grass');
@@ -44,35 +42,11 @@ export class MyGrass {
   }
 
   getTerrainHeight(x, z) {
-    if (!this.heightMapImage) return 0;
-
-    const halfSize = this.terrainSize / 2;
-    const u = (x + halfSize) / this.terrainSize;
-    const v = (z + halfSize) / this.terrainSize;
-
-    const px = Math.floor(u * (this.heightMapImage.width - 1));
-    const py = Math.floor(v * (this.heightMapImage.height - 1));
-
-    const idx = (py * this.heightMapImage.width + px) * 4;
-    const height = this.heightMapImage.data[idx] / 255;
-
-    return this.baseHeight + height * this.heightScale;
+    return this.ground ? this.ground.getHeight(x, z) : 0;
   }
 
   getPathValue(x, z) {
-    if (!this.pathMapImage) return 0;
-
-    const halfSize = this.terrainSize / 2;
-    const u = (x + halfSize) / this.terrainSize;
-    const v = (z + halfSize) / this.terrainSize;
-
-    const px = Math.floor(u * (this.pathMapImage.width - 1));
-    const py = Math.floor(v * (this.pathMapImage.height - 1));
-
-    const idx = (py * this.pathMapImage.width + px) * 4;
-    const pathValue = this.pathMapImage.data[idx] / 255;
-
-    return pathValue;
+    return this.ground ? this.ground.getPathValue(x, z) : 0;
   }
 
   initGrass() {

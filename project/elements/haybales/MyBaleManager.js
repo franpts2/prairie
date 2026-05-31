@@ -119,43 +119,7 @@ export class BaleManager {
     }
 
     isPointInWater(x, z) {
-        if (!this.pathMapImage) {
-            this.pathMapImage = this.scene.assetManager.getPixelData('path');
-        }
-        const img = this.pathMapImage;
-        if (!img) return false;
-
-        const terrainSize = this.scene.ground ? this.scene.ground.terrain.size : 400;
-        const halfSize = terrainSize / 2;
-        const u = (x + halfSize) / terrainSize;
-        const v = (z + halfSize) / terrainSize;
-
-        if (u < 0 || u > 1 || v < 0 || v > 1) return false;
-
-        const du = u - 0.5;
-        const dv = v - 0.5;
-        if (du * du + dv * dv > 0.25) return false;
-
-        const getPixelVal = (uu, vv) => {
-            const px = Math.floor(Math.max(0, Math.min(1, uu)) * (img.width - 1));
-            const py = Math.floor(Math.max(0, Math.min(1, vv)) * (img.height - 1));
-            const idx = (py * img.width + px) * 4;
-            return img.data[idx] / 255.0;
-        };
-
-        const pathValue = getPixelVal(u, v);
-        if (pathValue < 0.40 || pathValue > 0.60) return false;
-
-        const stepSize = 0.012;
-        const p1 = getPixelVal(u + stepSize, v);
-        const p2 = getPixelVal(u - stepSize, v);
-        const p3 = getPixelVal(u, v + stepSize);
-        const p4 = getPixelVal(u, v - stepSize);
-
-        const maxNeighbor = Math.max(p1, p2, p3, p4);
-        if (maxNeighbor > 0.70) return false;
-
-        return true;
+        return this.scene.ground ? this.scene.ground.isPointInWater(x, z) : false;
     }
 
     isValidPlacement(pos) {

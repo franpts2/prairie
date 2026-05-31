@@ -11,9 +11,6 @@ export class MyRocks {
         this.rockItems = [];
         this.terrainSize = 400;
 
-        const pathData = scene.assetManager.getPixelData('path');
-        this.pathMapImage = pathData;
-
         this.rockAppearances = this.initAppearances();
         this.initPlacement();
     }
@@ -38,19 +35,7 @@ export class MyRocks {
     }
 
     getPathValue(x, z) {
-        if (!this.pathMapImage) return 0;
-
-        const halfSize = this.terrainSize / 2;
-        const u = (x + halfSize) / this.terrainSize;
-        const v = (z + halfSize) / this.terrainSize;
-
-        const px = Math.floor(u * (this.pathMapImage.width - 1));
-        const py = Math.floor(v * (this.pathMapImage.height - 1));
-
-        const idx = (py * this.pathMapImage.width + px) * 4;
-        const pathValue = this.pathMapImage.data[idx] / 255;
-
-        return pathValue;
+        return this.ground ? this.ground.getPathValue(x, z) : 0;
     }
 
     getRockSize() {
