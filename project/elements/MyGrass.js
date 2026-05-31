@@ -95,6 +95,8 @@ export class MyGrass {
       minItemDistance: 0.2,
     });
 
+    this.deadPatchGroups = deadPatchGroups;
+
     for (const group of deadPatchGroups) {
       const groupSize = (0.7 + Math.random() * 0.4) * 0.75;
       for (const item of group.items) {
