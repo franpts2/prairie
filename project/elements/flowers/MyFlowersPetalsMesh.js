@@ -14,8 +14,8 @@ export class MyFlowersPetalsMesh extends CGFobject {
         this.texCoords = [];
 
         // base unit hemisphere coordinates
-        const slices = 16;
-        const stacks = 8;
+        const slices = 5;
+        const stacks = 3;
         const radius = 0.5;
 
         const baseVerts = [];
