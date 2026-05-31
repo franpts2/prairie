@@ -14,7 +14,7 @@ export class MyFlowersStemsMesh extends CGFobject {
         this.texCoords = [];
 
         // base unit cylinder coordinates (z from 0 to 1, radius 1)
-        const slices = 12;
+        const slices = 6;
         const stacks = 4;
         const alphaAng = 2 * Math.PI / slices;
         const stackStep = 1.0 / stacks;
