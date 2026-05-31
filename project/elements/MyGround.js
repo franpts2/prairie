@@ -88,6 +88,69 @@ export class MyGround {
     return this.baseHeight + r * this.heightScale;
   }
 
+  getPathValue(x, z) {
+    if (!this.pathData) {
+      const pathData = this.scene.assetManager.getPixelData('path');
+      if (!pathData) return 0;
+      this.pathData = pathData.data;
+      this.pathWidth = pathData.width;
+      this.pathHeight = pathData.height;
+    }
+
+    const halfSize = this.terrain.size / 2;
+    const u = (x + halfSize) / this.terrain.size;
+    const v = (z + halfSize) / this.terrain.size;
+
+    if (u < 0 || u > 1 || v < 0 || v > 1) return 0;
+
+    const px = Math.floor(u * (this.pathWidth - 1));
+    const py = Math.floor(v * (this.pathHeight - 1));
+    const idx = (py * this.pathWidth + px) * 4;
+    return this.pathData[idx] / 255.0;
+  }
+
+  isPointInWater(x, z) {
+    if (!this.pathData) {
+      const pathData = this.scene.assetManager.getPixelData('path');
+      if (!pathData) return false;
+      this.pathData = pathData.data;
+      this.pathWidth = pathData.width;
+      this.pathHeight = pathData.height;
+    }
+
+    const halfSize = this.terrain.size / 2;
+    const u = (x + halfSize) / this.terrain.size;
+    const v = (z + halfSize) / this.terrain.size;
+
+    if (u < 0 || u > 1 || v < 0 || v > 1) return false;
+
+    // Check if within circular boundary of the terrain
+    const du = u - 0.5;
+    const dv = v - 0.5;
+    if (du * du + dv * dv > 0.25) return false;
+
+    const getPixelVal = (uu, vv) => {
+      const px = Math.floor(Math.max(0, Math.min(1, uu)) * (this.pathWidth - 1));
+      const py = Math.floor(Math.max(0, Math.min(1, vv)) * (this.pathHeight - 1));
+      const idx = (py * this.pathWidth + px) * 4;
+      return this.pathData[idx] / 255.0;
+    };
+
+    const pathValue = getPixelVal(u, v);
+    if (pathValue < 0.40 || pathValue > 0.60) return false;
+
+    const stepSize = 0.012;
+    const p1 = getPixelVal(u + stepSize, v);
+    const p2 = getPixelVal(u - stepSize, v);
+    const p3 = getPixelVal(u, v + stepSize);
+    const p4 = getPixelVal(u, v - stepSize);
+
+    const maxNeighbor = Math.max(p1, p2, p3, p4);
+    if (maxNeighbor > 0.70) return false;
+
+    return true;
+  }
+
   display() {
     this.scene.pushMatrix();
     this.appearance.apply();

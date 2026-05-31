@@ -35,6 +35,18 @@ export class WagonPhysics {
         this.maxSteerAngle = 45 * Math.PI / 180; // 45 degrees
         this.steerSpeed = 0.45;
         this.steerReturnSpeed = 2.0;
+
+        // Horse visual properties (simulated values exposed for rendering)
+        this.theta = 0;
+        this.horseLeftX = 0;
+        this.horseLeftZ = 0;
+        this.horseRightX = 0;
+        this.horseRightZ = 0;
+        this.horseYOffset = 0;
+        this.yLeft = 0;
+        this.pitchLeft = 0;
+        this.yRight = 0;
+        this.pitchRight = 0;
     }
 
     update(dt) {
@@ -128,6 +140,55 @@ export class WagonPhysics {
         }
 
         this.resolveCollisions();
+
+        // --- Horses Visual Position & Pitch Calculations ---
+        const pivotX = this.x - 2.4 * Math.sin(this.angle);
+        const pivotZ = this.z - 2.4 * Math.cos(this.angle);
+        this.theta = this.angle + this.steerAngle;
+
+        const xL_local = -1.5;
+        const zL_local = -5.0;
+        this.horseLeftX = pivotX + xL_local * Math.cos(this.theta) + zL_local * Math.sin(this.theta);
+        this.horseLeftZ = pivotZ - xL_local * Math.sin(this.theta) + zL_local * Math.cos(this.theta);
+
+        const xR_local = 1.5;
+        const zR_local = -5.0;
+        this.horseRightX = pivotX + xR_local * Math.cos(this.theta) + zR_local * Math.sin(this.theta);
+        this.horseRightZ = pivotZ - xR_local * Math.sin(this.theta) + zR_local * Math.cos(this.theta);
+
+        this.horseYOffset = (this.heightOffset || 0.15) + 1.0 + 1.8;
+
+        this.yLeft = 0;
+        this.pitchLeft = 0;
+        this.yRight = 0;
+        this.pitchRight = 0;
+
+        if (this.scene.ground) {
+            const dirX = -Math.sin(this.theta);
+            const dirZ = -Math.cos(this.theta);
+
+            const frontXL = this.horseLeftX + 1.0 * dirX;
+            const frontZL = this.horseLeftZ + 1.0 * dirZ;
+            const backXL = this.horseLeftX - 1.0 * dirX;
+            const backZL = this.horseLeftZ - 1.0 * dirZ;
+
+            const yFL = this.scene.ground.getHeight(frontXL, frontZL);
+            const yBL = this.scene.ground.getHeight(backXL, backZL);
+
+            this.yLeft = (yFL + yBL) / 2;
+            this.pitchLeft = Math.asin(Math.max(-1.0, Math.min(1.0, (yFL - yBL) / 2.0)));
+
+            const frontXR = this.horseRightX + 1.0 * dirX;
+            const frontZR = this.horseRightZ + 1.0 * dirZ;
+            const backXR = this.horseRightX - 1.0 * dirX;
+            const backZR = this.horseRightZ - 1.0 * dirZ;
+
+            const yFR = this.scene.ground.getHeight(frontXR, frontZR);
+            const yBR = this.scene.ground.getHeight(backXR, backZR);
+
+            this.yRight = (yFR + yBR) / 2;
+            this.pitchRight = Math.asin(Math.max(-1.0, Math.min(1.0, (yFR - yBR) / 2.0)));
+        }
     }
 
     resolveCollisions() {
@@ -162,43 +223,7 @@ export class WagonPhysics {
     }
 
     isPointInWater(x, z) {
-        if (!this.pathMapImage) {
-            this.pathMapImage = this.scene.assetManager.getPixelData('path');
-        }
-        const img = this.pathMapImage;
-        if (!img) return false;
-
-        const terrainSize = this.scene.ground ? this.scene.ground.terrain.size : 400;
-        const halfSize = terrainSize / 2;
-        const u = (x + halfSize) / terrainSize;
-        const v = (z + halfSize) / terrainSize;
-
-        if (u < 0 || u > 1 || v < 0 || v > 1) return false;
-
-        const du = u - 0.5;
-        const dv = v - 0.5;
-        if (du * du + dv * dv > 0.25) return false;
-
-        const getPixelVal = (uu, vv) => {
-            const px = Math.floor(Math.max(0, Math.min(1, uu)) * (img.width - 1));
-            const py = Math.floor(Math.max(0, Math.min(1, vv)) * (img.height - 1));
-            const idx = (py * img.width + px) * 4;
-            return img.data[idx] / 255.0;
-        };
-
-        const pathValue = getPixelVal(u, v);
-        if (pathValue < 0.40 || pathValue > 0.60) return false;
-
-        const stepSize = 0.012;
-        const p1 = getPixelVal(u + stepSize, v);
-        const p2 = getPixelVal(u - stepSize, v);
-        const p3 = getPixelVal(u, v + stepSize);
-        const p4 = getPixelVal(u, v - stepSize);
-
-        const maxNeighbor = Math.max(p1, p2, p3, p4);
-        if (maxNeighbor > 0.70) return false;
-
-        return true;
+        return this.scene.ground ? this.scene.ground.isPointInWater(x, z) : false;
     }
 
     countWaterPointsAt(x, z, angle, steerAngle) {

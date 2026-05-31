@@ -32,6 +32,10 @@ export class AssetManager {
             waterTex: "./assets/textures/waterTex.jpg",
             waterMap: "./assets/textures/waterMap.jpg"
         };
+
+        this.modelPaths = {
+            horse: "assets/models/horse/horse.obj"
+        };
     }
 
     /**
@@ -86,6 +90,10 @@ export class AssetManager {
 
     getTexture(key) {
         return this.textures[key];
+    }
+
+    getModelPath(key) {
+        return this.modelPaths[key];
     }
 
     getPixelData(key) {
