@@ -11,9 +11,6 @@ export class BaleManager {
         this.initPlacement();
     }
 
-    /**
-     * Scatters the hay bales randomly on the terrain
-     */
     initPlacement() {
         const count = 30;
         const positions = PlacementUtils.generateScatterPositions({
@@ -23,6 +20,7 @@ export class BaleManager {
             minZ: -150,
             maxZ: 150,
             minDistance: 15,
+            validate: (pos) => this.isValidPlacement(pos)
         });
 
         const ground = this.scene.ground;
@@ -43,9 +41,6 @@ export class BaleManager {
         });
     }
 
-    /**
-     * Checks if the wagon is close enough to collect any uncaptured hay bale
-     */
     checkCollisions(wagon, gameController, isKeyPressedP) {
         if (!isKeyPressedP) return;
 
@@ -53,7 +48,6 @@ export class BaleManager {
             if (bale.captured) continue;
             if (!bale.collider) continue;
 
-            // keep the bale's collider in sync (important after dropping)
             bale.collider.setPosition(bale.x, bale.y, bale.z);
 
             if (wagon.collider && wagon.collider.collidesWith(bale.collider)) {
@@ -66,9 +60,6 @@ export class BaleManager {
         }
     }
 
-    /**
-     * Drops a hay bale from the wagon onto the ground at the wagon's current coordinates
-     */
     dropBale(wagon, gameController) {
         if (gameController.wagonBales <= 0) return;
 
@@ -76,13 +67,11 @@ export class BaleManager {
         if (baleToDrop) {
             const droppedScale = gameController.dropBale();
 
-            // place the bale back on the ground at the wagon's coordinates
             baleToDrop.x = wagon.x;
             baleToDrop.z = wagon.z;
             baleToDrop.scale = droppedScale || MyHayBale.SCALE;
             baleToDrop.captured = false;
 
-            // sync the collider's coordinates on drop
             const ground = this.scene.ground;
             const height = ground ? ground.getHeight(wagon.x, wagon.z) : 0;
             const baleY = height + baleToDrop.scale * 0.5;
@@ -94,10 +83,6 @@ export class BaleManager {
         }
     }
 
-    /**
-     * Respawns new hay bales randomly on the terrain to replace the delivered ones
-     * @param {number} count - Number of hay bales to respawn
-     */
     respawnBales(count) {
         if (count <= 0) return;
 
@@ -108,6 +93,7 @@ export class BaleManager {
             minZ: -150,
             maxZ: 150,
             minDistance: 15,
+            validate: (pos) => this.isValidPlacement(pos)
         });
 
         const ground = this.scene.ground;
@@ -132,10 +118,58 @@ export class BaleManager {
         console.log(`Respawned ${newBales.length} new hay bales on the terrain!`);
     }
 
-    /**
-     * Updates the visibility progress of the hay bales based on their distance to the wagon
-     * @param {number} dt - Time delta in seconds
-     */
+    isValidPlacement(pos) {
+        const baleRadius = MyHayBale.SCALE;
+
+        const barn = this.scene.barn;
+        const barnX = barn ? barn.x : -12;
+        const barnZ = barn ? barn.z : -90;
+        const barnRadius = (barn && barn.collider) ? barn.collider.radius : 13.0;
+        const dxBarn = pos.x - barnX;
+        const dzBarn = pos.z - barnZ;
+        const distBarn = Math.sqrt(dxBarn * dxBarn + dzBarn * dzBarn);
+        if (distBarn < barnRadius + baleRadius + 1.0) {
+            return false;
+        }
+
+        const platform = this.scene.gameController ? this.scene.gameController.haybaleplatform : null;
+        const platformX = platform ? platform.centerX : -55;
+        const platformZ = platform ? platform.centerZ : -90;
+        const platformRadius = (platform && platform.collider) ? platform.collider.radius : 3.0;
+        const dxPlat = pos.x - platformX;
+        const dzPlat = pos.z - platformZ;
+        const distPlat = Math.sqrt(dxPlat * dxPlat + dzPlat * dzPlat);
+        if (distPlat < platformRadius + baleRadius + 3.0) {
+            return false;
+        }
+
+        if (this.scene.rocks && this.scene.rocks.rockItems) {
+            for (const rock of this.scene.rocks.rockItems) {
+                const rockRadius = rock.collider ? rock.collider.radius : (rock.size * 1.6);
+                const dxRock = pos.x - rock.x;
+                const dzRock = pos.z - rock.z;
+                const distRock = Math.sqrt(dxRock * dxRock + dzRock * dzRock);
+                if (distRock < rockRadius + baleRadius + 0.5) {
+                    return false;
+                }
+            }
+        }
+
+        if (this.scene.trees && this.scene.trees.treeItems) {
+            for (const tree of this.scene.trees.treeItems) {
+                const treeRadius = tree.canopyRadius || 3.0;
+                const dxTree = pos.x - tree.x;
+                const dzTree = pos.z - tree.z;
+                const distTree = Math.sqrt(dxTree * dxTree + dzTree * dzTree);
+                if (distTree < treeRadius + baleRadius + 0.5) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     update(dt) {
         const wagon = this.scene.wagon;
         if (!wagon) return;
@@ -143,7 +177,7 @@ export class BaleManager {
         const wagonX = wagon.x;
         const wagonZ = wagon.z;
         const VISIBILITY_RANGE = 40.0;
-        const TRANSITION_SPEED = 4.0; // 0.25 seconds to transition fully
+        const TRANSITION_SPEED = 4.0;
 
         for (const bale of this.hayBales) {
             if (bale.captured) continue;

@@ -12,7 +12,8 @@ export function squaredDistance(a, b) {
 export function generateScatterPositions({
     count,
     minX, maxX, minZ, maxZ,
-    minDistance = 0, maxAttempts = 50
+    minDistance = 0, maxAttempts = 50,
+    validate = null
 }) {
     const positions = [];
     const minDistance2 = minDistance * minDistance;
@@ -31,7 +32,7 @@ export function generateScatterPositions({
                 squaredDistance(existing, candidate) < minDistance2
             );
 
-            if (!tooClose) {
+            if (!tooClose && (!validate || validate(candidate))) {
                 position = candidate;
                 break;
             }

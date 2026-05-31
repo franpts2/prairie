@@ -202,14 +202,14 @@ export class MyScene extends CGFscene {
     this.trees = new MyTrees(this, this.ground);
     this.grass = new MyGrass(this);
 
+    this.barn = new MyBarn(this, -12, -90);
+
     this.baleManager = new BaleManager(this);
     this.hayBales = new MyHayBales(this, this.baleManager);
 
     this.wagon = new MyWagon(this);
 
     this.flowers = new MyFlowers(this, this.ground);
-    
-    this.barn = new MyBarn(this, -12, -90);
 
 
     this.deliveryCircle = new MyDeliveryCircle(this);
