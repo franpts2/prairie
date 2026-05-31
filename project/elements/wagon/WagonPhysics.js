@@ -21,6 +21,8 @@ export class WagonPhysics {
         this.collider = new CompoundWagonCollider(2.5, 2.2);
         this.currentlyColliding = new Set();
         this.wasOutOfBounds = false;
+        this.wasInWater = false;
+        this.pathMapImage = null;
 
         this.speed = 0;
         this.maxSpeed = 8;
@@ -36,47 +38,69 @@ export class WagonPhysics {
     }
 
     update(dt) {
-        // move wagon forward along local negative Z axis, rotated by this.angle
-        const newX = this.x - this.speed * Math.sin(this.angle) * dt;
-        const newZ = this.z - this.speed * Math.cos(this.angle) * dt;
+        // calculate potential next state
+        const nextX = this.x - this.speed * Math.sin(this.angle) * dt;
+        const nextZ = this.z - this.speed * Math.cos(this.angle) * dt;
+        const nextAngle = this.angle + (this.speed * dt / 4.8) * Math.sin(this.steerAngle);
 
-        const distanceSq = newX * newX + newZ * newZ;
-        const maxRadius = this.worldLimitRadius - this.worldLimitMargin;
-        const maxRadiusSq = maxRadius * maxRadius;
+        const currentWaterCount = this.countWaterPointsAt(this.x, this.z, this.angle, this.steerAngle);
+        const nextWaterCount = this.countWaterPointsAt(nextX, nextZ, nextAngle, this.steerAngle);
 
-        if (distanceSq <= maxRadiusSq) {
-            this.x = newX;
-            this.z = newZ;
-            this.wasOutOfBounds = false;
-        } else {
-            const distance = Math.sqrt(distanceSq);
-            this.x = (newX / distance) * (maxRadius - 0.5);
-            this.z = (newZ / distance) * (maxRadius - 0.5);
-
-            if (!this.wasOutOfBounds) {
-                this.wasOutOfBounds = true;
-
-                if (this.scene.gameController && this.scene.gameController.onWagonCollision) {
-                    this.scene.gameController.onWagonCollision('world_limit');
-                }
-
-                const knockbackSpeed = Math.max(4.0, Math.abs(this.speed) * 0.8);
-                if (this.speed > 0) {
-                    this.speed = -knockbackSpeed;
-                } else if (this.speed < 0) {
-                    this.speed = knockbackSpeed;
-                } else {
-                    this.speed = -4.0;
-                }
+        if (nextWaterCount > 0 && nextWaterCount > currentWaterCount) {
+            // Block the movement! Stop at the edge and apply knockback.
+            const knockbackSpeed = Math.max(4.0, Math.abs(this.speed) * 0.8);
+            if (this.speed > 0) {
+                this.speed = -knockbackSpeed;
+            } else if (this.speed < 0) {
+                this.speed = knockbackSpeed;
             } else {
-                this.speed = this.speed > 0 ? -2.0 : 2.0;
+                this.speed = -4.0;
             }
-        }
 
-        // adjust wagon orientation based on speed and steering angle
-        // bicycle model: d(theta)/dt = (speed / L) * Math.sin(steerAngle)
-        // wheelbase (L) between front and back axle is 4.8
-        this.angle += (this.speed * dt / 4.8) * Math.sin(this.steerAngle);
+            if (!this.wasInWater) {
+                this.wasInWater = true;
+                if (this.scene.gameController && this.scene.gameController.onWagonCollision) {
+                    this.scene.gameController.onWagonCollision('water');
+                }
+            }
+        } else {
+            this.wasInWater = nextWaterCount > 0;
+
+            const distanceSq = nextX * nextX + nextZ * nextZ;
+            const maxRadius = this.worldLimitRadius - this.worldLimitMargin;
+            const maxRadiusSq = maxRadius * maxRadius;
+
+            if (distanceSq <= maxRadiusSq) {
+                this.x = nextX;
+                this.z = nextZ;
+                this.wasOutOfBounds = false;
+            } else {
+                const distance = Math.sqrt(distanceSq);
+                this.x = (nextX / distance) * (maxRadius - 0.5);
+                this.z = (nextZ / distance) * (maxRadius - 0.5);
+
+                if (!this.wasOutOfBounds) {
+                    this.wasOutOfBounds = true;
+
+                    if (this.scene.gameController && this.scene.gameController.onWagonCollision) {
+                        this.scene.gameController.onWagonCollision('world_limit');
+                    }
+
+                    const knockbackSpeed = Math.max(4.0, Math.abs(this.speed) * 0.8);
+                    if (this.speed > 0) {
+                        this.speed = -knockbackSpeed;
+                    } else if (this.speed < 0) {
+                        this.speed = knockbackSpeed;
+                    } else {
+                        this.speed = -4.0;
+                    }
+                } else {
+                    this.speed = this.speed > 0 ? -2.0 : 2.0;
+                }
+            }
+
+            this.angle = nextAngle;
+        }
 
         // align height to terrain
         if (this.scene.ground) {
@@ -135,6 +159,91 @@ export class WagonPhysics {
         if (collided && !appliedKnockback) {
             this.speed = 0;
         }
+    }
+
+    isPointInWater(x, z) {
+        if (!this.pathMapImage) {
+            this.pathMapImage = this.scene.assetManager.getPixelData('path');
+        }
+        const img = this.pathMapImage;
+        if (!img) return false;
+
+        const terrainSize = this.scene.ground ? this.scene.ground.terrain.size : 400;
+        const halfSize = terrainSize / 2;
+        const u = (x + halfSize) / terrainSize;
+        const v = (z + halfSize) / terrainSize;
+
+        if (u < 0 || u > 1 || v < 0 || v > 1) return false;
+
+        const du = u - 0.5;
+        const dv = v - 0.5;
+        if (du * du + dv * dv > 0.25) return false;
+
+        const getPixelVal = (uu, vv) => {
+            const px = Math.floor(Math.max(0, Math.min(1, uu)) * (img.width - 1));
+            const py = Math.floor(Math.max(0, Math.min(1, vv)) * (img.height - 1));
+            const idx = (py * img.width + px) * 4;
+            return img.data[idx] / 255.0;
+        };
+
+        const pathValue = getPixelVal(u, v);
+        if (pathValue < 0.40 || pathValue > 0.60) return false;
+
+        const stepSize = 0.012;
+        const p1 = getPixelVal(u + stepSize, v);
+        const p2 = getPixelVal(u - stepSize, v);
+        const p3 = getPixelVal(u, v + stepSize);
+        const p4 = getPixelVal(u, v - stepSize);
+
+        const maxNeighbor = Math.max(p1, p2, p3, p4);
+        if (maxNeighbor > 0.70) return false;
+
+        return true;
+    }
+
+    countWaterPointsAt(x, z, angle, steerAngle) {
+        // 1. Wagon Bed Sphere
+        const wagonSphere = { x, z, radius: 2.5 };
+
+        // 2. Horse Sphere
+        const pivotX = x - 2.4 * Math.sin(angle);
+        const pivotZ = z - 2.4 * Math.cos(angle);
+        const theta = angle + steerAngle;
+        const horseCenterX = pivotX - 5.0 * Math.sin(theta);
+        const horseCenterZ = pivotZ - 5.0 * Math.cos(theta);
+        const horseSphere = { x: horseCenterX, z: horseCenterZ, radius: 2.2 };
+
+        let count = 0;
+        count += this.countSphereWaterPoints(wagonSphere);
+        count += this.countSphereWaterPoints(horseSphere);
+        return count;
+    }
+
+    countSphereWaterPoints(sphere) {
+        const cx = sphere.x;
+        const cz = sphere.z;
+        const rad = sphere.radius;
+
+        const diag = rad * 0.7071;
+        const points = [
+            { x: cx, z: cz },
+            { x: cx + rad, z: cz },
+            { x: cx - rad, z: cz },
+            { x: cx, z: cz + rad },
+            { x: cx, z: cz - rad },
+            { x: cx + diag, z: cz + diag },
+            { x: cx - diag, z: cz + diag },
+            { x: cx + diag, z: cz - diag },
+            { x: cx - diag, z: cz - diag }
+        ];
+
+        let count = 0;
+        for (const pt of points) {
+            if (this.isPointInWater(pt.x, pt.z)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     handleCollisionResponse(obstacle) {
