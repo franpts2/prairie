@@ -39,12 +39,17 @@ export class MyInterface extends CGFinterface {
 
         gameFolder.open();
 
-        // Performance Toggles Folder
-        const perfFolder = this.gui.addFolder("Performance Toggles");
-        perfFolder.add(this.scene, 'renderGrass').name('Render Grass');
-        perfFolder.add(this.scene, 'renderFlowers').name('Render Flowers');
-        perfFolder.add(this.scene, 'renderHorses').name('Render Horses');
-        perfFolder.open();
+        // add a help groups that displays the keyboard controls
+        const helpFolder = this.gui.addFolder("Help");
+        const h1 = helpFolder.add({ 'WAD': 'Move' }, 'WAD');
+        const h2 = helpFolder.add({ 'P': 'Pick Up Hay Bale' }, 'P');
+        const h3 = helpFolder.add({ 'L': 'Deliver Hay Bale' }, 'L');
+
+        [h1, h2, h3].forEach(h => {
+            h.domElement.style.pointerEvents = 'none';
+        });
+
+        helpFolder.open();
 
         // init keyboard keys
         this.initKeys();
