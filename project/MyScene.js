@@ -1,7 +1,7 @@
 import { CGFscene, CGFcamera, CGFaxis, CGFappearance } from "../lib/CGF.js";
-import { MySky } from "./elements/MySky.js";
-import { MyCloud } from "./elements/MyCloud.js";
-import { MySun } from "./elements/MySun.js";
+import { MySky } from "./elements/sky/MySky.js";
+import { MyCloud } from "./elements/sky/MyCloud.js";
+import { MySun } from "./elements/sky/MySun.js";
 import { MyGround } from "./elements/MyGround.js";
 import { MyRocks } from "./elements/rocks/MyRocks.js";
 import { MyTrees } from "./elements/trees/MyTrees.js";

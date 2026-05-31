@@ -1,5 +1,5 @@
-import { CGFappearance, CGFtexture } from "../../lib/CGF.js";
-import { MySphere } from "../shapes/MySphere.js";
+import { CGFappearance, CGFtexture } from "../../../lib/CGF.js";
+import { MySphere } from "../../shapes/MySphere.js";
 
 export class MyCloud {
   constructor(scene) {
