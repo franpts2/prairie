@@ -14,7 +14,7 @@ uniform bool uLightEnabled;
 uniform vec4 uLightPosition;
 
 void main() {
-    // Basic lighting setup
+    // lighting setup
     vec3 lightDir = normalize(vec3(0.4, 0.8, 0.4));
     float diffuse = max(abs(dot(vNormal, lightDir)), 0.0);
     float softLight = 0.4 + diffuse * 0.6;
@@ -25,16 +25,16 @@ void main() {
         softLight = 0.4 + diffuse * 0.6;
     }
 
-    // Height gradient along the local Z axis (0.0 at base to 1.0 at tip)
+    // height gradient along the local Z axis (0.0 at base to 1.0 at tip)
     float heightT = clamp(vLocalZ, 0.0, 1.0);
 
-    // Animating glow stripe moving up/down the arrow
+    // animating glow stripe moving up/down the arrow
     float stripe = sin(vLocalZ * 5.0 - uTime * uGlowSpeed) * 0.5 + 0.5;
-    stripe = pow(stripe, 4.0); // Sharpen the glow stripe
+    stripe = pow(stripe, 4.0); // sharpen the glow stripe
 
-    // Mix base color and glow color based on the stripe and height gradient
+    // mix base color and glow color based on the stripe and height gradient
     vec3 color = mix(uBaseColor.rgb, uGlowColor.rgb, stripe * 0.6 + heightT * 0.4);
 
-    // Render with emissive ambient lighting + standard diffuse lighting
+    // render with emissive ambient lighting + standard diffuse lighting
     gl_FragColor = vec4(color * (softLight + 0.35), uBaseColor.a);
 }

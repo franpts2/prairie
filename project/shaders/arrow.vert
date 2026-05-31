@@ -7,8 +7,6 @@ uniform mat4 uPMatrix;
 uniform mat4 uNMatrix;
 
 uniform float uTime;
-uniform float uPulseSpeed;
-uniform float uPulseStrength;
 uniform float uBobSpeed;
 uniform float uBobStrength;
 uniform float uBobPhase;
@@ -20,13 +18,9 @@ void main() {
     vNormal = normalize((uNMatrix * vec4(aVertexNormal, 0.0)).xyz);
     vLocalZ = aVertexPosition.z;
 
-    // Breathing effect (pulsing scale on X and Y)
-    float pulse = 1.0 + sin(uTime * uPulseSpeed) * uPulseStrength;
     vec3 displacedPosition = aVertexPosition;
-    displacedPosition.x *= pulse;
-    displacedPosition.y *= pulse;
 
-    // Bobbing effect along local Z axis (which is rotated vertically)
+    // bobbing effect along local Z axis
     float bobOffset = sin(uTime * uBobSpeed + uBobPhase) * uBobStrength;
     displacedPosition.z += bobOffset;
 

@@ -34,8 +34,6 @@ export class MyArrow {
 
         this.shader.setUniformsValues({
             uTime: time,
-            uPulseSpeed: 3.5,
-            uPulseStrength: 0.08,
             uGlowSpeed: 5.0,
             uBobSpeed: 4.5,
             uBobStrength: 0.15,
