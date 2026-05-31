@@ -6,7 +6,7 @@ export class MyDeliveryCircle extends CGFobject {
     this.scene = scene;
     
     this.x = -40;
-    this.z = -90;
+    this.z = -95;
     this.radius = 10.0;
     this.width = 0.5; // width of the ring boundary
     this.slices = 120; // number of subdivisions around the circle

@@ -206,7 +206,7 @@ export class MyScene extends CGFscene {
     this.trees = new MyTrees(this, this.ground);
     this.grass = new MyGrass(this);
 
-    this.barn = new MyBarn(this, -12, -90);
+    this.barn = new MyBarn(this, -12, -100);
 
     this.baleManager = new BaleManager(this);
     this.hayBales = new MyHayBales(this, this.baleManager);
@@ -230,8 +230,8 @@ export class MyScene extends CGFscene {
       0.4,
       0.1,
       5000,
-      vec3.fromValues(30, 15, 30),
-      vec3.fromValues(0, 0, 0)
+      vec3.fromValues(41, 32, -47),
+      vec3.fromValues(-12, 5, -100)
     );
   }
   setDefaultAppearance() {
