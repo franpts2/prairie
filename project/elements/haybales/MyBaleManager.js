@@ -27,7 +27,7 @@ export class BaleManager {
         this.hayBales = positions.map(pos => {
             const scale = MyHayBale.SCALE;
             const height = ground ? ground.getHeight(pos.x, pos.z) : 0;
-            const baleY = height + scale * 0.5;
+            const baleY = height + 0.3 * scale;
             return {
                 x: pos.x,
                 y: baleY,
@@ -74,7 +74,7 @@ export class BaleManager {
 
             const ground = this.scene.ground;
             const height = ground ? ground.getHeight(wagon.x, wagon.z) : 0;
-            const baleY = height + baleToDrop.scale * 0.5;
+            const baleY = height + 0.3 * baleToDrop.scale;
             baleToDrop.y = baleY;
             baleToDrop.collider.setPosition(wagon.x, baleY, wagon.z);
             baleToDrop.collider.radius = baleToDrop.scale;
@@ -100,7 +100,7 @@ export class BaleManager {
         const newBales = positions.map(pos => {
             const scale = MyHayBale.SCALE;
             const height = ground ? ground.getHeight(pos.x, pos.z) : 0;
-            const baleY = height + scale * 0.5;
+            const baleY = height + 0.3 * scale;
             return {
                 x: pos.x,
                 y: baleY,
