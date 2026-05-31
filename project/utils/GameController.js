@@ -227,7 +227,7 @@ export class GameController {
      * @param {string} obstacleType - The type of obstacle collided with
      */
     onWagonCollision(obstacleType) {
-        if (obstacleType === 'barn') {
+        if (obstacleType === 'barn' || obstacleType === 'haybaleplatform') {
             return;
         }
 

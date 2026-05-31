@@ -179,6 +179,10 @@ export class MyScene extends CGFscene {
       colliders.push({ type: 'barn', item: this.barn, collider: this.barn.collider });
     }
 
+    if (this.gameController && this.gameController.haybaleplatform && this.gameController.haybaleplatform.collider) {
+      colliders.push({ type: 'haybaleplatform', item: this.gameController.haybaleplatform, collider: this.gameController.haybaleplatform.collider });
+    }
+
     return colliders;
   }
 
