@@ -23,7 +23,7 @@ export class WagonPhysics {
         this.wasOutOfBounds = false;
 
         this.speed = 0;
-        this.maxSpeed = 10;
+        this.maxSpeed = 8;
         this.acceleration = 4;
         this.brakeDecel = 11;
         this.friction = 2;
