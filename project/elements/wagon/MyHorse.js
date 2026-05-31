@@ -17,7 +17,7 @@ export class MyHorse extends CGFobject {
         this.appearance.setTexture(this.scene.assetManager.getTexture('horse'));
 
         // instantiate horse animation shader
-        this.shader = new CGFshader(scene.gl, "shaders/horse.vert", "shaders/horse.frag");
+        this.shader = new CGFshader(scene.gl, "shaders/horse/horse.vert", "shaders/horse/horse.frag");
     }
 
     display(speed = 0.0) {

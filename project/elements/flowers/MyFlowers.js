@@ -27,8 +27,8 @@ export class MyFlowers {
             [0.46, 0.41, 0.71],  // lilac
         ];
 
-        this.flowerShader = new CGFshader(scene.gl, "shaders/flower.vert", "shaders/flower.frag");
-        
+        this.flowerShader = new CGFshader(scene.gl, "shaders/flower/flower.vert", "shaders/flower/flower.frag");
+
         this.scene.setActiveShader(this.flowerShader);
         this.flowerShader.setUniformsValues({
             uWindSpeed: 1.8,
@@ -185,9 +185,9 @@ export class MyFlowers {
             const groupFlowers = this.flowerItems.filter(item => {
                 const fCol = item.flower.petalColor;
                 const col = this.flowerColors[i];
-                return Math.abs(fCol[0] - col[0]) < 0.01 && 
-                       Math.abs(fCol[1] - col[1]) < 0.01 && 
-                       Math.abs(fCol[2] - col[2]) < 0.01;
+                return Math.abs(fCol[0] - col[0]) < 0.01 &&
+                    Math.abs(fCol[1] - col[1]) < 0.01 &&
+                    Math.abs(fCol[2] - col[2]) < 0.01;
             });
 
             this.petalsMeshes[i] = [];
