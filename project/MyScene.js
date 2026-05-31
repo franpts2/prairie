@@ -300,7 +300,7 @@ export class MyScene extends CGFscene {
       this.gameController.haybaleplatform.display();
     }
 
-    // this.hayBales.display();
+    this.hayBales.display();
 
     this.sky.display();
 
