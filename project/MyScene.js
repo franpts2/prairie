@@ -59,6 +59,11 @@ export class MyScene extends CGFscene {
     this.displayLight0 = true;
     this.scaleFactor = 1;
 
+    // Performance toggles
+    this.renderGrass = true;
+    this.renderFlowers = true;
+    this.renderHorses = true;
+
     this.setUpdatePeriod(1000 / 60);
     this.lastTime = 0;
     this.time = 0;
@@ -281,7 +286,9 @@ export class MyScene extends CGFscene {
 
     this.trees.display();
 
-    this.grass.display();
+    if (this.renderGrass) {
+      this.grass.display();
+    }
 
     if (this.gameController && this.gameController.haybaleplatform) {
       this.gameController.haybaleplatform.display();
@@ -300,7 +307,9 @@ export class MyScene extends CGFscene {
     this.wagon.display();
     this.popMatrix();
 
-    if (this.flowers) this.flowers.display();
+    if (this.renderFlowers && this.flowers) {
+      this.flowers.display();
+    }
 
     this.pushMatrix();
     this.barn.display();

@@ -15,8 +15,10 @@ export class MyGrassMesh extends CGFobject {
 
     let vertexOffset = 0;
 
+    const grassWidthScale = 0.1; // Fine-tune this value to adjust the slenderness of the grass blades
+
     for (const inst of this.instances) {
-      const halfW = inst.size / 2;
+      const halfW = (inst.size / 2) * grassWidthScale;
       const h = inst.size * 1.2;
 
       for (let q = 0; q < 2; q++) {
