@@ -11,6 +11,11 @@ uniform sampler2D uSampler3;    // pathMap (unit 2)
 uniform float timeFactor;
 
 void main() {
+	// Only draw water inside the circular boundaries of the terrain
+	if (distance(vTextureCoord, vec2(0.5, 0.5)) > 0.5) {
+		discard;
+	}
+
 	// Sample the path map to find the riverbed
 	float pathValue = texture2D(uSampler3, vTextureCoord).r;
 
