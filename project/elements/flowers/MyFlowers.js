@@ -13,9 +13,6 @@ export class MyFlowers {
         this.terrainSize = 400;
         this.time = 0;
 
-        const pathData = scene.assetManager.getPixelData('path');
-        this.pathMapImage = pathData;
-
         this.flowerColors = [
             [0.87, 0.02, 0.15],  // red
             [0.82, 0.44, 0.06],  // orange
@@ -40,19 +37,7 @@ export class MyFlowers {
     }
 
     getPathValue(x, z) {
-        if (!this.pathMapImage) return 0;
-
-        const halfSize = this.terrainSize / 2;
-        const u = (x + halfSize) / this.terrainSize;
-        const v = (z + halfSize) / this.terrainSize;
-
-        if (u < 0 || u > 1 || v < 0 || v > 1) return 0;
-
-        const px = Math.floor(u * (this.pathMapImage.width - 1));
-        const py = Math.floor(v * (this.pathMapImage.height - 1));
-
-        const idx = (py * this.pathMapImage.width + px) * 4;
-        return this.pathMapImage.data[idx] / 255;
+        return this.ground ? this.ground.getPathValue(x, z) : 0;
     }
 
     initPlacement() {

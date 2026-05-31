@@ -88,6 +88,27 @@ export class MyGround {
     return this.baseHeight + r * this.heightScale;
   }
 
+  getPathValue(x, z) {
+    if (!this.pathData) {
+      const pathData = this.scene.assetManager.getPixelData('path');
+      if (!pathData) return 0;
+      this.pathData = pathData.data;
+      this.pathWidth = pathData.width;
+      this.pathHeight = pathData.height;
+    }
+
+    const halfSize = this.terrain.size / 2;
+    const u = (x + halfSize) / this.terrain.size;
+    const v = (z + halfSize) / this.terrain.size;
+
+    if (u < 0 || u > 1 || v < 0 || v > 1) return 0;
+
+    const px = Math.floor(u * (this.pathWidth - 1));
+    const py = Math.floor(v * (this.pathHeight - 1));
+    const idx = (py * this.pathWidth + px) * 4;
+    return this.pathData[idx] / 255.0;
+  }
+
   isPointInWater(x, z) {
     if (!this.pathData) {
       const pathData = this.scene.assetManager.getPixelData('path');
