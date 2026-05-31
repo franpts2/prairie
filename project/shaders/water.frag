@@ -44,7 +44,8 @@ void main() {
 	vec2 d1 = texture2D(uSampler2, mapUv).rg;
 	vec2 d2 = texture2D(uSampler2, mapUv + vec2(0.03, -0.02)).rg;
 	vec2 distortion = ((d1 + d2) * 0.5) * 2.0 - 1.0;
-	vec2 finalUv = vTextureCoord + distortion * 0.016 + vec2(vWave * 0.006, 0.0);
+	float waterRepeat = 4.0;
+	vec2 finalUv = (vTextureCoord * waterRepeat) + distortion * 0.016 + vec2(vWave * 0.006, 0.0);
 
 	vec4 baseColor = texture2D(uSampler, finalUv);
 

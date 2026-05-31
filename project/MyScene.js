@@ -65,7 +65,7 @@ export class MyScene extends CGFscene {
     this.renderFlowers = true;
     this.renderHorses = true;
     this.renderWater = true;
-    this.waterHeight = 1.2;
+    this.waterHeight = 0.2;
 
     this.setUpdatePeriod(1000 / 60);
     this.lastTime = 0;
@@ -217,7 +217,7 @@ export class MyScene extends CGFscene {
 
 
     this.deliveryCircle = new MyDeliveryCircle(this);
-    this.water = new MyWater(this, 1.2);
+    this.water = new MyWater(this);
 
     this.ready = true;
   }
