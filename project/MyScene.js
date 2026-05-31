@@ -89,7 +89,7 @@ export class MyScene extends CGFscene {
     this.fpsDiv.style.backdropFilter = "blur(4px)";
     this.fpsDiv.style.transition = "all 0.3s ease";
     this.fpsDiv.innerHTML = "FPS: --";
-    document.body.appendChild(this.fpsDiv);
+    // document.body.appendChild(this.fpsDiv);
 
     this.fpsFrames = 0;
     this.fpsLastCheck = 0;
@@ -300,7 +300,7 @@ export class MyScene extends CGFscene {
       this.gameController.haybaleplatform.display();
     }
 
-    this.hayBales.display();
+    // this.hayBales.display();
 
     this.sky.display();
 
