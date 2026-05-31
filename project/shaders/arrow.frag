@@ -25,12 +25,12 @@ void main() {
         softLight = 0.4 + diffuse * 0.6;
     }
 
-    // height gradient along the local Z axis (0.0 at base to 1.0 at tip)
-    float heightT = clamp(vLocalZ, 0.0, 1.0);
+    // height gradient along the local Z axis (0.0 at base to 1.8 at tip)
+    float heightT = clamp(vLocalZ / 1.8, 0.0, 1.0);
 
     // animating glow stripe moving up/down the arrow
-    float stripe = sin(vLocalZ * 5.0 - uTime * uGlowSpeed) * 0.5 + 0.5;
-    stripe = pow(stripe, 4.0); // sharpen the glow stripe
+    float stripe = sin(vLocalZ * 3.0 - uTime * uGlowSpeed) * 0.5 + 0.5;
+    stripe = pow(stripe, 6.0); // sharpen the glow stripe
 
     // mix base color and glow color based on the stripe and height gradient
     vec3 color = mix(uBaseColor.rgb, uGlowColor.rgb, stripe * 0.6 + heightT * 0.4);

@@ -70,12 +70,14 @@ export class MyArrow {
         this.scene.rotate(Math.PI / 2, 1, 0, 0);
 
         // draw cylinder
+        this.shader.setUniformsValues({ uShapeScale: 1.0, uShapeOffset: 0.0 });
         this.scene.pushMatrix();
         this.scene.scale(0.16, 0.16, 1.0);
         this.cylinder.display();
         this.scene.popMatrix();
 
         // draw cone
+        this.shader.setUniformsValues({ uShapeScale: 0.8, uShapeOffset: 1.0 });
         this.scene.pushMatrix();
         this.scene.translate(0, 0, 1.0);
         this.scene.scale(0.48, 0.48, 0.8);

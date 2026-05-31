@@ -10,13 +10,15 @@ uniform float uTime;
 uniform float uBobSpeed;
 uniform float uBobStrength;
 uniform float uBobPhase;
+uniform float uShapeScale;
+uniform float uShapeOffset;
 
 varying vec3 vNormal;
 varying float vLocalZ;
 
 void main() {
     vNormal = normalize((uNMatrix * vec4(aVertexNormal, 0.0)).xyz);
-    vLocalZ = aVertexPosition.z;
+    vLocalZ = aVertexPosition.z * uShapeScale + uShapeOffset;
 
     vec3 displacedPosition = aVertexPosition;
 
