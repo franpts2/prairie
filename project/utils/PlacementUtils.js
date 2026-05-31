@@ -1,7 +1,9 @@
+// Generates a random float value in the range [min, max].
 export function randomBetween(min, max) {
     return min + Math.random() * (max - min);
 }
 
+// Calculates the squared 2D distance between two points to avoid expensive square root operations.
 export function squaredDistance(a, b) {
     const dx = a.x - b.x;
     const dz = a.z - b.z;
@@ -9,6 +11,7 @@ export function squaredDistance(a, b) {
     return dx * dx + dz * dz;
 }
 
+// Generates a set of 2D scatter coordinates spaced out by a minimum required distance using a simple rejection sampling method.
 export function generateScatterPositions({
     count,
     minX, maxX, minZ, maxZ,
@@ -47,6 +50,7 @@ export function generateScatterPositions({
     return positions;
 }
 
+// Generates multiple grouped clusters of 2D coordinates, maintaining a minimum spacing between clusters as well as between items within a cluster.
 export function generateClusteredPositions({
     groupCount, minGroupSize = 3, maxGroupSize = 6,
     minX, maxX, minZ, maxZ,

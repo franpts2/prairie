@@ -7,23 +7,24 @@ const HASH_SHIFT_B = 16;
 const HASH_MASK = 2147483647;
 
 export class NoiseGenerator {
+    // Initializes the noise generator with a specific integer seed.
     constructor(seed = 0) {
         this.seed = seed;
     }
 
-    // Hash function for pseudo-random values based on position and seed
+    // Generates a pseudo-random floating-point value in [0, 1] using coordinate bit-shifting and large primes.
     hash(x, y, z) {
         let h = this.seed + Math.floor(x * HASH_PRIME_X) ^ Math.floor(y * HASH_PRIME_Y) ^ Math.floor(z * HASH_PRIME_Z);
         h = (h ^ (h >> HASH_SHIFT_A)) * HASH_MULTIPLIER;
         return ((h ^ (h >> HASH_SHIFT_B)) & HASH_MASK) / HASH_MASK;
     }
 
-    // Smoothstep function for smooth interpolation
+    // Applies smoothstep cubic interpolation to smooth transition boundaries between points.
     smoothstep(t) {
         return t * t * (3 - 2 * t);
     }
 
-    // Smooth value noise in the 0..1 range.
+    // Generates 3D smooth value noise using trilinear interpolation of hashed grid values.
     noise(x, y, z) {
         const xi = Math.floor(x);
         const yi = Math.floor(y);
@@ -56,7 +57,7 @@ export class NoiseGenerator {
         return nxy0 * (1 - w) + nxy1 * w;
     }
 
-    // Multi-scale noise in the -1..1 range for natural irregular shapes.
+    // Generates multi-scale fractal Brownian motion noise by summing multiple octaves of standard 3D noise.
     fractalNoise(x, y, z, octaves = 4) {
         let value = 0;
         let amplitude = 1;

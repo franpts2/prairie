@@ -2,15 +2,15 @@ import { MyHaybalePlatform } from "../elements/haybales/MyHaybalePlatform.js";
 import { MyHayBale } from "../elements/haybales/MyHayBale.js";
 
 export class GameController {
+    // Initializes the game state, loads game over UI overlay references, registers restart handlers, and creates the haybale platform.
     constructor(scene) {
         this.scene = scene;
 
         this.INITIAL_HP = 200;
-        this.HP_DECAY_RATE = 1; // 1 HP per second
+        this.HP_DECAY_RATE = 1;
         this.MAX_BALES = 2;
         this.BALE_HEAL_VALUE = 50;
 
-        // UI elements
         this.overlay = document.getElementById('game-over-overlay');
         this.scoreDisplay = document.getElementById('final-score');
         this.restartBtn = document.getElementById('restart-button');
@@ -21,16 +21,12 @@ export class GameController {
             };
         }
 
-        // Target area to pile delivered hay bales neatly
         this.haybaleplatform = new MyHaybalePlatform(scene);
 
-        // game state
         this.reset();
     }
 
-    /**
-     * Resets the game state and hides the overlay
-     */
+    // Resets game parameters including HP, score, delivered bales counter, game over states, and hides the overlay.
     reset() {
         this.hp = this.INITIAL_HP;
         this.score = 0;
@@ -39,27 +35,21 @@ export class GameController {
         this.lastHeal = 0;
         this.balesDelivered = 0;
         this.isGameOver = false;
-        this.keyCooldown = 0; // Input check cooldown
+        this.keyCooldown = 0;
 
         if (this.overlay) {
             this.overlay.style.display = 'none';
         }
     }
 
-    /**
-     * Updates game state based on time elapsed, handles inputs and updates scene models
-     * @param {number} dt - Time since last update in seconds
-     */
+    // Updates game statistics, ticks down time-based score, reduces player HP, polls active keyboard inputs, updates wagon physics, and evaluates bale collection or platform delivery interactions.
     update(dt) {
         if (this.isGameOver) return;
 
-        // update score (= time passed)
         this.score += dt;
 
-        // apply HP Decay
         this.hp -= this.HP_DECAY_RATE * dt;
 
-        // check Game Over
         if (this.hp <= 0) {
             this.hp = 0;
             this.isGameOver = true;
@@ -67,15 +57,12 @@ export class GameController {
             return;
         }
 
-        // process wagon movement inputs
         this.checkKeys(dt);
 
-        // update wagon physical positions & terrain alignments
         if (this.scene.wagon) {
             this.scene.wagon.update(dt);
         }
 
-        // process key interactions (P and L) with cooldown
         if (this.keyCooldown > 0) {
             this.keyCooldown -= dt;
         }
@@ -85,15 +72,13 @@ export class GameController {
         const isL = this.keyCooldown <= 0 && gui && typeof gui.isKeyPressed === 'function' && gui.isKeyPressed("KeyL");
 
         if (isP || isL) {
-            this.keyCooldown = 0.3; // 300ms input cooldown
+            this.keyCooldown = 0.3;
         }
 
-        // check collision with hay bales
         if (this.scene.baleManager && this.scene.wagon) {
             this.scene.baleManager.checkCollisions(this.scene.wagon, this, isP);
         }
 
-        // check drop/delivery action (when L is pressed)
         if (isL && this.scene.baleManager && this.scene.wagon) {
             if (this.scene.deliveryCircle && this.scene.deliveryCircle.isIntersecting(this.scene.wagon)) {
                 this.deliverBales();
@@ -103,10 +88,7 @@ export class GameController {
         }
     }
 
-    /**
-     * Checks driving input keys and calls wagon acceleration/steering methods
-     * @param {number} dt - Time delta in seconds
-     */
+    // Polls interface controls for W/A/S/D key presses and redirects inputs to wagon steering, acceleration, or braking mechanisms.
     checkKeys(dt) {
         const gui = this.scene.gui;
         const wagon = this.scene.wagon;
@@ -134,9 +116,7 @@ export class GameController {
         }
     }
 
-    /**
-     * Handles game over state: shows overlay and final score
-     */
+    // Handles transitioning to game over state, logging final statistics, and displaying the overlay with the user's score.
     onGameOver() {
         console.log("Game Over! Final Score: " + Math.floor(this.score));
 
@@ -146,46 +126,38 @@ export class GameController {
         }
     }
 
-    /**
-     * Apply damage to the wagon
-     * @param {number} amount - HP to lose
-     */
+    // Inflicts health point damage to the player, updates last damage records, handles death triggers, and invokes a red visual flash on the wagon.
     applyDamage(amount) {
         if (this.isGameOver) return;
         this.hp -= amount;
         this.lastDamage = amount;
         if (this.hp < 0) this.hp = 0;
 
-        // trigger red damage flash feedback on the wagon
         if (this.scene.wagon && this.scene.wagon.triggerDamageFlash) {
             this.scene.wagon.triggerDamageFlash();
         }
     }
 
-    /**
-     * Deliver hay bales to the barn
-     */
+    // Processes delivery of all collected hay bales to the target circle, restores player HP proportionally, deposits physical bales on the platform, and triggers a green visual flash.
     deliverBales() {
         if (this.isGameOver) return;
         if (this.wagonBales > 0) {
             const healing = this.wagonBales * this.BALE_HEAL_VALUE;
             this.hp += healing;
-            // limit HP to 200
+
             if (this.hp > 200) this.hp = 200;
 
             this.lastHeal = healing;
 
-            // relocate and release delivered bales in BaleManager
             if (this.scene.baleManager && this.scene.baleManager.hayBales) {
                 const capturedBales = this.scene.baleManager.hayBales.filter(b => b.captured);
                 this.haybaleplatform.depositBales(capturedBales, this.balesDelivered);
-                
+
                 if (typeof this.scene.baleManager.respawnBales === 'function') {
                     this.scene.baleManager.respawnBales(capturedBales.length);
                 }
             }
 
-            // trigger green healing flash feedback on the wagon
             if (this.scene.wagon && this.scene.wagon.triggerHealFlash) {
                 this.scene.wagon.triggerHealFlash();
             }
@@ -197,10 +169,7 @@ export class GameController {
         }
     }
 
-    /**
-     * Drop a carried hay bale
-     * @returns {number|null} - The scale of the dropped bale
-     */
+    // Deducts one hay bale from the wagon inventory and returns its scaling size for physics drop calculations.
     dropBale() {
         if (this.isGameOver) return null;
         if (this.wagonBales > 0) {
@@ -210,9 +179,7 @@ export class GameController {
         return null;
     }
 
-    /**
-     * Capture a hay bale
-     */
+    // Attempts to add a hay bale to the wagon inventory if the player is currently under the carrying limit.
     captureBale() {
         if (this.isGameOver) return false;
         if (this.wagonBales < this.MAX_BALES) {
@@ -222,10 +189,7 @@ export class GameController {
         return false;
     }
 
-    /**
-     * Handle gameplay consequences of a wagon collision
-     * @param {string} obstacleType - The type of obstacle collided with
-     */
+    // Processes a collision notification from the physics engine, assigning randomized damage for barrier hits and logging water hazard events.
     onWagonCollision(obstacleType) {
         if (obstacleType === 'world_limit') {
             const damage = Math.floor(Math.random() * (15 - 5 + 1)) + 5;
@@ -238,7 +202,6 @@ export class GameController {
             return;
         }
 
-        // generate a random damage number between 5 and 15 for other obstacles
         const damage = Math.floor(Math.random() * (15 - 5 + 1)) + 5;
         this.applyDamage(damage);
     }

@@ -1,12 +1,11 @@
 export class SpatialGrid {
+    // Initializes the spatial partitioning grid with a specific cell size.
     constructor(cellSize = 2) {
         this.cellSize = cellSize;
         this.grid = {};
     }
 
-    /**
-     * Adds an obstacle (exclusion zone) to the grid
-     */
+    // Registers an obstacle into all grid cells that its bounding circle overlaps.
     addObstacle(x, z, radius) {
         const radiusSq = radius * radius;
         const minGx = Math.floor((x - radius) / this.cellSize);
@@ -23,9 +22,7 @@ export class SpatialGrid {
         }
     }
 
-    /**
-     * Checks if a position is within any obstacle's avoidance radius.
-     */
+    // Checks if a coordinate falls inside any obstacle located in its corresponding grid cell.
     isBlocked(x, z) {
         const gx = Math.floor(x / this.cellSize);
         const gz = Math.floor(z / this.cellSize);

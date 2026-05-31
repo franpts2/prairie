@@ -1,10 +1,10 @@
 import { CollisionSphere, CompoundWagonCollider } from '../../utils/CollisionSphere.js';
 
 export class WagonPhysics {
+    // Initializes the wagon's positioning parameters, physics properties (speed, steering, friction), and the compound collision detection system.
     constructor(scene) {
         this.scene = scene;
 
-        // position and motion variables
         this.x = -40;
         this.y = 0;
         this.z = -65;
@@ -15,9 +15,6 @@ export class WagonPhysics {
         this.worldLimitRadius = 200;
         this.worldLimitMargin = 10;
 
-        // compound collider with two overlapping spheres:
-        // - Wagon bed: radius 2.5
-        // - Horses: radius 2.2
         this.collider = new CompoundWagonCollider(2.5, 2.2);
         this.currentlyColliding = new Set();
         this.wasOutOfBounds = false;
@@ -30,13 +27,11 @@ export class WagonPhysics {
         this.brakeDecel = 11;
         this.friction = 2;
 
-        // steering variables
         this.steerAngle = 0;
-        this.maxSteerAngle = 45 * Math.PI / 180; // 45 degrees
+        this.maxSteerAngle = 45 * Math.PI / 180;
         this.steerSpeed = 0.45;
         this.steerReturnSpeed = 2.0;
 
-        // Horse visual properties (simulated values exposed for rendering)
         this.theta = 0;
         this.horseLeftX = 0;
         this.horseLeftZ = 0;
@@ -49,8 +44,9 @@ export class WagonPhysics {
         this.pitchRight = 0;
     }
 
+    // Calculates the wagon's next position/rotation, confines it within world boundary limits, enforces knockback on water entry, computes height adaptation over terrain surfaces, and matches horse coordinates with the wagon's movement.
     update(dt) {
-        // calculate potential next state
+
         const nextX = this.x - this.speed * Math.sin(this.angle) * dt;
         const nextZ = this.z - this.speed * Math.cos(this.angle) * dt;
         const nextAngle = this.angle + (this.speed * dt / 4.8) * Math.sin(this.steerAngle);
@@ -59,7 +55,7 @@ export class WagonPhysics {
         const nextWaterCount = this.countWaterPointsAt(nextX, nextZ, nextAngle, this.steerAngle);
 
         if (nextWaterCount > 0 && nextWaterCount > currentWaterCount) {
-            // Block the movement! Stop at the edge and apply knockback.
+
             const knockbackSpeed = Math.max(4.0, Math.abs(this.speed) * 0.8);
             if (this.speed > 0) {
                 this.speed = -knockbackSpeed;
@@ -114,7 +110,6 @@ export class WagonPhysics {
             this.angle = nextAngle;
         }
 
-        // align height to terrain
         if (this.scene.ground) {
             const frontX = this.x - 2.4 * Math.sin(this.angle);
             const frontZ = this.z - 2.4 * Math.cos(this.angle);
@@ -141,7 +136,6 @@ export class WagonPhysics {
 
         this.resolveCollisions();
 
-        // --- Horses Visual Position & Pitch Calculations ---
         const pivotX = this.x - 2.4 * Math.sin(this.angle);
         const pivotZ = this.z - 2.4 * Math.cos(this.angle);
         this.theta = this.angle + this.steerAngle;
@@ -191,6 +185,7 @@ export class WagonPhysics {
         }
     }
 
+    // Checks for wagon overlap against active scene colliders, processes collision responses (like knockbacks), and displaces the wagon away from obstacles.
     resolveCollisions() {
         if (!this.collider) return;
 
@@ -201,14 +196,13 @@ export class WagonPhysics {
 
         for (const obstacle of obstacles) {
             if (this.collider.collidesWith(obstacle.collider)) {
-                // track this active collision
+
                 newColliding.add(obstacle.item);
 
                 const response = this.handleCollisionResponse(obstacle);
                 if (response.appliedKnockback) appliedKnockback = true;
                 if (response.collided) collided = true;
 
-                // push-out logic only applies to non-rock obstacles
                 if (obstacle.type !== 'rock') {
                     this.pushOutFromObstacle(obstacle.collider);
                 }
@@ -222,15 +216,16 @@ export class WagonPhysics {
         }
     }
 
+    // Checks if the ground system marks a given coordinate as a water hazard.
     isPointInWater(x, z) {
         return this.scene.ground ? this.scene.ground.isPointInWater(x, z) : false;
     }
 
+    // Counts how many sample points on the wagon and horse hulls are currently submerged in water.
     countWaterPointsAt(x, z, angle, steerAngle) {
-        // 1. Wagon Bed Sphere
+
         const wagonSphere = { x, z, radius: 2.5 };
 
-        // 2. Horse Sphere
         const pivotX = x - 2.4 * Math.sin(angle);
         const pivotZ = z - 2.4 * Math.cos(angle);
         const theta = angle + steerAngle;
@@ -244,6 +239,7 @@ export class WagonPhysics {
         return count;
     }
 
+    // Checks several sample coordinates along a bounding sphere's circumference and center to evaluate water submersion.
     countSphereWaterPoints(sphere) {
         const cx = sphere.x;
         const cz = sphere.z;
@@ -271,6 +267,7 @@ export class WagonPhysics {
         return count;
     }
 
+    // Triggers damage/collision notifications on first impact and initiates speed reduction or knockbacks for solid obstacles.
     handleCollisionResponse(obstacle) {
         let appliedKnockback = false;
         let collided = false;
@@ -287,7 +284,7 @@ export class WagonPhysics {
                 appliedKnockback = true;
             }
         } else if ((obstacle.type === 'tree' || obstacle.type === 'barn' || obstacle.type === 'haybaleplatform') && this.speed > 0) {
-            // still driving into the obstacle, keep bouncing back
+
             this.speed = -2.0;
             appliedKnockback = true;
         }
@@ -299,19 +296,20 @@ export class WagonPhysics {
         return { appliedKnockback, collided };
     }
 
+    // Applies a backward speed impulse (rebound) to the wagon upon solid obstacle impacts.
     applyKnockback() {
         const knockbackSpeed = Math.max(4.0, Math.abs(this.speed) * 0.8);
         this.speed = -knockbackSpeed;
     }
 
+    // Displaces the wagon's position away from a static obstacle's center to resolve physical overlaps.
     pushOutFromObstacle(staticCollider) {
-        // find which collider is actually overlapping (default to wagon body)
+
         let activeCollider = this.collider.wagonCollider;
         if (this.collider.horseCollider && this.collider.horseCollider.collidesWith(staticCollider)) {
             activeCollider = this.collider.horseCollider;
         }
 
-        // 3D push-out vector
         const dx = activeCollider.x - staticCollider.x;
         const dy = activeCollider.y - staticCollider.y;
         const dz = activeCollider.z - staticCollider.z;
@@ -321,15 +319,14 @@ export class WagonPhysics {
 
         if (distance > 0.001) {
             const overlap = radiusSum - distance;
-            // push the wagon out
+
             this.x += (dx / distance) * overlap;
             this.z += (dz / distance) * overlap;
         } else {
-            // fallback to avoid division by zero
+
             this.x += activeCollider.radius + staticCollider.radius;
         }
 
-        // update height to align with terrain at new position
         if (this.scene.ground) {
             const frontX = this.x - 2.4 * Math.sin(this.angle);
             const frontZ = this.z - 2.4 * Math.cos(this.angle);
@@ -343,7 +340,6 @@ export class WagonPhysics {
             this.pitchAngle = Math.asin(Math.max(-1.0, Math.min(1.0, (yFront - yBack) / 4.8)));
         }
 
-        // update the wagon's collider position
         if (this.collider.updatePositions) {
             this.collider.updatePositions(this.x, this.y, this.z, this.angle, this.steerAngle);
         } else {
@@ -351,6 +347,7 @@ export class WagonPhysics {
         }
     }
 
+    // Increases forward speed based on acceleration rate up to maximum velocity.
     accelerate(dt) {
         this.speed += this.acceleration * dt;
         if (this.speed > this.maxSpeed) {
@@ -358,6 +355,7 @@ export class WagonPhysics {
         }
     }
 
+    // Applies active braking deceleration to rapidly reduce forward speed.
     brake(dt) {
         if (this.speed > 0) {
             this.speed = Math.max(0, this.speed - this.brakeDecel * dt);
@@ -366,6 +364,7 @@ export class WagonPhysics {
         }
     }
 
+    // Applies passive ground friction to slowly decelerate the wagon when no controls are pressed.
     decelerate(dt) {
         if (this.speed > 0) {
             this.speed = Math.max(0, this.speed - this.friction * dt);
@@ -374,21 +373,22 @@ export class WagonPhysics {
         }
     }
 
+    // Interpolates steering wheel angles based on input direction, returning the wheels to center when there is no active steering input.
     steer(dir, dt) {
         if (dir > 0) {
-            // Steer left
+
             this.steerAngle += this.steerSpeed * dt;
             if (this.steerAngle > this.maxSteerAngle) {
                 this.steerAngle = this.maxSteerAngle;
             }
         } else if (dir < 0) {
-            // Steer right
+
             this.steerAngle -= this.steerSpeed * dt;
             if (this.steerAngle < -this.maxSteerAngle) {
                 this.steerAngle = -this.maxSteerAngle;
             }
         } else {
-            // Return to center
+
             if (this.steerAngle > 0) {
                 this.steerAngle -= this.steerReturnSpeed * dt;
                 if (this.steerAngle < 0) {

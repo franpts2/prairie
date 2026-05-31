@@ -1,25 +1,20 @@
 export class CollisionSphere {
-    constructor(x = 0, y = 0, z = 0, radius = 1.0) {
+    // Initializes the collision sphere with position coordinates and a radius.
+     constructor(x = 0, y = 0, z = 0, radius = 1.0) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.radius = radius;
     }
 
-    /**
-     * Updates the position of the sphere collider.
-     */
+    // Updates the position coordinates of the sphere.
     setPosition(x, y, z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    /**
-     * Checks if this sphere overlaps with another CollisionSphere.
-     * @param {CollisionSphere} other - The other sphere collider to check against.
-     * @returns {boolean} - True if colliding, false otherwise.
-     */
+    // Performs a 3D spherical distance collision check against another sphere.
     collidesWith(other) {
         const dx = this.x - other.x;
         const dy = this.y - other.y;
@@ -31,43 +26,36 @@ export class CollisionSphere {
 }
 
 export class CompoundWagonCollider {
+    // Initializes a compound collider containing separate spheres for the wagon and horse.
     constructor(wagonRadius = 2.5, horseRadius = 2.2) {
         this.wagonCollider = new CollisionSphere(0, 0, 0, wagonRadius);
         this.horseCollider = new CollisionSphere(0, 0, 0, horseRadius);
-        
-        // Backward-compatibility properties
+
         this.x = 0;
         this.y = 0;
         this.z = 0;
-        this.radius = wagonRadius; // fallback
+        this.radius = wagonRadius;
     }
 
-    /**
-     * Updates the position of the individual spheres based on the wagon's state.
-     */
+    // Calculates and updates the wagon and horse bounding sphere positions based on the steer and pivot angles.
     updatePositions(x, y, z, angle, steerAngle) {
         this.x = x;
         this.y = y;
         this.z = z;
 
-        // 1. Wagon Bed Sphere is centered at the wagon's base coordinates
         this.wagonCollider.setPosition(x, y, z);
 
-        // 2. Horse Sphere is placed forward along the wagon's current tongue direction
         const pivotX = x - 2.4 * Math.sin(angle);
         const pivotZ = z - 2.4 * Math.cos(angle);
         const theta = angle + steerAngle;
 
-        // The horses are offset by -5.0 units along the steer-rotated axis
         const horseCenterX = pivotX - 5.0 * Math.sin(theta);
         const horseCenterZ = pivotZ - 5.0 * Math.cos(theta);
 
         this.horseCollider.setPosition(horseCenterX, y, horseCenterZ);
     }
 
-    /**
-     * Backward-compatibility for callers that use setPosition
-     */
+    // Sets the position for both the wagon and the horse colliders directly.
     setPosition(x, y, z) {
         this.x = x;
         this.y = y;
@@ -76,9 +64,7 @@ export class CompoundWagonCollider {
         this.horseCollider.setPosition(x, y, z);
     }
 
-    /**
-     * Checks if either sphere overlaps with the other CollisionSphere.
-     */
+    // Checks if either the wagon or the horse bounding sphere is currently intersecting another sphere.
     collidesWith(other) {
         return this.wagonCollider.collidesWith(other) || this.horseCollider.collidesWith(other);
     }
