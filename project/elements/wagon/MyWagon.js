@@ -205,21 +205,6 @@ export class MyWagon extends CGFobject {
         this.scene.translate(0, 1, -2.4);
         this.scene.rotate(this.steerAngle, 0, 1, 0);
         this.tongue.display();
-
-        // left horse
-        this.scene.pushMatrix();
-        this.scene.translate(-1.5, 1.8, -5.0); // distance to each other, height of the ground, forward from the tongue
-        this.scene.scale(3.0, 3.0, 3.0);
-        this.horseLeft.display();
-        this.scene.popMatrix();
-
-        // right horse
-        this.scene.pushMatrix();
-        this.scene.translate(1.5, 1.8, -5.0);
-        this.scene.scale(3.0, 3.0, 3.0);
-        this.horseRight.display();
-        this.scene.popMatrix();
-
         this.scene.popMatrix();
 
         // --- Cover ---
@@ -231,6 +216,70 @@ export class MyWagon extends CGFobject {
         // --- Hay Bales ---
         this.collectedBales.display();
 
+        this.scene.popMatrix();
+
+        const pivotX = this.x - 2.4 * Math.sin(this.angle);
+        const pivotZ = this.z - 2.4 * Math.cos(this.angle);
+        const theta = this.angle + this.steerAngle;
+
+        const xL_local = -1.5;
+        const zL_local = -5.0;
+        const horseLeftX = pivotX + xL_local * Math.cos(theta) + zL_local * Math.sin(theta);
+        const horseLeftZ = pivotZ - xL_local * Math.sin(theta) + zL_local * Math.cos(theta);
+
+        const xR_local = 1.5;
+        const zR_local = -5.0;
+        const horseRightX = pivotX + xR_local * Math.cos(theta) + zR_local * Math.sin(theta);
+        const horseRightZ = pivotZ - xR_local * Math.sin(theta) + zR_local * Math.cos(theta);
+
+        const horseYOffset = (this.physics.heightOffset || 0.15) + 1.0 + 1.8;
+
+        let yLeft = 0;
+        let pitchLeft = 0;
+        let yRight = 0;
+        let pitchRight = 0;
+
+        if (this.scene.ground) {
+            const dirX = -Math.sin(theta);
+            const dirZ = -Math.cos(theta);
+
+            const frontXL = horseLeftX + 1.0 * dirX;
+            const frontZL = horseLeftZ + 1.0 * dirZ;
+            const backXL = horseLeftX - 1.0 * dirX;
+            const backZL = horseLeftZ - 1.0 * dirZ;
+
+            const yFL = this.scene.ground.getHeight(frontXL, frontZL);
+            const yBL = this.scene.ground.getHeight(backXL, backZL);
+
+            yLeft = (yFL + yBL) / 2;
+            pitchLeft = Math.asin(Math.max(-1.0, Math.min(1.0, (yFL - yBL) / 2.0)));
+
+            const frontXR = horseRightX + 1.0 * dirX;
+            const frontZR = horseRightZ + 1.0 * dirZ;
+            const backXR = horseRightX - 1.0 * dirX;
+            const backZR = horseRightZ - 1.0 * dirZ;
+
+            const yFR = this.scene.ground.getHeight(frontXR, frontZR);
+            const yBR = this.scene.ground.getHeight(backXR, backZR);
+
+            yRight = (yFR + yBR) / 2;
+            pitchRight = Math.asin(Math.max(-1.0, Math.min(1.0, (yFR - yBR) / 2.0)));
+        }
+
+        this.scene.pushMatrix();
+        this.scene.translate(horseLeftX, yLeft + horseYOffset, horseLeftZ);
+        this.scene.rotate(theta, 0, 1, 0);
+        this.scene.rotate(pitchLeft, 1, 0, 0);
+        this.scene.scale(3.0, 3.0, 3.0);
+        this.horseLeft.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+        this.scene.translate(horseRightX, yRight + horseYOffset, horseRightZ);
+        this.scene.rotate(theta, 0, 1, 0);
+        this.scene.rotate(pitchRight, 1, 0, 0);
+        this.scene.scale(3.0, 3.0, 3.0);
+        this.horseRight.display();
         this.scene.popMatrix();
     }
 }
