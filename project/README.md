@@ -144,6 +144,10 @@ Our implementation addresses all basic requirements and introduces several highl
 | ![Grass and Flowers Shaders](docs/screenshots/project-t10-g06-4.gif) | Grass and Flowers shaders. |
 | ![Delivery and Barn Area](docs/screenshots/project-t10-g06-5.png) | Delivery and Barn Area. |
 
+## Live URL
+
+You can try out this project here: https://cgra-t10-g06.pages.dev/
+
 ## AI Use Declaration
 
 AI was used to aid in the following tasks:
