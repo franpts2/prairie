@@ -1,4 +1,4 @@
-import { CollisionSphere } from '../../utils/CollisionSphere.js';
+import { CollisionSphere, CompoundWagonCollider } from '../../utils/CollisionSphere.js';
 
 export class WagonPhysics {
     constructor(scene) {
@@ -11,12 +11,14 @@ export class WagonPhysics {
         this.angle = Math.PI;
         this.pitchAngle = 0;
         this.heightOffset = 0.15;
-        this.radius = 5;
 
         this.worldLimitRadius = 200;
         this.worldLimitMargin = 10;
 
-        this.collider = new CollisionSphere(this.x, this.y, this.z, this.radius);
+        // compound collider with two overlapping spheres:
+        // - Wagon bed: radius 2.5
+        // - Horses: radius 2.2
+        this.collider = new CompoundWagonCollider(2.5, 2.2);
         this.currentlyColliding = new Set();
         this.wasOutOfBounds = false;
 
@@ -94,7 +96,11 @@ export class WagonPhysics {
         }
 
         if (this.collider) {
-            this.collider.setPosition(this.x, this.y, this.z);
+            if (this.collider.updatePositions) {
+                this.collider.updatePositions(this.x, this.y, this.z, this.angle, this.steerAngle);
+            } else {
+                this.collider.setPosition(this.x, this.y, this.z);
+            }
         }
 
         this.resolveCollisions();
@@ -165,13 +171,19 @@ export class WagonPhysics {
     }
 
     pushOutFromObstacle(staticCollider) {
+        // find which collider is actually overlapping (default to wagon body)
+        let activeCollider = this.collider.wagonCollider;
+        if (this.collider.horseCollider && this.collider.horseCollider.collidesWith(staticCollider)) {
+            activeCollider = this.collider.horseCollider;
+        }
+
         // 3D push-out vector
-        const dx = this.x - staticCollider.x;
-        const dy = this.y - staticCollider.y;
-        const dz = this.z - staticCollider.z;
+        const dx = activeCollider.x - staticCollider.x;
+        const dy = activeCollider.y - staticCollider.y;
+        const dz = activeCollider.z - staticCollider.z;
         const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-        const radiusSum = this.collider.radius + staticCollider.radius;
+        const radiusSum = activeCollider.radius + staticCollider.radius;
 
         if (distance > 0.001) {
             const overlap = radiusSum - distance;
@@ -180,7 +192,7 @@ export class WagonPhysics {
             this.z += (dz / distance) * overlap;
         } else {
             // fallback to avoid division by zero
-            this.x += this.collider.radius + staticCollider.radius;
+            this.x += activeCollider.radius + staticCollider.radius;
         }
 
         // update height to align with terrain at new position
@@ -198,7 +210,11 @@ export class WagonPhysics {
         }
 
         // update the wagon's collider position
-        this.collider.setPosition(this.x, this.y, this.z);
+        if (this.collider.updatePositions) {
+            this.collider.updatePositions(this.x, this.y, this.z, this.angle, this.steerAngle);
+        } else {
+            this.collider.setPosition(this.x, this.y, this.z);
+        }
     }
 
     accelerate(dt) {
