@@ -1,5 +1,6 @@
 import { CGFappearance } from "../../../lib/CGF.js";
 import { TiledCube } from "../../utils/TiledCube.js";
+import { CollisionSphere } from "../../utils/CollisionSphere.js";
 
 export class MyHaybalePlatform {
     constructor(scene) {
@@ -19,6 +20,9 @@ export class MyHaybalePlatform {
 
         this.plankThickness = 0.15;
         this.supportThickness = 0.25;
+
+        this.y = 0;
+        this.collider = new CollisionSphere(this.centerX, this.y, this.centerZ, 3.0);
     }
 
     depositBales(capturedBales, startIndex) {
@@ -54,6 +58,13 @@ export class MyHaybalePlatform {
     }
 
     display() {
+        if (this.scene.ground && this.y === 0) {
+            this.y = this.scene.ground.getHeight(this.centerX, this.centerZ);
+            if (this.collider) {
+                this.collider.setPosition(this.centerX, this.y, this.centerZ);
+            }
+        }
+
         if (!this.woodAppearance) {
             this.woodAppearance = new CGFappearance(this.scene);
             this.woodAppearance.setAmbient(0.4, 0.2, 0.1, 1.0);

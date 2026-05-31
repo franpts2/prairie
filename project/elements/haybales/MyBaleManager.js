@@ -95,6 +95,44 @@ export class BaleManager {
     }
 
     /**
+     * Respawns new hay bales randomly on the terrain to replace the delivered ones
+     * @param {number} count - Number of hay bales to respawn
+     */
+    respawnBales(count) {
+        if (count <= 0) return;
+
+        const positions = PlacementUtils.generateScatterPositions({
+            count: count,
+            minX: -150,
+            maxX: 150,
+            minZ: -150,
+            maxZ: 150,
+            minDistance: 15,
+        });
+
+        const ground = this.scene.ground;
+        const newBales = positions.map(pos => {
+            const scale = MyHayBale.SCALE;
+            const height = ground ? ground.getHeight(pos.x, pos.z) : 0;
+            const baleY = height + scale * 0.5;
+            return {
+                x: pos.x,
+                y: baleY,
+                z: pos.z,
+                rotation: Math.random() * Math.PI * 2,
+                scale: scale,
+                captured: false,
+                collider: new CollisionSphere(pos.x, baleY, pos.z, scale),
+                yOffset: 0,
+                visibilityProgress: 0.0
+            };
+        });
+
+        this.hayBales.push(...newBales);
+        console.log(`Respawned ${newBales.length} new hay bales on the terrain!`);
+    }
+
+    /**
      * Updates the visibility progress of the hay bales based on their distance to the wagon
      * @param {number} dt - Time delta in seconds
      */
