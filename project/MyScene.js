@@ -14,6 +14,7 @@ import { AssetManager } from "./utils/AssetManager.js";
 import { MyFlowers } from "./elements/flowers/MyFlowers.js";
 import { GameController } from "./utils/GameController.js";
 import { MyDeliveryCircle } from "./elements/MyDeliveryCircle.js";
+import { MyWater } from "./elements/MyWater.js";
 
 /**
  * MyScene
@@ -63,6 +64,8 @@ export class MyScene extends CGFscene {
     this.renderGrass = true;
     this.renderFlowers = true;
     this.renderHorses = true;
+    this.renderWater = true;
+    this.waterHeight = 0.2;
 
     this.setUpdatePeriod(1000 / 60);
     this.lastTime = 0;
@@ -134,6 +137,7 @@ export class MyScene extends CGFscene {
       this.wagon.update(dt);
       if (this.hayBales) this.hayBales.update(dt);
       if (this.flowers) this.flowers.update(this.time);
+      if (this.water) this.water.update(t);
       this.gameController.update(dt);
     }
   }
@@ -213,6 +217,7 @@ export class MyScene extends CGFscene {
 
 
     this.deliveryCircle = new MyDeliveryCircle(this);
+    this.water = new MyWater(this);
 
     this.ready = true;
   }
@@ -281,6 +286,7 @@ export class MyScene extends CGFscene {
     this.multMatrix(sca);
 
     this.ground.display();
+    if (this.water) this.water.display();
 
     this.rocks.display();
 
