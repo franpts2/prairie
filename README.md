@@ -10,6 +10,32 @@
 | **Francisca Portugal** | 202303640      | up202303640@up.pt |
 | **Pedro Monteiro**     | 202307242      | up202307242@up.pt |
 
+## Table of Contents
+
+- [Game & Scene Description](#game--scene-description)
+  - [Core Gameplay Loop](#core-gameplay-loop)
+- [How to Run the Project](#how-to-run-the-project)
+  - [Prerequisites](#prerequisites)
+  - [Recommended Steps](#recommended-steps)
+- [Live URL](#live-url)
+- [Keyboard Controls Reference](#keyboard-controls-reference)
+- [Implemented Features](#implemented-features)
+  - [1. Sky, clouds, and sun](#1-sky-clouds-and-sun)
+  - [2. Terrain elevation](#2-terrain-elevation)
+  - [3. Ground surface](#3-ground-surface)
+  - [4. Scatter Elements](#4-scatter-elements)
+  - [5. Flora](#5-flora)
+  - [6. Grass](#6-grass)
+  - [7. Covered light wagon/prairie schooner](#7-covered-light-wagonprairie-schooner)
+  - [8. Wagon interaction mechanics](#8-wagon-interaction-mechanics)
+  - [9. Barn](#9-barn)
+  - [10. Interface elements](#10-interface-elements)
+  - [11. Animation](#11-animation)
+  - [12. Shaders](#12-shaders)
+- [Known Issues & Limitations](#known-issues--limitations)
+- [Screenshots & Deliverables](#screenshots--deliverables)
+- [AI Use Declaration](#ai-use-declaration)
+
 ## Game & Scene Description
 
 This project is a 3D interactive survival game built from scratch using the **WebCGF library** and custom **WebGL/GLSL shaders**. The scene is set in a vibrant spring prairie landscape under a dynamic sky dome. 
