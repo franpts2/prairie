@@ -1,6 +1,14 @@
-# Spring Prairie Survival Game — CGRA 2025/2026
-**L.EIC (3rd Year) — Computação Gráfica**  
+# Spring Prairie Survival Game
+**L.EIC (3rd Year) — Computação Gráfica 2025/2026**  
 **Faculdade de Engenharia da Universidade do Porto (FEUP)**  
+
+<div align="left">
+    <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript"/>
+    <img src="https://img.shields.io/badge/WebGL-990000?style=for-the-badge&logo=webgl&logoColor=white" alt="WebGL"/>
+    <img src="https://img.shields.io/badge/OpenGL-FFFFFF?style=for-the-badge&logo=opengl&logoColor=E6522C" alt="OpenGL / GLSL"/>
+    <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5"/>
+    <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3"/>
+</div>
 
 ## Group T10G06 / T02G06
 
@@ -12,29 +20,32 @@
 
 ## Table of Contents
 
-- [Game & Scene Description](#game--scene-description)
-  - [Core Gameplay Loop](#core-gameplay-loop)
-- [How to Run the Project](#how-to-run-the-project)
-  - [Prerequisites](#prerequisites)
-  - [Recommended Steps](#recommended-steps)
-- [Live URL](#live-url)
-- [Keyboard Controls Reference](#keyboard-controls-reference)
-- [Implemented Features](#implemented-features)
-  - [1. Sky, clouds, and sun](#1-sky-clouds-and-sun)
-  - [2. Terrain elevation](#2-terrain-elevation)
-  - [3. Ground surface](#3-ground-surface)
-  - [4. Scatter Elements](#4-scatter-elements)
-  - [5. Flora](#5-flora)
-  - [6. Grass](#6-grass)
-  - [7. Covered light wagon/prairie schooner](#7-covered-light-wagonprairie-schooner)
-  - [8. Wagon interaction mechanics](#8-wagon-interaction-mechanics)
-  - [9. Barn](#9-barn)
-  - [10. Interface elements](#10-interface-elements)
-  - [11. Animation](#11-animation)
-  - [12. Shaders](#12-shaders)
-- [Known Issues & Limitations](#known-issues--limitations)
-- [Screenshots & Deliverables](#screenshots--deliverables)
-- [AI Use Declaration](#ai-use-declaration)
+- [Spring Prairie Survival Game](#spring-prairie-survival-game)
+  - [Group T10G06 / T02G06](#group-t10g06--t02g06)
+  - [Table of Contents](#table-of-contents)
+  - [Game \& Scene Description](#game--scene-description)
+    - [Core Gameplay Loop](#core-gameplay-loop)
+  - [How to Run the Project](#how-to-run-the-project)
+    - [Prerequisites](#prerequisites)
+    - [Recommended Steps](#recommended-steps)
+  - [Live URL](#live-url)
+  - [Keyboard Controls Reference](#keyboard-controls-reference)
+  - [Implemented Features](#implemented-features)
+    - [1. Sky, clouds, and sun](#1-sky-clouds-and-sun)
+    - [2. Terrain elevation](#2-terrain-elevation)
+    - [3. Ground surface](#3-ground-surface)
+    - [4. Scatter Elements](#4-scatter-elements)
+    - [5. Flora](#5-flora)
+    - [6. Grass](#6-grass)
+    - [7. Covered light wagon/prairie schooner](#7-covered-light-wagonprairie-schooner)
+    - [8. Wagon interaction mechanics](#8-wagon-interaction-mechanics)
+    - [9. Barn](#9-barn)
+    - [10. Interface elements](#10-interface-elements)
+    - [11. Animation](#11-animation)
+    - [12. Shaders](#12-shaders)
+  - [Known Issues \& Limitations](#known-issues--limitations)
+  - [Screenshots \& Deliverables](#screenshots--deliverables)
+  - [AI Use Declaration](#ai-use-declaration)
 
 ## Game & Scene Description
 
@@ -170,13 +181,13 @@ Our implementation addresses all basic requirements and introduces several highl
 
 ## Screenshots & Deliverables
 
-| Screenshot / Demonstration | Description |
-| :---: | :--- |
-| ![Overview](project/docs/screenshots/project-t10g06-1.png) | Overview of the scene. |
+|                            Screenshot / Demonstration                            | Description                       |
+| :------------------------------------------------------------------------------: | :-------------------------------- |
+|            ![Overview](project/docs/screenshots/project-t10g06-1.png)            | Overview of the scene.            |
 | ![Flower, rocks and floor detail](project/docs/screenshots/project-t10g06-2.png) | Flowers, rocks and floor details. |
-| ![Wagon close-up](project/docs/screenshots/project-t10g06-3.png) | Wagon close-up |
-| ![Grass and Flowers Shaders](project/docs/screenshots/project-t10g06-4.gif) | Grass and Flowers shaders. |
-| ![Delivery and Barn Area](project/docs/screenshots/project-t10g06-5.png) | Delivery and Barn Area. |
+|         ![Wagon close-up](project/docs/screenshots/project-t10g06-3.png)         | Wagon close-up                    |
+|   ![Grass and Flowers Shaders](project/docs/screenshots/project-t10g06-4.gif)    | Grass and Flowers shaders.        |
+|     ![Delivery and Barn Area](project/docs/screenshots/project-t10g06-5.png)     | Delivery and Barn Area.           |
 
 
 ## AI Use Declaration
