@@ -146,11 +146,11 @@ Our implementation addresses all basic requirements and introduces several highl
 
 | Screenshot / Demonstration | Description |
 | :---: | :--- |
-| ![Overview](docs/screenshots/project-t10g06-1.png) | Overview of the scene. |
-| ![Flower, rocks and floor detail](docs/screenshots/project-t10g06-2.png) | Flowers, rocks and floor details. |
-| ![Wagon close-up](docs/screenshots/project-t10g06-3.png) | Wagon close-up |
-| ![Grass and Flowers Shaders](docs/screenshots/project-t10g06-4.gif) | Grass and Flowers shaders. |
-| ![Delivery and Barn Area](docs/screenshots/project-t10g06-5.png) | Delivery and Barn Area. |
+| ![Overview](project/docs/screenshots/project-t10g06-1.png) | Overview of the scene. |
+| ![Flower, rocks and floor detail](project/docs/screenshots/project-t10g06-2.png) | Flowers, rocks and floor details. |
+| ![Wagon close-up](project/docs/screenshots/project-t10g06-3.png) | Wagon close-up |
+| ![Grass and Flowers Shaders](project/docs/screenshots/project-t10g06-4.gif) | Grass and Flowers shaders. |
+| ![Delivery and Barn Area](project/docs/screenshots/project-t10g06-5.png) | Delivery and Barn Area. |
 
 
 ## AI Use Declaration
