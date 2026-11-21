@@ -1,27 +1,33 @@
 # Spring Prairie Survival Game
-**L.EIC (3rd Year) — Computação Gráfica 2025/2026**  
-**Faculdade de Engenharia da Universidade do Porto (FEUP)**  
 
-<div align="left">
-    <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript"/>
-    <img src="https://img.shields.io/badge/WebGL-990000?style=for-the-badge&logo=webgl&logoColor=white" alt="WebGL"/>
-    <img src="https://img.shields.io/badge/OpenGL-FFFFFF?style=for-the-badge&logo=opengl&logoColor=E6522C" alt="OpenGL / GLSL"/>
-    <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5"/>
-    <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3"/>
-</div>
+A 3D interactive survival game built with WebGL, GLSL, and WebCGF: drive a wagon, collect hay, and survive the prairie.
 
-## Group T10G06 / T02G06
+<p align="left">
+  <a href="https://cgra-t10-g06.pages.dev/"><img src="https://img.shields.io/badge/live-cgra--t10--g06.pages.dev-FF3D81?style=flat-square" alt="Live site"></a>
+</p>
 
-| Name                   | Student Number | E-Mail            |
-| :--------------------- | :------------- | :---------------- |
-| **Carolina Ferreira**  | 202303547      | up202303547@up.pt |
-| **Francisca Portugal** | 202303640      | up202303640@up.pt |
-| **Pedro Monteiro**     | 202307242      | up202307242@up.pt |
+<p align="left">
+  <img src="https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E" alt="JavaScript">
+  <img src="https://img.shields.io/badge/WebGL-990000?style=for-the-badge&logo=webgl&logoColor=white" alt="WebGL">
+  <img src="https://img.shields.io/badge/OpenGL-FFFFFF?style=for-the-badge&logo=opengl" alt="OpenGL">
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5">
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css&logoColor=white" alt="CSS3">
+</p>
+
+## Team & Course
+
+| Name | Student Number | E-Mail |
+| :--- | :--- | :--- |
+| **Carolina Ferreira** | 202303547 | up202303547@up.pt |
+| **Francisca Portugal** | 202303640 | up202303640@up.pt |
+| **Pedro Monteiro** | 202307242 | up202307242@up.pt |
+
+Developed for **L.EIC (3rd Year), Computação Gráfica 2025/2026** at the Faculty of Engineering of the University of Porto (FEUP). Group **T10G06 / T02G06**.
 
 ## Table of Contents
 
 - [Spring Prairie Survival Game](#spring-prairie-survival-game)
-  - [Group T10G06 / T02G06](#group-t10g06--t02g06)
+  - [Team & Course](#team--course)
   - [Table of Contents](#table-of-contents)
   - [Game \& Scene Description](#game--scene-description)
     - [Core Gameplay Loop](#core-gameplay-loop)
@@ -60,7 +66,6 @@ The player drives a hierarchical **Prairie Schooner (wagon)** and must survive f
 *   **Obstacles:** Driving into rocks, trees, the barn or the haybale platform damages the wagon, deducting a random damage value between `5 and 15 HP` and triggering a **red damage flash** effect on the wagon model. 
 *   **Game Over:** The game ends when HP reaches zero. The score is the total number of seconds the player remained alive. A stylized game-over overlay displays the final score and allows restarting the adventure instantly.
 
-
 ## How to Run the Project
 
 Since WebCGF loads shaders, textures, and 3D models via asynchronous HTTP requests, the project **must be served from a local HTTP server** to avoid CORS policy blockages.
@@ -86,7 +91,6 @@ Since WebCGF loads shaders, textures, and 3D models via asynchronous HTTP reques
 
 You can try out this project here: https://cgra-t10-g06.pages.dev/
 
-
 ## Keyboard Controls Reference
 
 |  Key  | Action             | Details                                                                |
@@ -97,7 +101,6 @@ You can try out this project here: https://cgra-t10-g06.pages.dev/
 | **D** | Steer Right        | Rotates the front wheels and wagon tongue right.                       |
 | **P** | Pick Up Hay Bale   | Captures a nearby hay bale if within range and cargo is < 2.           |
 | **L** | Drop / Deliver     | Delivers carried bales inside the circle, or drops them on the ground. |
-
 
 ## Implemented Features
 
@@ -178,7 +181,6 @@ Our implementation addresses all basic requirements and introduces several highl
 *   **Sky Dome Backface Clipping:** If you enable backface culling globally, the skybox may disappear depending on the winding order. *Note: The winding order and normals are designed for a standard sphere, and is optimized to avoid rendering when culled depending on view matrix boundaries.*
 *   **High Performance Tuning:** Due to the dense amount of grass blades, very low-end GPUs might see small frame-rate drops.
 
-
 ## Screenshots & Deliverables
 
 |                            Screenshot / Demonstration                            | Description                       |
@@ -188,7 +190,7 @@ Our implementation addresses all basic requirements and introduces several highl
 |         ![Wagon close-up](project/docs/screenshots/project-t10g06-3.png)         | Wagon close-up                    |
 |   ![Grass and Flowers Shaders](project/docs/screenshots/project-t10g06-4.gif)    | Grass and Flowers shaders.        |
 |     ![Delivery and Barn Area](project/docs/screenshots/project-t10g06-5.png)     | Delivery and Barn Area.           |
-
+|                  ![Live game](docs/screenshots/game.jpg)                   | Live game view.                   |
 
 ## AI Use Declaration
 
@@ -196,3 +198,11 @@ AI was used to aid in the following tasks:
 * **Optimizations**: AI helped diagnoze the performance bottlenecks and suggested ways to fight them.
 * **Refactoring**: gave ideas on how to best organize the project when requested.
 * **Documentation**: README and header comments were mostly generated by AI.
+
+## License
+
+Coursework submitted at FEUP. Shared for reference; all rights reserved unless stated otherwise.
+
+---
+
+_Prairie — survive the ride._
